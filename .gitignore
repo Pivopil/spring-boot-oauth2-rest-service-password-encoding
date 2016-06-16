@@ -1,4 +1,8 @@
+/.idea
+/spring-boot-oauth2-rest-service-password-encoding.iml
 *.class
+
+
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
