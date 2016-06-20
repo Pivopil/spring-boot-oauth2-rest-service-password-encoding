@@ -19,6 +19,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <log4j.version>1.2.17</log4j.version>
         <java.version>1.8</java.version>
+        <start-class>io.github.pivopil.Application</start-class>
     </properties>
 
     <dependencies>
