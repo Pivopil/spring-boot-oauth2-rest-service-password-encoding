@@ -1,0 +1,40 @@
+= Spring Boot OAuth2 REST Server with Password Encoding
+
+Simple Spring Boot OAuth2 REST server with password encoding.
+The REST server is based on the https://github.com/royclarkson/spring-rest-service-oauth/[Spring REST Service OAuth] app
+and https://spring.io/guides/gs/rest-service/[Building a RESTful Web Service] getting started guide.
+
+== Spring Projects
+
+The following projects are used in this sample app:
+
+* http://projects.spring.io/spring-boot/[Spring Boot]
+* http://docs.spring.io/spring/docs/current/spring-framework-reference/html/mvc.html[Spring MVC]
+* http://projects.spring.io/spring-security/[Spring Security]
+* http://projects.spring.io/spring-security-oauth/[Spring Security OAuth]
+* http://projects.spring.io/spring-data-jpa/[Spring Data JPA]
+* https://github.com/brettwooldridge/HikariCP/[HikariCP]
+
+== Build and Run in Tomcat
+
+```sh
+git clone https://github.com/Pivopil/spring-boot-oauth2-rest-service-password-encoding.git
+cd spring-boot-oauth2-rest-service-password-encoding
+mvn clean install
+```
+
+First update properties to you own db: `./rest/src/main/resources/application.properties`
+
+```
+spring.datasource.url=jdbc:mysql://localhost/oauth2rest?createDatabaseIfNotExist=true
+spring.datasource.username=root
+spring.datasource.password=1
+```
+
+Then:
+
+```sh
+mvn clean install
+```
+
+And put `./rest/target/rest-1.0.0.war` to Tomcat
