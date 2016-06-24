@@ -4,7 +4,7 @@ Simple Spring Boot OAuth2 REST server with password encoding.
 The REST server is based on the https://github.com/royclarkson/spring-rest-service-oauth/[Spring REST Service OAuth] app
 and https://spring.io/guides/gs/rest-service/[Building a RESTful Web Service] getting started guide.
 
-== Spring Projects
+== Projects
 
 The following projects are used in this sample app:
 
