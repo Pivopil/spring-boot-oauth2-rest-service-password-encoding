@@ -6,7 +6,11 @@
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
+/web-ui/dist
+/rest/src/main/resources/public
 # Package Files #
+/web-ui/node_modules
+/web-ui/typings
 *.jar
 *.war
 *.ear
