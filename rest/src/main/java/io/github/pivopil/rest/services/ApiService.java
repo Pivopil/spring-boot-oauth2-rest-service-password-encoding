@@ -28,7 +28,7 @@ public class ApiService {
     @Autowired
     private FrameworkEndpointHandlerMapping frameworkEndpointHandlerMapping;
 
-    public Map<String, Map<String, Set<String>>> getApi() {
+    public Map<String, Map<String, String>> getApi() {
 
         return Stream.of(
                 requestMappingHandlerMapping.getHandlerMethods(),
@@ -54,24 +54,22 @@ public class ApiService {
 
     };
 
-    private Function<? super Map.Entry<RequestMappingInfo, HandlerMethod>, ? extends Map<String, Set<String>>> transformToValue = entry -> {
+    private Function<? super Map.Entry<RequestMappingInfo, HandlerMethod>, ? extends Map<String, String>> transformToValue = entry -> {
         RequestMappingInfo requestMappingInfo = entry.getKey();
 
-        Map<String, Set<String>> map = new HashMap<>();
+        Map<String, String> map = new HashMap<>();
 
         Set<RequestMethod> methods = requestMappingInfo.getMethodsCondition().getMethods();
 
-        Set<String> methodSet;
 
         if (methods.size() > 0) {
-            methodSet = methods.stream().map(Enum::toString).collect(Collectors.toSet());
+            map.put("method", methods.iterator().next().toString());
         } else {
-            methodSet = new HashSet<>();
-            methodSet.add(RequestMethod.GET.toString());
+            map.put("method", RequestMethod.GET.toString());
         }
 
-        map.put("url", requestMappingInfo.getPatternsCondition().getPatterns());
-        map.put("method", methodSet);
+        map.put("url", requestMappingInfo.getPatternsCondition().getPatterns().iterator().next());
+
         return map;
     };
 }

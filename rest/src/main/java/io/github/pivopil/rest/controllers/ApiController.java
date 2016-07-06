@@ -20,7 +20,7 @@ public class ApiController {
     private ApiService apiService;
 
     @RequestMapping(REST_API.API)
-    public Map<String, Map<String, Set<String>>> getApi() {
+    public Map<String, Map<String, String>> getApi() {
         return apiService.getApi();
     }
 }
