@@ -1,3 +1,51 @@
-<main>
-    <h1>Angular 2 Spring Boot OAuth2 Client</h1>
-</main>
+<nav role="navigation" class="navbar navbar-default navbar-fixed-top">
+    <div class="navbar-header">
+        <button type="button" data-target="#navbarCollapse" data-toggle="collapse" class="navbar-toggle">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+    </div>
+    <div id="navbarCollapse" class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+            <li><a class="big-font" href="/"><i class="fa fa-home"></i>{{ 'HOME' | translate: language }}</a></li>
+
+        </ul>
+        <form [hidden]="isAuthorised" #submitForm="ngForm" class="navbar-form navbar-right">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <div class="col-md-10">
+                        <input required class="form-control" ngControl="email" #email="ngForm"
+                               [(ngModel)]="user.email" type="text" placeholder="Your Name">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-10">
+                        <input required class="form-control" ngControl="pass" #pass="ngForm"
+                               [(ngModel)]="user.pass" type="password" placeholder="Password">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-10">
+                        <button [disabled]="!submitForm.form.valid" class="btn btn-primary" (click)="singIn()">
+                            <i class="fa fa-sign-in"></i>{{'SING_IN' | translate:language }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div [hidden]="!isAuthorised" class="navbar-form navbar-right">
+            <span class="big-font"><i class="fa fa-user"></i>{{user.email}}</span>
+            <button class="btn btn-primary" (click)="singOut()">
+                <i class="fa fa-sign-out"></i>{{'SING_OUT' | translate:language }}
+            </button>
+
+            <select class="form-control" [(ngModel)]="language" (ngModelChange)="changeLanguage()">
+                <option *ngFor="let p of languages" [value]="p">{{p}}</option>
+            </select>
+
+        </div>
+    </div>
+</nav>
+<router-outlet></router-outlet>

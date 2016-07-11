@@ -1,0 +1,135 @@
+/*customer view*/
+.wrapper, .row {
+  padding-top: 5px;
+  height: 100%; }
+
+.wrapper:before, .wrapper:after,
+.column:before, .column:after {
+  content: "";
+  display: table; }
+
+.wrapper:after,
+.column:after {
+  clear: both; }
+
+.column {
+  height: 100%;
+  overflow: auto;
+  *zoom: 1; }
+
+.full {
+  padding-top: 70px; }
+
+.box {
+  bottom: 0;
+  /* increase for footer use */
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0; }
+
+.box > .row {
+  margin-right: 0; }
+
+#main {
+  background-color: #e9eaed;
+  padding-left: 0;
+  padding-right: 0; }
+
+#sidebar {
+  padding: 0;
+  padding-top: 50px; }
+
+#sidebar, #sidebar a, #sidebar-footer a {
+  background-color: transparent;
+  padding-left: 15px; }
+
+#footer {
+  margin-bottom: 20px; }
+
+/* bootstrap overrides */
+.navbar-toggle, .close {
+  outline: 0; }
+
+.navbar-toggle .icon-bar {
+  background-color: #fff; }
+
+.panel textarea, .well textarea, textarea.form-control {
+  resize: none; }
+
+.col-sm-9.full {
+  width: 100%; }
+
+/* adjust the contents on smaller devices */
+@media (max-width: 768px) {
+  .column .padding {
+    padding: 7px; }
+  .full {
+    padding-top: 20px; }
+  .navbar-blue {
+    background-color: #3B5999;
+    top: 0;
+    width: 100%;
+    position: relative; } }
+
+/*
+ * off canvas sidebar
+ * --------------------------------------------------
+ */
+@media screen and (max-width: 768px) {
+  .row-offcanvas {
+    position: relative;
+    -webkit-transition: all 0.25s ease-out;
+    -moz-transition: all 0.25s ease-out;
+    transition: all 0.25s ease-out; }
+  .row-offcanvas-left.active {
+    left: 33%; }
+  .row-offcanvas-left.active .sidebar-offcanvas {
+    left: -33%;
+    position: absolute;
+    top: 0;
+    width: 33%;
+    margin-left: 5px; }
+  #sidebar, #sidebar a, #sidebar-footer a {
+    padding-left: 10px; }
+  #toast-container .toast {
+    display: none; } }
+
+/*home view*/
+.big-font {
+  font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
+  text-align: center;
+  font-size: 24px; }
+
+/* Footer */
+.footer {
+  color: #cccccc;
+  text-align: center; }
+.footer p {
+  font-size: 11px; }
+.footer a {
+  color: #ccccff; }
+
+body {
+  /* Main body and headings */
+  font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+  padding-top: 60px; }
+
+.heading, .subheading {
+  font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
+  text-align: center; }
+
+span .position-icon {
+  text-align: right; }
+
+p {
+  font-size: 18px;
+  line-height: 24px; }
+p .lead {
+  margin-bottom: 0;
+  padding-top: 1.5%;
+  font-size: 24px;
+  line-height: 30px; }
+
+.fa {
+  padding-right: 0.25em; }
