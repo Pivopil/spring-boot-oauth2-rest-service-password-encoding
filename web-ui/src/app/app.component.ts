@@ -23,14 +23,14 @@ export class AppComponent {
                 private _eventService: EventService) {
     }
 
-    singOut() {
+    signOut() {
         this._oauthService.logout();
         this.isAuthorised = false;
         this.user = {email: "", pass: ""};
         this._router.navigate(['/']);
     }
 
-    singIn() {
+    signIn() {
         this._oauthService.login(this.user)
             .then(isAdmin => {
                 this.isAuthorised = true;

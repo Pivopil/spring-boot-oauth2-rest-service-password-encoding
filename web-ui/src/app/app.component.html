@@ -28,8 +28,8 @@
 
                 <div class="form-group">
                     <div class="col-md-10">
-                        <button [disabled]="!submitForm.form.valid" class="btn btn-primary" (click)="singIn()">
-                            <i class="fa fa-sign-in"></i>{{'SING_IN' | translate:language }}
+                        <button [disabled]="!submitForm.form.valid" class="btn btn-primary" (click)="signIn()">
+                            <i class="fa fa-sign-in"></i>{{'SIGN_IN' | translate:language }}
                         </button>
                     </div>
                 </div>
@@ -37,8 +37,8 @@
         </form>
         <div [hidden]="!isAuthorised" class="navbar-form navbar-right">
             <span class="big-font"><i class="fa fa-user"></i>{{user.email}}</span>
-            <button class="btn btn-primary" (click)="singOut()">
-                <i class="fa fa-sign-out"></i>{{'SING_OUT' | translate:language }}
+            <button class="btn btn-primary" (click)="signOut()">
+                <i class="fa fa-sign-out"></i>{{'SIGN_OUT' | translate:language }}
             </button>
 
             <select class="form-control" [(ngModel)]="language" (ngModelChange)="changeLanguage()">

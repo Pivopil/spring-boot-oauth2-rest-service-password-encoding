@@ -9,8 +9,8 @@ export class TranslatePipe implements PipeTransform {
 
             // home view
             HOME: 'Home',
-            SING_IN: 'Sing in',
-            SING_OUT: 'Sing Out',
+            SIGN_IN: 'Sign in',
+            SIGN_OUT: 'Sign Out',
             HI: 'Hi, ',
 
             // info view
