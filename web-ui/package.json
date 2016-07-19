@@ -25,6 +25,7 @@
     "bootstrap": "^3.3.6"
   },
   "devDependencies": {
+    "angular2-template-loader": "^0.4.0",
     "css-loader": "^0.23.1",
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.8.5",
