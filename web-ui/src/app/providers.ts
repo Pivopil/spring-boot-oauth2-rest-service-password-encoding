@@ -1,4 +1,4 @@
-import {provideRouter, RouterConfig} from '@angular/router';
+import {provideRouter, RouterConfig, RouterModule} from '@angular/router';
 import {FORM_PROVIDERS, LocationStrategy, HashLocationStrategy} from '@angular/common';
 import {Http, HTTP_PROVIDERS, RequestOptions, BaseRequestOptions, Headers} from '@angular/http';
 import {OauthService} from "./services/oauth.service";
@@ -20,6 +20,8 @@ export const routes: RouterConfig = [
     {path: 'admin-root', component: AdminComponent},
     {path: '', component: InfoComponent}
 ];
+
+export const routing = RouterModule.forRoot(routes);
 
 export const APPLICATION_PROVIDERS = [
     provideRouter(routes), {provide: LocationStrategy, useClass: HashLocationStrategy},
