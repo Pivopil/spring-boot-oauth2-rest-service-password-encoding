@@ -8,44 +8,53 @@
     </div>
     <div id="navbarCollapse" class="collapse navbar-collapse">
         <ul class="nav navbar-nav">
-            <li><a class="big-font" href="/"><i class="fa fa-home"></i>{{ 'HOME' | translate: language }}</a></li>
-
+            <!--<li><a class="big-font" href="/"><i class="fa fa-home"></i>{{ 'HOME' | translate: language }}</a></li>-->
+            <li><a routerLink="/crisis-center" routerLinkActive="active"
+               [routerLinkActiveOptions]="{ exact: true }">Crisis Center</a></li>
+            <li><a routerLink="/heroes" routerLinkActive="active">Heroes</a></li>
+            <li><a routerLink="/crisis-center/admin" routerLinkActive="active">Crisis Admin</a></li>
+            <li><a routerLink="/login" routerLinkActive="active">Login</a></li>
         </ul>
-        <form [hidden]="isAuthorised" #submitForm="ngForm" class="navbar-form navbar-right">
+        <form [formGroup]="heroForm"  *ngIf="isAuthorised"  (ngSubmit)="onSubmit()" class="navbar-form navbar-right">
             <div class="form-horizontal">
                 <div class="form-group">
                     <div class="col-md-10">
-                        <input required class="form-control" ngControl="email" #email="ngForm"
-                               [(ngModel)]="user.email" type="text" placeholder="Your Name">
+                        test
+                        <!--<input required class="form-control" ngControl="email" #email="ngForm"-->
+                               <!--[(ngModel)]="user.email" type="text" placeholder="Your Name">-->
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-md-10">
-                        <input required class="form-control" ngControl="pass" #pass="ngForm"
-                               [(ngModel)]="user.pass" type="password" placeholder="Password">
+                        test
+                        <!--<input required class="form-control" ngControl="pass" #pass="ngForm"-->
+                               <!--[(ngModel)]="user.pass" type="password" placeholder="Password">-->
                     </div>
                 </div>
 
                 <div class="form-group">
                     <div class="col-md-10">
-                        <button [disabled]="!submitForm.form.valid" class="btn btn-primary" (click)="signIn()">
-                            <i class="fa fa-sign-in"></i>{{'SIGN_IN' | translate:language }}
+                        test
+                        <!--<button [disabled]="!submitForm.form.valid" class="btn btn-primary" (click)="signIn()">-->
+                            <!--<i class="fa fa-sign-in"></i>{{'SIGN_IN' | translate:language }}-->
                         </button>
                     </div>
                 </div>
             </div>
         </form>
-        <div [hidden]="!isAuthorised" class="navbar-form navbar-right">
-            <span class="big-font"><i class="fa fa-user"></i>{{user.email}}</span>
-            <button class="btn btn-primary" (click)="signOut()">
-                <i class="fa fa-sign-out"></i>{{'SIGN_OUT' | translate:language }}
-            </button>
+        <!--<div [hidden]="!isAuthorised" class="navbar-form navbar-right">-->
+            <!--<span class="big-font"><i class="fa fa-user"></i>{{user.email}}</span>-->
+            <!--<button class="btn btn-primary" (click)="signOut()">-->
+                <!--<i class="fa fa-sign-out"></i>{{'SIGN_OUT' | translate:language }}-->
+            <!--</button>-->
 
-            <select class="form-control" [(ngModel)]="language" (ngModelChange)="changeLanguage()">
-                <option *ngFor="let p of languages" [value]="p">{{p}}</option>
-            </select>
+            <!--<select class="form-control" [(ngModel)]="language" (ngModelChange)="changeLanguage()">-->
+                <!--<option *ngFor="let p of languages" [value]="p">{{p}}</option>-->
+            <!--</select>-->
 
-        </div>
+        <!--</div>-->
     </div>
 </nav>
+
+
 <router-outlet></router-outlet>
