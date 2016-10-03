@@ -4,7 +4,7 @@ var commonConfig = require('./webpack.common.js');
 var helpers = require('./helpers');
 
 module.exports = webpackMerge(commonConfig, {
-  devtool: 'cheap-module-eval-source-map',
+    devtool: 'cheap-module-eval-source-map',
 
     output: {
         path: helpers.root('dist'),
@@ -18,12 +18,9 @@ module.exports = webpackMerge(commonConfig, {
     ],
 
     devServer: {
-        historyApiFallback: true,
-        watchOptions: {aggregateTimeout: 300, poll: 1000},
         proxy: {
-            '/oauth/*': 'http://localhost:8065',
-            '/api/*': 'http://localhost:8065'
-        },
-        stats: 'minimal'
+            '/oauth/*': {target: 'http://localhost:8065'},
+            '/api/*': {target: 'http://localhost:8065'}
+        }
     }
 });
