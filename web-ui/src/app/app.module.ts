@@ -12,13 +12,13 @@ import {DialogService} from "./services/dialog.service";
 import {EventService} from "./services/event.service";
 import {OauthService} from "./services/oauth.service";
 import {CustomerService} from "./services/customer.service";
+import {ForbiddenValidatorDirective} from "./login/forbiddenEmail/forbidden-email.directive";
 
 
 
 @NgModule({
     imports: [
         BrowserModule,
-        FormsModule,
         ReactiveFormsModule,
         HttpModule,
         routing,
@@ -26,7 +26,8 @@ import {CustomerService} from "./services/customer.service";
     ],
     declarations: [
         AppComponent,
-        LoginComponent
+        LoginComponent,
+        ForbiddenValidatorDirective
     ],
     providers: [
         appRoutingProviders,

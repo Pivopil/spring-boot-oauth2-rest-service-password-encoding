@@ -15,29 +15,30 @@
             <li><a routerLink="/crisis-center/admin" routerLinkActive="active">Crisis Admin</a></li>
             <li><a routerLink="/login" routerLinkActive="active">Login</a></li>
         </ul>
-        <form [formGroup]="heroForm"  *ngIf="isAuthorised"  (ngSubmit)="onSubmit()" class="navbar-form navbar-right">
+        <form [formGroup]="loginForm" (ngSubmit)="signIn()" class="navbar-form navbar-right">
             <div class="form-horizontal">
                 <div class="form-group">
                     <div class="col-md-10">
-                        test
-                        <!--<input required class="form-control" ngControl="email" #email="ngForm"-->
-                               <!--[(ngModel)]="user.email" type="text" placeholder="Your Name">-->
+                        <input required class="form-control" id="email" formControlName="email"
+                               [(ngModel)]="user.email" type="text" placeholder="Your Name">
+                        <div *ngIf="loginForm.email" class="alert alert-danger">
+                            {{ loginForm.email }}
+                        </div>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-md-10">
-                        test
-                        <!--<input required class="form-control" ngControl="pass" #pass="ngForm"-->
-                               <!--[(ngModel)]="user.pass" type="password" placeholder="Password">-->
+                        <input required id="password" class="form-control" [(ngModel)]="user.pass"
+                               type="password" placeholder="Password" formControlName="pass">
+                        <div *ngIf="loginForm.password" class="alert alert-danger">
+                            {{ loginForm.pass }}
+                        </div>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <div class="col-md-10">
-                        test
-                        <!--<button [disabled]="!submitForm.form.valid" class="btn btn-primary" (click)="signIn()">-->
-                            <!--<i class="fa fa-sign-in"></i>{{'SIGN_IN' | translate:language }}-->
-                        </button>
+                        <button type="submit" class="btn btn-primary" [disabled]="!loginForm.valid">Sign In</button>
                     </div>
                 </div>
             </div>
