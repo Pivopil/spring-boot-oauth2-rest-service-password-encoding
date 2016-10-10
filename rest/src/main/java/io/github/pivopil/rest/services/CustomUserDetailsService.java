@@ -30,6 +30,10 @@ public class CustomUserDetailsService implements UserDetailsService {
         return new UserRepositoryUserDetails(user);
     }
 
+    public boolean canAccessUser(UserRepositoryUserDetails currentUser, Long id) {
+        return false;
+    }
+
     public Iterable<User> findAll() {
         return userRepository.findAll();
     }

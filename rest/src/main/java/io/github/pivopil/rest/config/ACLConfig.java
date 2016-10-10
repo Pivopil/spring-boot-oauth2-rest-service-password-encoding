@@ -1,6 +1,5 @@
 package io.github.pivopil.rest.config;
 
-import net.sf.ehcache.hibernate.EhCacheRegionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.ehcache.EhCacheFactoryBean;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
