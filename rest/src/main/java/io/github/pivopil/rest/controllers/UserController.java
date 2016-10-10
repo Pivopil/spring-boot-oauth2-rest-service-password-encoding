@@ -4,6 +4,7 @@ import io.github.pivopil.REST_API;
 import io.github.pivopil.rest.services.CustomUserDetailsService;
 import io.github.pivopil.share.entities.impl.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,12 @@ public class UserController {
 
     @RequestMapping(REST_API.USERS)
     public Iterable<User> getUsers() {
+        return customUserDetailsService.findAll();
+    }
+
+    @RequestMapping("/api/acl")
+    @PostAuthorize("hasPermission(returnObject,'ADMIN')")
+    public Iterable<User> acl() {
         return customUserDetailsService.findAll();
     }
 
