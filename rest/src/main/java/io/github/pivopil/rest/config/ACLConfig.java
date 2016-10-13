@@ -63,9 +63,8 @@ public class ACLConfig  extends GlobalMethodSecurityConfiguration {
 
 
     AclAuthorizationStrategy aclAuthorizationStrategy() {
-        return new AclAuthorizationStrategyImpl(new SimpleGrantedAuthority("ROLE_ACL_ADMIN"),
-                new SimpleGrantedAuthority("ROLE_ACL_ADMIN"),
-                new SimpleGrantedAuthority("ROLE_ACL_ADMIN"));
+        return new AclAuthorizationStrategyImpl(new SimpleGrantedAuthority("ROLE_ADMIN"),
+                new SimpleGrantedAuthority("ROLE_USER"), new SimpleGrantedAuthority("ROLE_VISITOR"));
     }
 
     @Bean
@@ -73,6 +72,9 @@ public class ACLConfig  extends GlobalMethodSecurityConfiguration {
         JdbcMutableAclService service = new JdbcMutableAclService(dataSource, lookupStrategy(), aclCache());
         service.setClassIdentityQuery("select currval(pg_get_serial_sequence('acl_class', 'id'))");
         service.setSidIdentityQuery("select currval(pg_get_serial_sequence('acl_sid', 'id'))");
+        // postgre
+//        service.setClassIdentityQuery("select currval(pg_get_serial_sequence('acl_class', 'id'))");
+//        service.setSidIdentityQuery("select currval(pg_get_serial_sequence('acl_sid', 'id'))");
         return service;
     }
 

@@ -34,6 +34,7 @@ public class UserController {
         return customUserDetailsService.findAll();
     }
 
+    // @PreAuthorize('hasPermission(#object,read)')
     @RequestMapping("/api/acl2/{id}")
     @PreAuthorize("@customUserDetailsService.canAccessUser(principal, #id)")
     public Iterable<User> acl2(@PathVariable Long id) {
