@@ -13,6 +13,7 @@ import {EventService} from "./services/event.service";
 import {OauthService} from "./services/oauth.service";
 import {CustomerService} from "./services/customer.service";
 import {ForbiddenValidatorDirective} from "./login/forbiddenEmail/forbidden-email.directive";
+import {AdminModule} from "./admin/admin.module";
 
 
 
@@ -22,7 +23,8 @@ import {ForbiddenValidatorDirective} from "./login/forbiddenEmail/forbidden-emai
         ReactiveFormsModule,
         HttpModule,
         routing,
-        HeroesModule
+        HeroesModule,
+        //AdminModule
     ],
     declarations: [
         AppComponent,

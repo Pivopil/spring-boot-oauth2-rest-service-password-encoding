@@ -4,6 +4,7 @@ import {loginRoutes} from "./login/login.routing";
 import {authProviders} from "./login/login.routing";
 import {CanDeactivateGuard} from "./auth/can-deactivate-guard.service";
 import {heroesRoutes} from "./heroes/heroes.routing";
+import {adminRoutes} from "./admin/admin.routing";
 
 
 const crisisCenterRoutes:Routes = [
@@ -21,6 +22,15 @@ const crisisCenterRoutes:Routes = [
                 )
             )
     },
+    //{
+    //    path: 'admin',
+    //    loadChildren: () =>
+    //        new Promise(resolve =>
+    //            (require as any).ensure([], () =>
+    //                resolve(require('./admin/admin.module').AdminModule)
+    //            )
+    //        )
+    //},
     {
         path: 'crisis-center',
         loadChildren: () =>
@@ -35,7 +45,8 @@ const crisisCenterRoutes:Routes = [
 const appRoutes:Routes = [
     ...loginRoutes,
     ...crisisCenterRoutes,
-    ...heroesRoutes
+    ...heroesRoutes,
+    //...adminRoutes
 ];
 
 export const appRoutingProviders:any[] = [

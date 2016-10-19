@@ -1,0 +1,39 @@
+<div class="container">
+    <div class="row subheading">
+        <div class="col-md-12">
+            <!--<p class="lead">{{ 'ADMIN_PANEL' | translate: language }}</p>-->
+            <p class="lead">ADMIN_PANEL</p>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label for="customerSelector" class="col-md-3 col-md-offset-2 control-label">SELECT_CUSTOMER</label>
+
+                <div class="col-md-3">
+                    <select class="form-control" id="customerSelector" [(ngModel)]="selectedCustomer">
+                        <option *ngFor="let customer of customers" [value]="customer.id">{{customer.name}}</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-default"
+                            (click)="customerDialog()">SHOW_DATA
+                            <!--(click)="customerDialog()">{{ 'SHOW_DATA' | translate: language }}-->
+                    </button>
+                </div>
+
+
+                <div class="col-md-1">
+                    <button type="submit" class="btn btn-default" (click)="customerDialog(true)">
+                        NEW
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
