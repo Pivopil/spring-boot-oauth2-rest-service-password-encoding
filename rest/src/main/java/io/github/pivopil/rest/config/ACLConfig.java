@@ -72,9 +72,6 @@ public class ACLConfig  extends GlobalMethodSecurityConfiguration {
         JdbcMutableAclService service = new JdbcMutableAclService(dataSource, lookupStrategy(), aclCache());
         service.setClassIdentityQuery("select currval(pg_get_serial_sequence('acl_class', 'id'))");
         service.setSidIdentityQuery("select currval(pg_get_serial_sequence('acl_sid', 'id'))");
-        // postgre
-//        service.setClassIdentityQuery("select currval(pg_get_serial_sequence('acl_class', 'id'))");
-//        service.setSidIdentityQuery("select currval(pg_get_serial_sequence('acl_sid', 'id'))");
         return service;
     }
 
