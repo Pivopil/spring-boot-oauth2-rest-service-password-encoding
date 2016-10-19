@@ -79,7 +79,10 @@ public class OAuth2Configuration extends WebSecurityConfigurerAdapter {
             http
                     .authorizeRequests()
                     .antMatchers(REST_API.USERS).hasRole("ADMIN")
-                    .antMatchers(REST_API.ME).authenticated();
+                    .antMatchers(REST_API.ME).authenticated()
+                    .antMatchers(REST_API.ADMIN_POST).authenticated()
+                    .antMatchers(REST_API.PERSONAL_POST).authenticated()
+                    .antMatchers(REST_API.PUBLIC_POST).authenticated();
             // @formatter:on
         }
 
