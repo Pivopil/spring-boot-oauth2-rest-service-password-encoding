@@ -8,7 +8,7 @@ module.exports = webpackMerge(commonConfig, {
 
     output: {
         path: helpers.root('dist'),
-        publicPath: 'http://localhost:8080/',
+        publicPath: 'http://localhost:8083/',
         filename: '[name].js',
         chunkFilename: '[id].chunk.js'
     },
@@ -18,6 +18,8 @@ module.exports = webpackMerge(commonConfig, {
     ],
 
     devServer: {
+        historyApiFallback: true,
+        stats: 'minimal',
         proxy: {
             '/oauth/*': {target: 'http://localhost:8065'},
             '/api/*': {target: 'http://localhost:8065'}
