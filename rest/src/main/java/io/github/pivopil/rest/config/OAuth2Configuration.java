@@ -22,10 +22,12 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
 
+import javax.sql.DataSource;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
@@ -102,6 +104,12 @@ public class OAuth2Configuration extends WebSecurityConfigurerAdapter {
         @Autowired
         private CustomUserDetailsService userDetailsService;
 
+        @Autowired
+        private ClientDetailsService clientDetailsService;
+
+        @Autowired
+        DataSource dataSource;
+
         @Override
         public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
             oauthServer.passwordEncoder(passwordEncoder());
@@ -120,15 +128,15 @@ public class OAuth2Configuration extends WebSecurityConfigurerAdapter {
 
         @Override
         public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-            // @formatter:off
-            clients
-                    .inMemory()
-                    .withClient("clientapp")
-                    .authorizedGrantTypes("password", "refresh_token")
-                    .authorities("USER")
-                    .scopes("read", "write")
-                    .resourceIds(RESOURCE_ID)
-                    .secret(passwordEncoder().encode("123456"));
+            // @formatter:off .withClientDetails(clientDetailsService);
+            clients.jdbc(dataSource);
+//                    .inMemory()
+//                    .withClient("clientapp")
+//                    .authorizedGrantTypes("password", "refresh_token")
+//                    .authorities("USER")
+//                    .scopes("read", "write")
+//                    .resourceIds(RESOURCE_ID)
+//                    .secret(passwordEncoder().encode("123456"));
             // @formatter:on
         }
 

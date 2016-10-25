@@ -44,6 +44,7 @@ public class Application extends SpringBootServletInitializer implements Command
 
     @Override
     public void run(String... args) throws Exception {
+        PasswordEncoder passwordEncoder = applicationContext.getBean(PasswordEncoder.class);
         UserRepository userRepository = applicationContext.getBean(UserRepository.class);
         if (((List<User>) userRepository.findAll()).size() == 0) {
             RoleRepository roleRepository = applicationContext.getBean(RoleRepository.class);
@@ -61,7 +62,7 @@ public class Application extends SpringBootServletInitializer implements Command
             admin.setName("admin");
             admin.setLogin("admin");
 
-            PasswordEncoder passwordEncoder = applicationContext.getBean(PasswordEncoder.class);
+
 
             admin.setPassword(passwordEncoder.encode("admin"));
             admin.setRoles(new HashSet<>(Arrays.asList(roleUser, roleAdmin)));
