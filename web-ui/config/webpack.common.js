@@ -14,6 +14,14 @@ module.exports = {
     extensions: ['', '.js', '.ts']
   },
 
+  target: 'web',
+
+  node: {
+    fs: "empty",
+    net: "empty",
+    tls: "empty"
+  },
+
   module: {
     loaders: [
       {

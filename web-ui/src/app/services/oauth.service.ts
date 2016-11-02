@@ -11,7 +11,7 @@ export class OauthService {
 
     oauthConfig:any = {
         client_id: 'clientapp',
-        client_secret: '123456',
+        client_secret: 'admin',
         url: 'oauth/token',
         grant_type: 'password',
         scope: 'read write'

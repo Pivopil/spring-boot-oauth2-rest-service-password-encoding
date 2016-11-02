@@ -6,6 +6,7 @@ import {OauthService} from "./services/oauth.service";
 import {User} from "./models/user";
 import {FormGroup, FormBuilder, Validators} from '@angular/forms'
 import {forbiddenNameValidator} from "./login/forbiddenEmail/forbidden-email.directive";
+import {WebSocketSubscriptionService, Message} from "./services/websocketsubscription.service";
 
 @Component({
     selector: 'my-app',
@@ -23,7 +24,12 @@ export class AppComponent implements OnInit{
     constructor(private oauthService:OauthService,
                 private router:Router,
                 private eventService:EventService,
-                private fb:FormBuilder) {
+                private fb:FormBuilder,
+                private subscriptionService: WebSocketSubscriptionService) {
+        subscriptionService.messages.subscribe((msg: Message): void => {
+            console.log('chatService.messages.subscribe');
+            console.log(msg);
+        });
     }
 
     signOut() {

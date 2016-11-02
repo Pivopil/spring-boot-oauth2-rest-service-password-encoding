@@ -1,6 +1,6 @@
 import { NgModule }       from '@angular/core';
 import { BrowserModule }  from '@angular/platform-browser';
-import { FormsModule, ReactiveFormsModule }    from '@angular/forms';
+import { ReactiveFormsModule }    from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 import { AppComponent }       from './app.component';
@@ -13,7 +13,9 @@ import {EventService} from "./services/event.service";
 import {OauthService} from "./services/oauth.service";
 import {CustomerService} from "./services/customer.service";
 import {ForbiddenValidatorDirective} from "./login/forbiddenEmail/forbidden-email.directive";
-import {AdminModule} from "./admin/admin.module";
+// import {AdminModule} from "./admin/admin.module";
+import {WebSocketService} from "./services/websocket.service";
+import {WebSocketSubscriptionService} from "./services/websocketsubscription.service";
 
 
 
@@ -36,7 +38,9 @@ import {AdminModule} from "./admin/admin.module";
         DialogService,
         EventService,
         OauthService,
-        CustomerService
+        CustomerService,
+        WebSocketService,
+        WebSocketSubscriptionService
     ],
     bootstrap: [ AppComponent ]
 })

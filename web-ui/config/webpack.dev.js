@@ -3,6 +3,8 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var commonConfig = require('./webpack.common.js');
 var helpers = require('./helpers');
 
+var targetUrl = 'http://localhost:8065';
+
 module.exports = webpackMerge(commonConfig, {
     devtool: 'cheap-module-eval-source-map',
 
@@ -21,8 +23,21 @@ module.exports = webpackMerge(commonConfig, {
         historyApiFallback: true,
         stats: 'minimal',
         proxy: {
-            '/oauth/*': {target: 'http://localhost:8065'},
-            '/api/*': {target: 'http://localhost:8065'}
+            '/oauth/*': {
+                target: targetUrl,
+                changeOrigin: true,
+                ws: false
+            },
+            '/api/*': {
+                target: targetUrl,
+                changeOrigin: true,
+                ws: false
+            },
+            '/stomp/*': {
+                target: targetUrl,
+                changeOrigin: true,
+                ws: true
+            }
         }
     }
 });

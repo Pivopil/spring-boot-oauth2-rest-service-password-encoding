@@ -4,9 +4,12 @@ import io.github.pivopil.REST_API;
 import io.github.pivopil.rest.services.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.boot.web.support.ErrorPageFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.messaging.support.ChannelInterceptorAdapter;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -40,6 +43,20 @@ import java.security.SecureRandom;
 public class OAuth2Configuration extends WebSecurityConfigurerAdapter {
 
     private static final String RESOURCE_ID = "restservice";
+
+    @Bean
+    public ErrorPageFilter errorPageFilter() {
+        return new ErrorPageFilter();
+    }
+
+
+    @Bean
+    public FilterRegistrationBean disableSpringBootErrorFilter(ErrorPageFilter filter) {
+        FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
+        filterRegistrationBean.setFilter(filter);
+        filterRegistrationBean.setEnabled(false);
+        return filterRegistrationBean;
+    }
 
     @Bean
     public static PasswordEncoder passwordEncoder() throws NoSuchAlgorithmException {
@@ -85,7 +102,9 @@ public class OAuth2Configuration extends WebSecurityConfigurerAdapter {
                     .antMatchers(REST_API.ADMIN_POST).authenticated()
                     .antMatchers(REST_API.PERSONAL_POST).authenticated()
                     .antMatchers(REST_API.PUBLIC_POST).authenticated();
+//                    .antMatchers("/stomp/**").permitAll();
             // @formatter:on
+            //                    .antMatchers("/stomp").authenticated();
         }
 
     }
