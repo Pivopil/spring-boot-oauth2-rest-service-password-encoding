@@ -21,8 +21,7 @@ export class WebSocketService {
     }
 
     private create(url: string): Rx.Subject<MessageEvent> {
-        this.ws = new WebSocket(url);
-
+        this.ws = new WebSocket(url + '?access_token=' + localStorage.getItem('access_token'));
         let observable = Rx.Observable.create(
             (obs: Rx.Observer<MessageEvent>) => {
                 this.ws.onmessage = obs.next.bind(obs);

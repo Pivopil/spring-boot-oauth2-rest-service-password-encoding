@@ -101,8 +101,8 @@ public class OAuth2Configuration extends WebSecurityConfigurerAdapter {
                     .antMatchers(REST_API.ME).authenticated()
                     .antMatchers(REST_API.ADMIN_POST).authenticated()
                     .antMatchers(REST_API.PERSONAL_POST).authenticated()
-                    .antMatchers(REST_API.PUBLIC_POST).authenticated();
-//                    .antMatchers("/stomp/**").permitAll();
+                    .antMatchers(REST_API.PUBLIC_POST).authenticated()
+                    .antMatchers(REST_API.WS).authenticated();
             // @formatter:on
             //                    .antMatchers("/stomp").authenticated();
         }
