@@ -1,7 +1,9 @@
 package io.github.pivopil.rest.config;
 
 import io.github.pivopil.REST_API;
+import io.github.pivopil.rest.handlers.CustomHttpSessionStrategy;
 import io.github.pivopil.rest.services.CustomUserDetailsService;
+import io.github.pivopil.share.persistence.ws.JPASessionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -29,6 +31,12 @@ import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
+import org.springframework.security.web.access.channel.ChannelProcessingFilter;
+import org.springframework.session.ExpiringSession;
+import org.springframework.session.SessionRepository;
+import org.springframework.session.web.http.HeaderHttpSessionStrategy;
+import org.springframework.session.web.http.HttpSessionStrategy;
+import org.springframework.session.web.http.SessionRepositoryFilter;
 
 import javax.sql.DataSource;
 import java.security.NoSuchAlgorithmException;
@@ -43,6 +51,13 @@ import java.security.SecureRandom;
 public class OAuth2Configuration extends WebSecurityConfigurerAdapter {
 
     private static final String RESOURCE_ID = "restservice";
+
+
+
+//    @Override
+//    protected void configure(HttpSecurity http) throws Exception {
+//        http.addFilterBefore(this.sessionSessionRepositoryFilter, ChannelProcessingFilter.class);
+//    }
 
     @Bean
     public ErrorPageFilter errorPageFilter() {
@@ -84,6 +99,27 @@ public class OAuth2Configuration extends WebSecurityConfigurerAdapter {
     protected static class ResourceServerConfiguration extends
             ResourceServerConfigurerAdapter {
 
+        @Autowired
+        public SessionRepository<ExpiringSession> sessionRepository;
+
+
+//
+        @Bean
+        public HttpSessionStrategy httpSessionStrategy() {   return new CustomHttpSessionStrategy();
+        }
+//
+//
+//        public SessionRepositoryFilter<ExpiringSession> sessionRepositoryFilter() {
+//            SessionRepositoryFilter<ExpiringSession> sessionRepositoryFilter = new SessionRepositoryFilter<>(sessionRepository);
+//            sessionRepositoryFilter.setHttpSessionStrategy(httpSessionStrategy());
+//            return sessionRepositoryFilter;
+//        }
+//
+//        @Bean
+//        public SessionRepository<ExpiringSession> sessionRepository() {
+//            return new JPASessionRepository(10);
+//        }
+
         @Override
         public void configure(ResourceServerSecurityConfigurer resources) {
             // @formatter:off
@@ -101,8 +137,12 @@ public class OAuth2Configuration extends WebSecurityConfigurerAdapter {
                     .antMatchers(REST_API.ME).authenticated()
                     .antMatchers(REST_API.ADMIN_POST).authenticated()
                     .antMatchers(REST_API.PERSONAL_POST).authenticated()
-                    .antMatchers(REST_API.PUBLIC_POST).authenticated()
-                    .antMatchers(REST_API.WS).authenticated();
+                    .antMatchers(REST_API.PUBLIC_POST).authenticated();
+//                    .antMatchers(REST_API.WS).authenticated();
+
+//            http.addFilterBefore(sessionRepositoryFilter(), ChannelProcessingFilter.class);
+            http.addFilterBefore(new SessionRepositoryFilter(sessionRepository), ChannelProcessingFilter.class);
+
             // @formatter:on
             //                    .antMatchers("/stomp").authenticated();
         }

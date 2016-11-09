@@ -26,10 +26,10 @@ export class AppComponent implements OnInit{
                 private eventService:EventService,
                 private fb:FormBuilder,
                 private subscriptionService: WebSocketSubscriptionService) {
-        subscriptionService.messages.subscribe((msg: Message): void => {
-            console.log('chatService.messages.subscribe');
-            console.log(msg);
-        });
+        // subscriptionService.messages.subscribe((msg: Message): void => {
+        //     console.log('chatService.messages.subscribe');
+        //     console.log(msg);
+        // });
     }
 
     signOut() {

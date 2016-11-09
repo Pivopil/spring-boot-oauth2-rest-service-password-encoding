@@ -8,5 +8,63 @@
 </head>
 <body>
 <my-app>Loading...</my-app>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.1/sockjs.js"></script>
+<script>
+    (function () {
+        var stompClient = null, WSService;
+
+        WSService = {
+            disconnect: function disconnect() {
+                if (stompClient != null) {
+                    stompClient.disconnect();
+                }
+                console.log("Disconnected");
+            },
+            sendName: function sendName() {
+                stompClient.send("/app/hello", {}, JSON.stringify({'name': 'xxXxx'}));
+            },
+            connect: function connect() {
+                var socket = new SockJS('/ws');
+                stompClient = Stomp.over(socket);
+                stompClient.connect({}, function (frame) {
+                    console.log('Connected: ' + frame);
+                    stompClient.subscribe('/topic/greetings', function (greeting) {
+                        console.log(greeting);
+                    });
+                });
+            }
+        };
+
+        if (typeof exports !== "undefined" && exports !== null) {
+            exports.WSService = WSService;
+        }
+
+        if (typeof window !== "undefined" && window !== null) {
+            WSService.setInterval = function (interval, f) {
+                return window.setInterval(f, interval);
+            };
+            WSService.clearInterval = function (id) {
+                return window.clearInterval(id);
+            };
+            window.WSService = WSService;
+        } else if (!exports) {
+            self.WSService = WSService;
+        }
+
+        if (typeof window !== "undefined" && window !== null) {
+            WSService.setInterval = function (interval, f) {
+                return window.setInterval(f, interval);
+            };
+            WSService.clearInterval = function (id) {
+                return window.clearInterval(id);
+            };
+            window.WSService = WSService;
+        } else if (!exports) {
+            self.WSService = WSService;
+        }
+
+    }).call(this);
+</script>
 </body>
 </html>

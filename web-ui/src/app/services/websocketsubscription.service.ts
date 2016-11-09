@@ -17,17 +17,17 @@ export class WebSocketSubscriptionService {
     public messages: Subject<Message>;
 
     constructor(private wsService: WebSocketService) {
-        this.messages = <Subject<Message>>wsService
-            .connect(CHAT_URL)
-            .map((response: MessageEvent): Message => {
-                console.log(response);
-                // let data = JSON.parse(response.data);
-                return {
-                    author: 'test',
-                    message: response.data,
-                    newDate : response.timeStamp
-                }
-            });
+        // this.messages = <Subject<Message>>wsService
+        //     .connect(CHAT_URL)
+        //     .map((response: MessageEvent): Message => {
+        //         console.log(response);
+        //         // let data = JSON.parse(response.data);
+        //         return {
+        //             author: 'test',
+        //             message: response.data,
+        //             newDate : response.timeStamp
+        //         }
+        //     });
     }
 
 }
