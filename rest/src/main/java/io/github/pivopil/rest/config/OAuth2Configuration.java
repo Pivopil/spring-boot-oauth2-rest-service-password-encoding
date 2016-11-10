@@ -6,12 +6,12 @@ import io.github.pivopil.rest.services.CustomUserDetailsService;
 import io.github.pivopil.share.persistence.ws.JPASessionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.support.ErrorPageFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.messaging.support.ChannelInterceptorAdapter;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -31,13 +31,14 @@ import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
-import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.session.ExpiringSession;
 import org.springframework.session.SessionRepository;
 import org.springframework.session.web.http.HeaderHttpSessionStrategy;
 import org.springframework.session.web.http.HttpSessionStrategy;
 import org.springframework.session.web.http.SessionRepositoryFilter;
+import org.springframework.web.filter.RequestContextFilter;
 
+import javax.servlet.Filter;
 import javax.sql.DataSource;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -53,11 +54,60 @@ public class OAuth2Configuration extends WebSecurityConfigurerAdapter {
     private static final String RESOURCE_ID = "restservice";
 
 
+    @Autowired
+    public SessionRepository<ExpiringSession> sessionRepository;
 
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-//        http.addFilterBefore(this.sessionSessionRepositoryFilter, ChannelProcessingFilter.class);
-//    }
+    @Bean
+    public HttpSessionStrategy httpSessionStrategy() {
+        return new HeaderHttpSessionStrategy();
+    }
+
+
+    @Bean
+    public SessionRepositoryFilter<ExpiringSession> sessionRepositoryFilter() {
+        SessionRepositoryFilter<ExpiringSession> sessionRepositoryFilter = new SessionRepositoryFilter<>(sessionRepository);
+        sessionRepositoryFilter.setHttpSessionStrategy(httpSessionStrategy());
+        return sessionRepositoryFilter;
+    }
+
+    @Bean
+    public SessionRepository<ExpiringSession> sessionRepository() {
+        return new JPASessionRepository(10);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(RequestContextFilter.class)
+    public RequestContextFilter requestContextFilter() {
+
+        return new RequestContextFilter();
+    }
+
+    @Bean
+    public FilterRegistrationBean requestContextFilterChainRegistration(
+            @Qualifier("requestContextFilter") Filter securityFilter) {
+
+        FilterRegistrationBean registration = new FilterRegistrationBean(securityFilter);
+        registration.setName("requestContextFilter");
+
+        // note : must previous order of oAuth2ClientContextFilter
+        registration.setOrder(SessionRepositoryFilter.DEFAULT_ORDER + 1);
+
+        return registration;
+    }
+
+    @Bean
+    @Autowired
+    public FilterRegistrationBean sessionRepositoryFilterRegistration(
+            SessionRepositoryFilter<ExpiringSession> sessionRepositoryFilter) {
+
+        FilterRegistrationBean registration = new FilterRegistrationBean(sessionRepositoryFilter);
+        registration.setName("springSessionRepositoryFilter");
+
+        // note : must following order of oAuth2ClientContextFilter
+        registration.setOrder(Integer.MAX_VALUE - 1);
+
+        return registration;
+    }
 
     @Bean
     public ErrorPageFilter errorPageFilter() {
@@ -99,27 +149,6 @@ public class OAuth2Configuration extends WebSecurityConfigurerAdapter {
     protected static class ResourceServerConfiguration extends
             ResourceServerConfigurerAdapter {
 
-        @Autowired
-        public SessionRepository<ExpiringSession> sessionRepository;
-
-
-//
-        @Bean
-        public HttpSessionStrategy httpSessionStrategy() {   return new CustomHttpSessionStrategy();
-        }
-//
-//
-//        public SessionRepositoryFilter<ExpiringSession> sessionRepositoryFilter() {
-//            SessionRepositoryFilter<ExpiringSession> sessionRepositoryFilter = new SessionRepositoryFilter<>(sessionRepository);
-//            sessionRepositoryFilter.setHttpSessionStrategy(httpSessionStrategy());
-//            return sessionRepositoryFilter;
-//        }
-//
-//        @Bean
-//        public SessionRepository<ExpiringSession> sessionRepository() {
-//            return new JPASessionRepository(10);
-//        }
-
         @Override
         public void configure(ResourceServerSecurityConfigurer resources) {
             // @formatter:off
@@ -141,7 +170,7 @@ public class OAuth2Configuration extends WebSecurityConfigurerAdapter {
 //                    .antMatchers(REST_API.WS).authenticated();
 
 //            http.addFilterBefore(sessionRepositoryFilter(), ChannelProcessingFilter.class);
-            http.addFilterBefore(new SessionRepositoryFilter(sessionRepository), ChannelProcessingFilter.class);
+//            http.addFilterBefore(new SessionRepositoryFilter(sessionRepository), ChannelProcessingFilter.class);
 
             // @formatter:on
             //                    .antMatchers("/stomp").authenticated();
