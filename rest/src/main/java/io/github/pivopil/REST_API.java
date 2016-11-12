@@ -10,7 +10,6 @@ public class REST_API {
 
     public static final String ME = "/api/me";
     public static final String USERS = "/api/users";
-    public static final String API = "/api";
 
     public static final String ADMIN_POST = "/api/admin/post";
     public static final String PERSONAL_POST = "/api/personal/post";

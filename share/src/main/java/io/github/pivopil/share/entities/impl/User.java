@@ -5,12 +5,13 @@ import io.github.pivopil.share.entities.BasicEntity;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "user_table")
-public class User extends BasicEntity {
+public class User extends BasicEntity implements Serializable {
 
     @NotEmpty
     private String name;
