@@ -29,6 +29,7 @@ import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 import javax.sql.DataSource;
 import java.security.NoSuchAlgorithmException;
@@ -40,6 +41,7 @@ import java.security.SecureRandom;
 
 @Configuration
 @EnableWebSecurity
+@EnableRedisHttpSession
 public class OAuth2Configuration extends WebSecurityConfigurerAdapter {
 
     private static final String RESOURCE_ID = "restservice";
@@ -102,9 +104,9 @@ public class OAuth2Configuration extends WebSecurityConfigurerAdapter {
                     .antMatchers(REST_API.ADMIN_POST).authenticated()
                     .antMatchers(REST_API.PERSONAL_POST).authenticated()
                     .antMatchers(REST_API.PUBLIC_POST).authenticated()
-                    .antMatchers(REST_API.WS).authenticated();
+                    //.antMatchers(REST_API.WS).authenticated()
+                    .antMatchers("/messages").authenticated();
             // @formatter:on
-            //                    .antMatchers("/stomp").authenticated();
         }
 
     }

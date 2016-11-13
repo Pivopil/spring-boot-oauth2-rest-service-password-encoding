@@ -8,5 +8,105 @@
 </head>
 <body>
 <my-app>Loading...</my-app>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.1/sockjs.js"></script>
+<script>
+    (function () {
+        var stompClient = null, WSService;
+
+        WSService = {
+            disconnect: function disconnect() {
+                if (stompClient != null) {
+                    stompClient.disconnect();
+                }
+                console.log("Disconnected");
+            },
+            sendName: function sendName() {
+
+
+                var data = {
+                    "created" : new Date(),
+                    "from" : "admin",
+                    "to" : "admin",
+                    "message" : "texxxxt"
+                };
+                var destination = "/app/im"; // /queue/messages-user1
+                stompClient.send(destination, {}, JSON.stringify(data));
+
+
+
+            },
+            connect: function connect() {
+                //var socket = new SockJS('/messages');
+                var socket = new SockJS('/messages?access_token=' + localStorage.getItem('access_token'));
+                stompClient = Stomp.over(socket);
+                stompClient.connect({'Authorization': 'Bearer ' + localStorage.getItem('access_token')}, function (frame) {
+                    console.log('Connected: ' + frame);
+                    console.log('user-name: ' + frame.headers['user-name']);
+
+                    stompClient.subscribe("/user/queue/errors", function(message) {
+                        console.log("/user/queue/errors >>>>>>>>>>>>");
+                        console.log(message);
+                    });
+                    stompClient.subscribe("/app/users", function(message) {
+                        var friends = JSON.parse(message.body);
+
+                        console.log("/app/users >>>>>>>>>>>");
+                        console.log(friends);
+                    });
+                    stompClient.subscribe("/topic/friends/signin", function(message) {
+                        var friends = JSON.parse(message.body);
+
+                        console.log("/topic/friends/signin >>>>>>>");
+                        console.log(friends);
+                    });
+                    stompClient.subscribe("/topic/friends/signout", function(message) {
+                        var friends = JSON.parse(message.body);
+
+                        console.log('/topic/friends/signout >>>>>>>>');
+                        console.log(friends);
+                    });
+                    stompClient.subscribe("/user/queue/messages", function(message) {
+
+                        console.log('/user/queue/messages >>>>>');
+                        console.log(JSON.parse(message.body));
+
+                    });
+
+
+                });
+            }
+        };
+
+        if (typeof exports !== "undefined" && exports !== null) {
+            exports.WSService = WSService;
+        }
+
+        if (typeof window !== "undefined" && window !== null) {
+            WSService.setInterval = function (interval, f) {
+                return window.setInterval(f, interval);
+            };
+            WSService.clearInterval = function (id) {
+                return window.clearInterval(id);
+            };
+            window.WSService = WSService;
+        } else if (!exports) {
+            self.WSService = WSService;
+        }
+
+        if (typeof window !== "undefined" && window !== null) {
+            WSService.setInterval = function (interval, f) {
+                return window.setInterval(f, interval);
+            };
+            WSService.clearInterval = function (id) {
+                return window.clearInterval(id);
+            };
+            window.WSService = WSService;
+        } else if (!exports) {
+            self.WSService = WSService;
+        }
+
+    }).call(this);
+</script>
 </body>
 </html>
