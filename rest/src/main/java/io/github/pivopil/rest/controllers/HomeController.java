@@ -16,12 +16,6 @@ public class HomeController {
 
 
     /*
-    // ws test
-    @RequestMapping("/wstest")
-    public void wsTest() {
-        webSocketService.broadcastCurrentData("Super test");
-    }
-
     // acl test
     @RequestMapping("/api/acl")
     @PostAuthorize("hasPermission(returnObject,'ADMIN')")

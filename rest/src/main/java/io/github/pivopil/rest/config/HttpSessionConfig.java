@@ -15,8 +15,11 @@ import org.springframework.session.web.http.HttpSessionStrategy;
 public class HttpSessionConfig {
 
     @Bean
-    public JedisConnectionFactory connectionFactory() {
-        return new JedisConnectionFactory();
+    public JedisConnectionFactory jedisConnectionFactory() {
+        JedisConnectionFactory jedisConFactory = new JedisConnectionFactory();
+        jedisConFactory.setHostName("localhost");
+        jedisConFactory.setPort(6379);
+        return jedisConFactory;
     }
 
     @Bean
