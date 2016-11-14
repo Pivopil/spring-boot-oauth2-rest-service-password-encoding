@@ -17,7 +17,7 @@ public class CustomHandshakeInterceptor implements HandshakeInterceptor {
     @Override
     public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
         if (request.getURI().getQuery().split("access_token=").length == 2) {
-            String token = request.getURI().getQuery().split("access_token=")[0];
+            String token = "Bearer " + request.getURI().getQuery().split("access_token=")[0];
             attributes.put("SPRING.SESSION.ID", token);
             attributes.put(HTTP_SESSION_ID_ATTR_NAME, token);
         }

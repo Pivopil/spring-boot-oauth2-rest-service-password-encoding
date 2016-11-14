@@ -9,6 +9,7 @@ import org.springframework.boot.web.support.ErrorPageFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.messaging.support.ChannelInterceptorAdapter;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -29,7 +30,10 @@ import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
+import org.springframework.session.web.http.HeaderHttpSessionStrategy;
+import org.springframework.session.web.http.HttpSessionStrategy;
 
 import javax.sql.DataSource;
 import java.security.NoSuchAlgorithmException;
@@ -45,6 +49,26 @@ import java.security.SecureRandom;
 public class OAuth2Configuration extends WebSecurityConfigurerAdapter {
 
     private static final String RESOURCE_ID = "restservice";
+
+    @Bean
+    public JedisConnectionFactory jedisConnectionFactory() {
+        JedisConnectionFactory jedisConFactory = new JedisConnectionFactory();
+        jedisConFactory.setHostName("localhost");
+        jedisConFactory.setPort(6379);
+        return jedisConFactory;
+    }
+
+    @Bean
+    public HttpSessionStrategy httpSessionStrategy() {
+        HeaderHttpSessionStrategy headerHttpSessionStrategy = new HeaderHttpSessionStrategy();
+        headerHttpSessionStrategy.setHeaderName("Authorization");
+        return headerHttpSessionStrategy;
+    }
+
+    @Bean
+    public HttpSessionEventPublisher httpSessionEventPublisher() {
+        return new HttpSessionEventPublisher();
+    }
 
     @Bean
     public ErrorPageFilter errorPageFilter() {
@@ -104,7 +128,6 @@ public class OAuth2Configuration extends WebSecurityConfigurerAdapter {
                     .antMatchers(REST_API.ADMIN_POST).authenticated()
                     .antMatchers(REST_API.PERSONAL_POST).authenticated()
                     .antMatchers(REST_API.PUBLIC_POST).authenticated()
-                    //.antMatchers(REST_API.WS).authenticated()
                     .antMatchers("/messages").authenticated();
             // @formatter:on
         }
