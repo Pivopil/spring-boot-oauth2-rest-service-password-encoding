@@ -25,6 +25,7 @@ public class WebSocketSecurityConfig
 				// catch all
 				.anyMessage().authenticated();
 
+		// https://github.com/jhipster/generator-jhipster/issues/1370
 			//.simpMessageDestMatchers("/queue/**", "/topic/**").denyAll()
 			//.simpSubscribeDestMatchers("/queue/**/*-user*", "/topic/**/*-user*").denyAll()
 			//.anyMessage().authenticated();
