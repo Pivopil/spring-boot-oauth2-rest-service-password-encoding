@@ -6,14 +6,44 @@ and https://spring.io/guides/gs/rest-service/[Building a RESTful Web Service] ge
 
 == Projects
 
-The following projects are used in this sample app:
+==== The following projects are used in this sample app:
+
+===== DB
+
+* https://www.postgresql.org/ [PostgreSQL]
+* http://redis.io/ [Redis]
+
+===== BE
 
 * http://projects.spring.io/spring-boot/[Spring Boot]
 * http://docs.spring.io/spring/docs/current/spring-framework-reference/html/mvc.html[Spring MVC]
 * http://projects.spring.io/spring-security/[Spring Security]
-* http://projects.spring.io/spring-security-oauth/[Spring Security OAuth]
+* http://projects.spring.io/spring-security-oauth/[Spring Security OAuth 2]
 * http://projects.spring.io/spring-data-jpa/[Spring Data JPA]
 * https://github.com/brettwooldridge/HikariCP/[HikariCP]
+* http://docs.spring.io/spring-security/site/docs/3.0.x/reference/domain-acls.html [Spring Security ACL]
+* http://docs.spring.io/spring/docs/current/spring-framework-reference/html/websocket.html [Spring WebSocket]
+* http://projects.spring.io/spring-session/ [Spring Session]
+
+===== FE (in progress)
+
+== Release Notes
+
+=== v1.0 (current)
+- BE core functionality
+- (BE BUG) Angular 2 SockJS error in zone.js
+- (BE BUG) Spring Session does not persist to Redis
+
+=== v1.1
+- create ACL service
+- use JPA for clients not JDBC
+- create sql script for initial db data creation
+- integration tests for BE functionality
+
+=== v1.2
+- initial React configuration
+
+
 
 == Build and Run in Tomcat
 
