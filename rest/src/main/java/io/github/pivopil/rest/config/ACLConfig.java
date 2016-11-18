@@ -62,6 +62,12 @@ public class ACLConfig  extends GlobalMethodSecurityConfiguration {
     }
 
 
+    /*
+    index 0 is the authority needed to change ownership,
+    index 1 is the authority needed to modify auditing details,
+    index 2 is the authority needed to change other ACL and ACE details)
+    */
+
     AclAuthorizationStrategy aclAuthorizationStrategy() {
         return new AclAuthorizationStrategyImpl(new SimpleGrantedAuthority("ROLE_ADMIN"),
                 new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_ADMIN"));
