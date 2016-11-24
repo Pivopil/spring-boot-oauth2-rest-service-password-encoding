@@ -35,10 +35,10 @@ and https://spring.io/guides/gs/rest-service/[Building a RESTful Web Service] ge
 - (BE BUG) Spring Session does not persist to Redis
 
 === v1.1
-- create ACL service
-- use JPA for clients not JDBC
-- create sql script for initial db data creation
-- integration tests for BE functionality
+- Task #1.1.1 create ACL service
+- Task #1.1.2 use JPA for clients not JDBC
+- Task #1.1.3 create sql script for initial db data creation
+- Task #1.1.4 integration tests for BE functionality
 
 === v1.2
 - initial React configuration
