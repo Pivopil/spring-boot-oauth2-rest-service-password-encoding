@@ -12,6 +12,8 @@ import org.springframework.security.acls.domain.*;
 import org.springframework.security.acls.jdbc.BasicLookupStrategy;
 import org.springframework.security.acls.jdbc.JdbcMutableAclService;
 import org.springframework.security.acls.jdbc.LookupStrategy;
+import org.springframework.security.acls.model.AclService;
+import org.springframework.security.acls.model.SidRetrievalStrategy;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -28,6 +30,27 @@ public class ACLConfig extends GlobalMethodSecurityConfiguration {
 
     @Autowired
     DataSource dataSource;
+
+    @Autowired
+    AclPermissionEvaluator aclPermissionEvaluator;
+
+    @Autowired
+    AclService aclService;
+
+    @Bean
+    public ObjectIdentityRetrievalStrategyImpl objectIdentityRetrievalStrategy() {
+        return new ObjectIdentityRetrievalStrategyImpl();
+    }
+
+    @Bean
+    public AclPermissionEvaluator aclPermissionEvaluator() {
+        return new AclPermissionEvaluator(aclService);
+    }
+
+    @Bean
+    public SidRetrievalStrategy sidRetrievalStrategy() {
+        return new SidRetrievalStrategyImpl();
+    }
 
     @Bean
     public DefaultPermissionGrantingStrategy permissionGrantingStrategy() {
@@ -82,7 +105,7 @@ public class ACLConfig extends GlobalMethodSecurityConfiguration {
     @Override
     protected MethodSecurityExpressionHandler createExpressionHandler() {
         DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
-        expressionHandler.setPermissionEvaluator(new AclPermissionEvaluator(aclService()));
+        expressionHandler.setPermissionEvaluator(aclPermissionEvaluator);
         return expressionHandler;
     }
 
