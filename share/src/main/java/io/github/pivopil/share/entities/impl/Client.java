@@ -15,7 +15,7 @@ import java.util.Set;
  */
 
 @Entity
-@Table(name = "test_oauth_client_details")
+@Table(name = "custom_oauth_client_details")
 public class Client extends BasicEntity {
 
     @NotEmpty

@@ -15,6 +15,6 @@ public class REST_API {
     public static final String PERSONAL_POST = "/api/personal/post";
     public static final String PUBLIC_POST = "/api/public/post";
 
-    public static final String WS = "/ws";
+    public static final String WS = "/messages";
 
 }

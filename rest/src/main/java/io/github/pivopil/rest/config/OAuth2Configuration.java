@@ -2,6 +2,7 @@ package io.github.pivopil.rest.config;
 
 import io.github.pivopil.REST_API;
 import io.github.pivopil.rest.services.CustomUserDetailsService;
+import io.github.pivopil.rest.services.domain.CustomClientDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -10,12 +11,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
-import org.springframework.messaging.support.ChannelInterceptorAdapter;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -29,7 +30,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Res
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
+import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 import org.springframework.session.web.http.HeaderHttpSessionStrategy;
@@ -112,15 +113,11 @@ public class OAuth2Configuration extends WebSecurityConfigurerAdapter {
 
         @Override
         public void configure(ResourceServerSecurityConfigurer resources) {
-            // @formatter:off
-            resources
-                    .resourceId(RESOURCE_ID);
-            // @formatter:on
+            resources.resourceId(RESOURCE_ID);
         }
 
         @Override
         public void configure(HttpSecurity http) throws Exception {
-            // @formatter:off
             http
                     .authorizeRequests()
                     .antMatchers(REST_API.USERS).hasRole("ADMIN")
@@ -128,8 +125,7 @@ public class OAuth2Configuration extends WebSecurityConfigurerAdapter {
                     .antMatchers(REST_API.ADMIN_POST).authenticated()
                     .antMatchers(REST_API.PERSONAL_POST).authenticated()
                     .antMatchers(REST_API.PUBLIC_POST).authenticated()
-                    .antMatchers("/messages").authenticated();
-            // @formatter:on
+                    .antMatchers(REST_API.WS).authenticated();
         }
 
     }
@@ -139,8 +135,6 @@ public class OAuth2Configuration extends WebSecurityConfigurerAdapter {
     protected static class AuthorizationServerConfiguration extends
             AuthorizationServerConfigurerAdapter {
 
-        private TokenStore tokenStore = new InMemoryTokenStore();
-
         @Autowired
         @Qualifier("authenticationManagerBean")
         private AuthenticationManager authenticationManager;
@@ -149,10 +143,16 @@ public class OAuth2Configuration extends WebSecurityConfigurerAdapter {
         private CustomUserDetailsService userDetailsService;
 
         @Autowired
-        private ClientDetailsService clientDetailsService;
+        private CustomClientDetailsService clientDetailsService;
 
         @Autowired
         DataSource dataSource;
+
+
+        @Bean
+        protected TokenStore tokenStore() {
+            return new JdbcTokenStore(dataSource);
+        }
 
         @Override
         public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
@@ -162,26 +162,15 @@ public class OAuth2Configuration extends WebSecurityConfigurerAdapter {
         @Override
         public void configure(AuthorizationServerEndpointsConfigurer endpoints)
                 throws Exception {
-            // @formatter:off
             endpoints
-                    .tokenStore(this.tokenStore)
+                    .tokenStore(tokenStore())
                     .authenticationManager(this.authenticationManager)
                     .userDetailsService(userDetailsService);
-            // @formatter:on
         }
 
         @Override
         public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-            // @formatter:off .withClientDetails(clientDetailsService);
-            clients.jdbc(dataSource);
-//                    .inMemory()
-//                    .withClient("clientapp")
-//                    .authorizedGrantTypes("password", "refresh_token")
-//                    .authorities("USER")
-//                    .scopes("read", "write")
-//                    .resourceIds(RESOURCE_ID)
-//                    .secret(passwordEncoder().encode("123456"));
-            // @formatter:on
+            clients.withClientDetails(clientDetailsService);
         }
 
         @Bean
@@ -189,7 +178,7 @@ public class OAuth2Configuration extends WebSecurityConfigurerAdapter {
         public DefaultTokenServices tokenServices() {
             DefaultTokenServices tokenServices = new DefaultTokenServices();
             tokenServices.setSupportRefreshToken(true);
-            tokenServices.setTokenStore(this.tokenStore);
+            tokenServices.setTokenStore(tokenStore());
             return tokenServices;
         }
 
