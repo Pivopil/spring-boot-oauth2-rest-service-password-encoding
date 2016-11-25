@@ -21,9 +21,9 @@ and https://spring.io/guides/gs/rest-service/[Building a RESTful Web Service] ge
 * http://projects.spring.io/spring-security-oauth/[Spring Security OAuth 2]
 * http://projects.spring.io/spring-data-jpa/[Spring Data JPA]
 * https://github.com/brettwooldridge/HikariCP/[HikariCP]
-* http://docs.spring.io/spring-security/site/docs/3.0.x/reference/domain-acls.html [Spring Security ACL]
-* http://docs.spring.io/spring/docs/current/spring-framework-reference/html/websocket.html [Spring WebSocket]
-* http://projects.spring.io/spring-session/ [Spring Session]
+* http://docs.spring.io/spring-security/site/docs/3.0.x/reference/domain-acls.html[Spring Security ACL]
+* http://docs.spring.io/spring/docs/current/spring-framework-reference/html/websocket.html[Spring WebSocket]
+* http://projects.spring.io/spring-session/[Spring Session]
 
 ===== FE (in progress)
 

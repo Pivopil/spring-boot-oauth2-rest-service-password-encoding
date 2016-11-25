@@ -5,10 +5,8 @@ import org.springframework.cache.ehcache.EhCacheFactoryBean;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.access.expression.SecurityExpressionHandler;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
-import org.springframework.security.acls.AclPermissionCacheOptimizer;
 import org.springframework.security.acls.AclPermissionEvaluator;
 import org.springframework.security.acls.domain.*;
 import org.springframework.security.acls.jdbc.BasicLookupStrategy;
@@ -17,7 +15,6 @@ import org.springframework.security.acls.jdbc.LookupStrategy;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 
 import javax.sql.DataSource;
 
@@ -27,7 +24,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
-public class ACLConfig  extends GlobalMethodSecurityConfiguration {
+public class ACLConfig extends GlobalMethodSecurityConfiguration {
 
     @Autowired
     DataSource dataSource;
@@ -83,7 +80,7 @@ public class ACLConfig  extends GlobalMethodSecurityConfiguration {
 
 
     @Override
-    protected MethodSecurityExpressionHandler createExpressionHandler(){
+    protected MethodSecurityExpressionHandler createExpressionHandler() {
         DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
         expressionHandler.setPermissionEvaluator(new AclPermissionEvaluator(aclService()));
         return expressionHandler;

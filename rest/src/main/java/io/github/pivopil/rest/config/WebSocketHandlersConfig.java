@@ -11,17 +11,17 @@ import org.springframework.session.ExpiringSession;
 @Configuration
 public class WebSocketHandlersConfig<S extends ExpiringSession> {
 
-	@Bean
-	public WebSocketConnectHandler<S> webSocketConnectHandler(
-			SimpMessageSendingOperations messagingTemplate,
-			ActiveWebSocketUserRepository repository) {
-		return new WebSocketConnectHandler<S>(messagingTemplate, repository);
-	}
+    @Bean
+    public WebSocketConnectHandler<S> webSocketConnectHandler(
+            SimpMessageSendingOperations messagingTemplate,
+            ActiveWebSocketUserRepository repository) {
+        return new WebSocketConnectHandler<S>(messagingTemplate, repository);
+    }
 
-	@Bean
-	public WebSocketDisconnectHandler<S> webSocketDisconnectHandler(
-			SimpMessageSendingOperations messagingTemplate,
-			ActiveWebSocketUserRepository repository) {
-		return new WebSocketDisconnectHandler<S>(messagingTemplate, repository);
-	}
+    @Bean
+    public WebSocketDisconnectHandler<S> webSocketDisconnectHandler(
+            SimpMessageSendingOperations messagingTemplate,
+            ActiveWebSocketUserRepository repository) {
+        return new WebSocketDisconnectHandler<S>(messagingTemplate, repository);
+    }
 }

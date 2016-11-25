@@ -1,4 +1,4 @@
-package io.github.pivopil.rest.services.domain;
+package io.github.pivopil.rest.services;
 
 import io.github.pivopil.share.entities.impl.Client;
 import io.github.pivopil.share.persistence.ClientRepository;

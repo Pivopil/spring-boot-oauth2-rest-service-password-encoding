@@ -29,7 +29,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
         return new UserRepositoryUserDetails(user);
     }
-
+// could be used as
+//    @PreAuthorize("@customUserDetailsService.canAccessUser(principal, #id)")
     public boolean canAccessUser(UserRepositoryUserDetails currentUser, Long id) {
         return false;
     }
