@@ -30,21 +30,21 @@ and https://spring.io/guides/gs/rest-service/[Building a RESTful Web Service] ge
 == Release Notes
 
 === v1.0 (current)
-- BE core functionality (Done)
-- (BUG) Angular 2 SockJS error in zone.js
-- (BUG) Spring Session does not persist to Redis
+- Task #1.1.1 (Done) BE core functionality
 
 === v1.1
-- Task #1.1.1 create ACL service
-- Task #1.1.2 use JPA for clients (DONE)
-- Task #1.1.3 create sql script for initial db data creation
-- Task #1.1.4 integration tests for BE functionality
-- Task #1.1.5 store tokens in DB (Done)
+- Task #1.1.1        create ACL service
+- Task #1.1.2 (DONE) use JPA for clients
+- Task #1.1.3 (DONE) create sql script for initial db data creation
+- Task #1.1.4        integration tests for BE functionality
+- Task #1.1.5 (DONE) store tokens in DB (Done)
 
 === v1.2
 - initial React configuration
 
-
+=== BUG
+- (BUG) Angular 2 SockJS error in zone.js
+- (BUG) Spring Session does not persist to Redis
 
 == Build and Run in Tomcat
 
