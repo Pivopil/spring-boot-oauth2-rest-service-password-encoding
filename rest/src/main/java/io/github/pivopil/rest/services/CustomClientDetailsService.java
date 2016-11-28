@@ -85,7 +85,12 @@ public class CustomClientDetailsService implements ClientDetailsService {
 
         @Override
         public Collection<GrantedAuthority> getAuthorities() {
-            return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+            String[] roles = super.getRoles().split(",");
+            List<GrantedAuthority> simpleGrantedAuthorityList = new ArrayList<>();
+            for (String role :roles) {
+                simpleGrantedAuthorityList.add(new SimpleGrantedAuthority(role));
+            }
+            return simpleGrantedAuthorityList;
         }
 
         @Override

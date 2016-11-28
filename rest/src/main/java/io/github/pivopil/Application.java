@@ -118,8 +118,8 @@ public class Application extends SpringBootServletInitializer implements Command
             userRepository.save(Arrays.asList(admin, userFirst, userSecond, clientAdminFirst, clientAdminSecond));
 
             // clients
-            Client client1 = new Client("clientFirst", passwordEncoder.encode("clientFirst"), "read,write");
-            Client client2 = new Client("clientSecond", passwordEncoder.encode("clientSecond"), "read,write");
+            Client client1 = new Client("clientFirst", passwordEncoder.encode("clientFirst"), "read,write", "ROLE_FIRST");
+            Client client2 = new Client("clientSecond", passwordEncoder.encode("clientSecond"), "read,write", "ROLE_SECOND");
             clientRepository.save(Arrays.asList(client1, client2));
 
             // acl and token tables creation

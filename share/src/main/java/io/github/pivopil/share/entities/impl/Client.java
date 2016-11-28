@@ -1,6 +1,7 @@
 package io.github.pivopil.share.entities.impl;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.deser.std.StringArrayDeserializer;
 import io.github.pivopil.share.entities.BasicEntity;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -28,6 +29,8 @@ public class Client extends BasicEntity {
 
     private String scopes;
 
+    private String roles;
+
     public Client() {
     }
 
@@ -37,12 +40,14 @@ public class Client extends BasicEntity {
         this.clientId = client.clientId;
         this.clientSecret = client.clientSecret;
         this.scopes = client.scopes;
+        this.roles = client.roles;
     }
 
-    public Client(String clientId, String clientSecret, String scopes) {
+    public Client(String clientId, String clientSecret, String scopes, String roles) {
         this.clientId = clientId;
         this.clientSecret = clientSecret;
         this.scopes = scopes;
+        this.roles = roles;
     }
 
     public String getClientId() {
@@ -67,5 +72,13 @@ public class Client extends BasicEntity {
 
     public void setScopes(String scopes) {
         this.scopes = scopes;
+    }
+
+    public String getRoles() {
+        return roles;
+    }
+
+    public void setRoles(String roles) {
+        this.roles = roles;
     }
 }
