@@ -57,7 +57,7 @@ public class Application extends SpringBootServletInitializer implements Command
         if (((List<User>) userRepository.findAll()).size() == 0) {
             RoleRepository roleRepository = applicationContext.getBean(RoleRepository.class);
             ClientRepository clientRepository  = applicationContext.getBean(ClientRepository.class);
-            DataSource dataSource = applicationContext.getBean(DataSource.class);
+
 
             Role roleUser = new Role();
             roleUser.setName("ROLE_USER");
@@ -77,17 +77,17 @@ public class Application extends SpringBootServletInitializer implements Command
 
             // user
             User user = new User();
-            admin.setName("user");
-            admin.setLogin("user");
-            admin.setPassword(passwordEncoder.encode("user"));
-            admin.setRoles(new HashSet<>(Arrays.asList(roleUser, roleAdmin)));
+            user.setName("user");
+            user.setLogin("user");
+            user.setPassword(passwordEncoder.encode("user"));
+            user.setRoles(new HashSet<>(Arrays.asList(roleUser, roleAdmin)));
 
             // visitor
             User visitor = new User();
-            admin.setName("visitor");
-            admin.setLogin("visitor");
-            admin.setPassword(passwordEncoder.encode("visitor"));
-            admin.setRoles(new HashSet<>(Arrays.asList(roleUser, roleAdmin)));
+            visitor.setName("visitor");
+            visitor.setLogin("visitor");
+            visitor.setPassword(passwordEncoder.encode("visitor"));
+            visitor.setRoles(new HashSet<>(Arrays.asList(roleUser, roleAdmin)));
 
 
             userRepository.save(Arrays.asList(admin, user, visitor));
@@ -99,12 +99,13 @@ public class Application extends SpringBootServletInitializer implements Command
 
             // acl and token tables creation
 
-            try {
-                Connection connection = dataSource.getConnection();
-                ScriptUtils.executeSqlScript(connection, new EncodedResource(new ClassPathResource("/sql/acl-token-tables.sql"), "utf8"), false, false, "--", "commit", "______", "__________=");
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+//            try {
+//                DataSource dataSource = applicationContext.getBean(DataSource.class);
+//                Connection connection = dataSource.getConnection();
+//                ScriptUtils.executeSqlScript(connection, new EncodedResource(new ClassPathResource("/sql/acl-token-tables.sql"), "utf8"), false, false, "--", "commit", "______", "__________=");
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            }
 
         }
     }

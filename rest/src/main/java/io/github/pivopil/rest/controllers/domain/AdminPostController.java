@@ -18,8 +18,12 @@ import java.io.IOException;
 @RequestMapping(value = REST_API.ADMIN_POST)
 public class AdminPostController {
 
+    private final AdminPostService adminPostService;
+
     @Autowired
-    private AdminPostService adminPostService;
+    public AdminPostController(AdminPostService adminPostService) {
+        this.adminPostService = adminPostService;
+    }
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<Iterable<AdminPost>> list() {
@@ -27,19 +31,19 @@ public class AdminPostController {
         return new ResponseEntity<>(adminPostService.getAll(), headers, HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    @PostMapping
     public AdminPost create(@RequestBody AdminPost todo) {
         return adminPostService.add(todo);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/json")
+    @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@RequestBody AdminPost updatedTodo, @PathVariable("id") Long id) throws IOException {
         updatedTodo.setId(id);
         adminPostService.edit(updatedTodo);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@RequestBody AdminPost updatedTodo, @PathVariable("id") Long id) {
         adminPostService.delete(updatedTodo);

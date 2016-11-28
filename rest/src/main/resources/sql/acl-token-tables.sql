@@ -10,7 +10,7 @@ create table if not exists acl_class(
 	class varchar(100) not null,
 	constraint unique_uk_2 unique(class)
 );
-
+-- commit
 create table if not exists acl_object_identity(
 	id bigserial primary key,
 	object_id_class bigint not null,
@@ -23,7 +23,7 @@ create table if not exists acl_object_identity(
 	constraint foreign_fk_2 foreign key(object_id_class)references acl_class(id),
 	constraint foreign_fk_3 foreign key(owner_sid)references acl_sid(id)
 );
-
+-- commit
 create table if not exists acl_entry(
 	id bigserial primary key,
 	acl_object_identity bigint not null,
@@ -37,7 +37,7 @@ create table if not exists acl_entry(
 	constraint foreign_fk_4 foreign key(acl_object_identity) references acl_object_identity(id),
 	constraint foreign_fk_5 foreign key(sid) references acl_sid(id)
 );
-
+-- commit
 create table if not exists oauth_access_token (
   token_id VARCHAR(256),
   token bytea,
@@ -47,11 +47,10 @@ create table if not exists oauth_access_token (
   authentication bytea,
   refresh_token VARCHAR(256)
 );
-
+-- commit
 create table if not exists oauth_refresh_token (
   token_id VARCHAR(256),
   token bytea,
   authentication bytea
 );
-
 -- commit

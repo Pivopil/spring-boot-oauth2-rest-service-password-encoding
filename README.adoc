@@ -70,14 +70,27 @@ mvn clean install
 
 And put `./rest/target/rest-1.0.0.war` to Tomcat
 
-== Create Dump
+== PostgreSQL Database commands
+
+Create Dump
 
 ```sh
 pg_dump -U postgres -h localhost -d oauth2rx -f oauth2rx_pg_db.sql
 ```
 
-== Restore from Dump
+Restore from Dump
 
 ```sh
 psql -U postgres -h localhost -d oauth2rx -f oauth2rx_pg_db.sql
+```
+Drop Database
+
+```sh
+DROP DATABASE IF EXISTS oauth2rx;
+```
+
+Create Database
+
+```sh
+CREATE DATABASE IF NOT EXISTS oauth2rx;
 ```
