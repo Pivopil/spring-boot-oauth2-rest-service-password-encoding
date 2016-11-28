@@ -58,44 +58,69 @@ public class Application extends SpringBootServletInitializer implements Command
             RoleRepository roleRepository = applicationContext.getBean(RoleRepository.class);
             ClientRepository clientRepository  = applicationContext.getBean(ClientRepository.class);
 
+            Role roleAdmin = new Role();
+            roleAdmin.setName("ROLE_ADMIN");
+            roleAdmin = roleRepository.save(roleAdmin);
 
             Role roleUser = new Role();
             roleUser.setName("ROLE_USER");
-
-            Role roleAdmin = new Role();
-            roleAdmin.setName("ROLE_ADMIN");
-
             roleUser = roleRepository.save(roleUser);
-            roleAdmin = roleRepository.save(roleAdmin);
 
-            // admin
+            Role roleClient = new Role();
+            roleClient.setName("ROLE_CLIENT");
+            roleClient = roleRepository.save(roleClient);
+
+
+            Role roleClientFirst = new Role();
+            roleClientFirst.setName("ROLE_FIRST");
+            roleClientFirst = roleRepository.save(roleClientFirst);
+
+            Role roleClientSecond = new Role();
+            roleClientSecond.setName("ROLE_SECOND");
+            roleClientSecond = roleRepository.save(roleClientSecond);
+
+
+            // admin with roles for all
             User admin = new User();
-            admin.setName("admin");
-            admin.setLogin("admin");
+            admin.setName("adminName");
+            admin.setLogin("adminLogin");
             admin.setPassword(passwordEncoder.encode("admin"));
-            admin.setRoles(new HashSet<>(Arrays.asList(roleUser, roleAdmin)));
+            admin.setRoles(new HashSet<>(Arrays.asList(roleUser, roleAdmin, roleClientFirst, roleClientSecond, roleClient)));
 
-            // user
-            User user = new User();
-            user.setName("user");
-            user.setLogin("user");
-            user.setPassword(passwordEncoder.encode("user"));
-            user.setRoles(new HashSet<>(Arrays.asList(roleUser, roleAdmin)));
+            // admin for first client
+            User clientAdminFirst = new User();
+            clientAdminFirst.setName("clientFirstName");
+            clientAdminFirst.setLogin("clientFirstLogin");
+            clientAdminFirst.setPassword(passwordEncoder.encode("clientFirst"));
+            clientAdminFirst.setRoles(new HashSet<>(Arrays.asList(roleClientFirst, roleClient)));
 
-            // visitor
-            User visitor = new User();
-            visitor.setName("visitor");
-            visitor.setLogin("visitor");
-            visitor.setPassword(passwordEncoder.encode("visitor"));
-            visitor.setRoles(new HashSet<>(Arrays.asList(roleUser, roleAdmin)));
+            // admin for second client
+            User clientAdminSecond = new User();
+            clientAdminSecond.setName("clientSecondName");
+            clientAdminSecond.setLogin("clientSecondLogin");
+            clientAdminSecond.setPassword(passwordEncoder.encode("clientSecond"));
+            clientAdminSecond.setRoles(new HashSet<>(Arrays.asList(roleClientSecond, roleClient)));
 
+            // user for first client
+            User userFirst = new User();
+            userFirst.setName("userFirstName");
+            userFirst.setLogin("userFirstLogin");
+            userFirst.setPassword(passwordEncoder.encode("userFirst"));
+            userFirst.setRoles(new HashSet<>(Arrays.asList(roleUser, roleClientFirst)));
 
-            userRepository.save(Arrays.asList(admin, user, visitor));
+            // user for client second
+            User userSecond = new User();
+            userSecond.setName("userSecondName");
+            userSecond.setLogin("userSecondLogin");
+            userSecond.setPassword(passwordEncoder.encode("userSecond"));
+            userSecond.setRoles(new HashSet<>(Arrays.asList(roleUser, roleClientSecond)));
 
-            // client
+            userRepository.save(Arrays.asList(admin, userFirst, userSecond, clientAdminFirst, clientAdminSecond));
 
-            Client client = new Client("clientapp", passwordEncoder.encode("clientapp"), "read,write");
-            clientRepository.save(client);
+            // clients
+            Client client1 = new Client("clientFirst", passwordEncoder.encode("clientFirst"), "read,write");
+            Client client2 = new Client("clientSecond", passwordEncoder.encode("clientSecond"), "read,write");
+            clientRepository.save(Arrays.asList(client1, client2));
 
             // acl and token tables creation
 
