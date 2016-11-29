@@ -62,22 +62,22 @@ public class Application extends SpringBootServletInitializer implements Command
             roleAdmin.setName("ROLE_ADMIN");
             roleAdmin = roleRepository.save(roleAdmin);
 
-            Role roleUser = new Role();
-            roleUser.setName("ROLE_USER");
-            roleUser = roleRepository.save(roleUser);
+            Role roleOrgNeoUser = new Role();
+            roleOrgNeoUser.setName("ROLE_ORG_NEO_USER");
+            roleOrgNeoUser = roleRepository.save(roleOrgNeoUser);
 
-            Role roleClient = new Role();
-            roleClient.setName("ROLE_CLIENT");
-            roleClient = roleRepository.save(roleClient);
+            Role roleOrgTrinityUser = new Role();
+            roleOrgTrinityUser.setName("ROLE_ORG_TRINITY_USER");
+            roleOrgTrinityUser = roleRepository.save(roleOrgTrinityUser);
 
 
-            Role roleClientFirst = new Role();
-            roleClientFirst.setName("ROLE_FIRST");
-            roleClientFirst = roleRepository.save(roleClientFirst);
+            Role roleOrgNeoAdmin = new Role();
+            roleOrgNeoAdmin.setName("ROLE_ORG_NEO_ADMIN");
+            roleOrgNeoAdmin = roleRepository.save(roleOrgNeoAdmin);
 
-            Role roleClientSecond = new Role();
-            roleClientSecond.setName("ROLE_SECOND");
-            roleClientSecond = roleRepository.save(roleClientSecond);
+            Role roleOrgTrinityAdmin = new Role();
+            roleOrgTrinityAdmin.setName("ROLE_ORG_TRINITY_ADMIN");
+            roleOrgTrinityAdmin = roleRepository.save(roleOrgTrinityAdmin);
 
 
             // admin with roles for all
@@ -85,41 +85,43 @@ public class Application extends SpringBootServletInitializer implements Command
             admin.setName("adminName");
             admin.setLogin("adminLogin");
             admin.setPassword(passwordEncoder.encode("admin"));
-            admin.setRoles(new HashSet<>(Arrays.asList(roleUser, roleAdmin, roleClientFirst, roleClientSecond, roleClient)));
+            admin.setRoles(new HashSet<>(Arrays.asList(roleOrgNeoUser, roleAdmin, roleOrgNeoAdmin, roleOrgTrinityAdmin, roleOrgTrinityUser)));
 
             // admin for first client
-            User clientAdminFirst = new User();
-            clientAdminFirst.setName("clientFirstName");
-            clientAdminFirst.setLogin("clientFirstLogin");
-            clientAdminFirst.setPassword(passwordEncoder.encode("clientFirst"));
-            clientAdminFirst.setRoles(new HashSet<>(Arrays.asList(roleClientFirst, roleClient)));
+            User adminNeo = new User();
+            adminNeo.setName("neoAdminName");
+            adminNeo.setLogin("neoAdminLogin");
+            adminNeo.setPassword(passwordEncoder.encode("neoAdmin"));
+            adminNeo.setRoles(new HashSet<>(Arrays.asList(roleOrgNeoAdmin, roleOrgNeoUser)));
 
             // admin for second client
-            User clientAdminSecond = new User();
-            clientAdminSecond.setName("clientSecondName");
-            clientAdminSecond.setLogin("clientSecondLogin");
-            clientAdminSecond.setPassword(passwordEncoder.encode("clientSecond"));
-            clientAdminSecond.setRoles(new HashSet<>(Arrays.asList(roleClientSecond, roleClient)));
+            User adminTrinity = new User();
+            adminTrinity.setName("trinityAdminName");
+            adminTrinity.setLogin("trinityAdminLogin");
+            adminTrinity.setPassword(passwordEncoder.encode("trinityAdmin"));
+            adminTrinity.setRoles(new HashSet<>(Arrays.asList(roleOrgTrinityAdmin, roleOrgTrinityUser)));
+
 
             // user for first client
-            User userFirst = new User();
-            userFirst.setName("userFirstName");
-            userFirst.setLogin("userFirstLogin");
-            userFirst.setPassword(passwordEncoder.encode("userFirst"));
-            userFirst.setRoles(new HashSet<>(Arrays.asList(roleUser, roleClientFirst)));
+            User userNeo = new User();
+            userNeo.setName("neoUserName");
+            userNeo.setLogin("neoUserLogin");
+            userNeo.setPassword(passwordEncoder.encode("neoUser"));
+            userNeo.setRoles(new HashSet<>(Arrays.asList(roleOrgNeoUser, roleOrgNeoAdmin)));
 
             // user for client second
-            User userSecond = new User();
-            userSecond.setName("userSecondName");
-            userSecond.setLogin("userSecondLogin");
-            userSecond.setPassword(passwordEncoder.encode("userSecond"));
-            userSecond.setRoles(new HashSet<>(Arrays.asList(roleUser, roleClientSecond)));
+            User userTrinity = new User();
+            userTrinity.setName("trinityUserName");
+            userTrinity.setLogin("trinityUserLogin");
+            userTrinity.setPassword(passwordEncoder.encode("trinityUser"));
+            userTrinity.setRoles(new HashSet<>(Arrays.asList(roleOrgTrinityUser, roleOrgTrinityAdmin)));
 
-            userRepository.save(Arrays.asList(admin, userFirst, userSecond, clientAdminFirst, clientAdminSecond));
+
+            userRepository.save(Arrays.asList(admin, userNeo, userTrinity, adminNeo, adminTrinity));
 
             // clients
-            Client client1 = new Client("clientFirst", passwordEncoder.encode("clientFirst"), "read,write", "ROLE_FIRST");
-            Client client2 = new Client("clientSecond", passwordEncoder.encode("clientSecond"), "read,write", "ROLE_SECOND");
+            Client client1 = new Client("apiOne", passwordEncoder.encode("apiOne"), "read,write", "ROLE_API_ONE");
+            Client client2 = new Client("apiTwo", passwordEncoder.encode("apiTwo"), "read,write", "ROLE_API_TWO");
             clientRepository.save(Arrays.asList(client1, client2));
 
             // acl and token tables creation
