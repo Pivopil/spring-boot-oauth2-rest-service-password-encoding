@@ -31,20 +31,9 @@ public class ACLConfig extends GlobalMethodSecurityConfiguration {
     @Autowired
     DataSource dataSource;
 
-    @Autowired
-    AclPermissionEvaluator aclPermissionEvaluator;
-
-    @Autowired
-    AclService aclService;
-
     @Bean
     public ObjectIdentityRetrievalStrategyImpl objectIdentityRetrievalStrategy() {
         return new ObjectIdentityRetrievalStrategyImpl();
-    }
-
-    @Bean
-    public AclPermissionEvaluator aclPermissionEvaluator() {
-        return new AclPermissionEvaluator(aclService);
     }
 
     @Bean
@@ -81,13 +70,6 @@ public class ACLConfig extends GlobalMethodSecurityConfiguration {
         return new BasicLookupStrategy(dataSource, aclCache(), aclAuthorizationStrategy(), new ConsoleAuditLogger());
     }
 
-
-    /*
-    index 0 is the authority needed to change ownership,
-    index 1 is the authority needed to modify auditing details,
-    index 2 is the authority needed to change other ACL and ACE details)
-    */
-
     AclAuthorizationStrategy aclAuthorizationStrategy() {
         return new AclAuthorizationStrategyImpl(new SimpleGrantedAuthority("ROLE_ADMIN"),
                 new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_ADMIN"));
@@ -103,9 +85,10 @@ public class ACLConfig extends GlobalMethodSecurityConfiguration {
 
 
     @Override
-    protected MethodSecurityExpressionHandler createExpressionHandler() {
+    protected MethodSecurityExpressionHandler createExpressionHandler(){
         DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
-        expressionHandler.setPermissionEvaluator(aclPermissionEvaluator);
+        // todo as been
+        expressionHandler.setPermissionEvaluator(new AclPermissionEvaluator(aclService()));
         return expressionHandler;
     }
 
