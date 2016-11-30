@@ -25,6 +25,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -63,20 +64,20 @@ public class Application extends SpringBootServletInitializer implements Command
             roleAdmin = roleRepository.save(roleAdmin);
 
             Role roleOrgNeoUser = new Role();
-            roleOrgNeoUser.setName("ROLE_ORG_NEO_USER");
+            roleOrgNeoUser.setName("ROLE_NEO_LOCAL_USER");
             roleOrgNeoUser = roleRepository.save(roleOrgNeoUser);
 
             Role roleOrgTrinityUser = new Role();
-            roleOrgTrinityUser.setName("ROLE_ORG_TRINITY_USER");
+            roleOrgTrinityUser.setName("ROLE_TRINITY_LOCAL_USER");
             roleOrgTrinityUser = roleRepository.save(roleOrgTrinityUser);
 
 
             Role roleOrgNeoAdmin = new Role();
-            roleOrgNeoAdmin.setName("ROLE_ORG_NEO_ADMIN");
+            roleOrgNeoAdmin.setName("ROLE_NEO_LOCAL_ADMIN");
             roleOrgNeoAdmin = roleRepository.save(roleOrgNeoAdmin);
 
             Role roleOrgTrinityAdmin = new Role();
-            roleOrgTrinityAdmin.setName("ROLE_ORG_TRINITY_ADMIN");
+            roleOrgTrinityAdmin.setName("ROLE_TRINITY_LOCAL_ADMIN");
             roleOrgTrinityAdmin = roleRepository.save(roleOrgTrinityAdmin);
 
 
@@ -92,14 +93,14 @@ public class Application extends SpringBootServletInitializer implements Command
             adminNeo.setName("neoAdminName");
             adminNeo.setLogin("neoAdminLogin");
             adminNeo.setPassword(passwordEncoder.encode("neoAdmin"));
-            adminNeo.setRoles(new HashSet<>(Arrays.asList(roleOrgNeoAdmin, roleOrgNeoUser)));
+            adminNeo.setRoles(new HashSet<>(Collections.singletonList(roleOrgNeoAdmin)));
 
             // admin for second client
             User adminTrinity = new User();
             adminTrinity.setName("trinityAdminName");
             adminTrinity.setLogin("trinityAdminLogin");
             adminTrinity.setPassword(passwordEncoder.encode("trinityAdmin"));
-            adminTrinity.setRoles(new HashSet<>(Arrays.asList(roleOrgTrinityAdmin, roleOrgTrinityUser)));
+            adminTrinity.setRoles(new HashSet<>(Collections.singletonList(roleOrgTrinityAdmin)));
 
 
             // user for first client
@@ -107,14 +108,14 @@ public class Application extends SpringBootServletInitializer implements Command
             userNeo.setName("neoUserName");
             userNeo.setLogin("neoUserLogin");
             userNeo.setPassword(passwordEncoder.encode("neoUser"));
-            userNeo.setRoles(new HashSet<>(Arrays.asList(roleOrgNeoUser, roleOrgNeoAdmin)));
+            userNeo.setRoles(new HashSet<>(Collections.singletonList(roleOrgNeoUser)));
 
             // user for client second
             User userTrinity = new User();
             userTrinity.setName("trinityUserName");
             userTrinity.setLogin("trinityUserLogin");
             userTrinity.setPassword(passwordEncoder.encode("trinityUser"));
-            userTrinity.setRoles(new HashSet<>(Arrays.asList(roleOrgTrinityUser, roleOrgTrinityAdmin)));
+            userTrinity.setRoles(new HashSet<>(Collections.singletonList(roleOrgTrinityUser)));
 
 
             userRepository.save(Arrays.asList(admin, userNeo, userTrinity, adminNeo, adminTrinity));
