@@ -1,5 +1,6 @@
 package io.github.pivopil.rest.services;
 
+import io.github.pivopil.rest.services.security.CustomSecurityService;
 import io.github.pivopil.share.entities.impl.Content;
 import io.github.pivopil.share.entities.impl.User;
 import io.github.pivopil.share.persistence.ContentRepository;
