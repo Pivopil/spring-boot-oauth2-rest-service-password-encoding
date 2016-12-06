@@ -17,7 +17,7 @@ public class UserController {
 
     @RequestMapping(REST_API.ME)
     public UserDetails me(@AuthenticationPrincipal User user) {
-        return customUserDetailsService.loadUserByUsername(user.getName());
+        return customUserDetailsService.loadUserByUsername(user.getLogin());
     }
 
     @RequestMapping(REST_API.USERS)

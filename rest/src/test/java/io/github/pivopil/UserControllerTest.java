@@ -34,6 +34,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(locations="classpath:test.properties")
 public class UserControllerTest {
 
+    public static final String DEFAULT_CLIENT_SECRET = "apiOne";
+    public static final String DEFAULT_CLIENT_NAME = DEFAULT_CLIENT_SECRET;
     @Autowired
     WebApplicationContext context;
 
@@ -54,7 +56,7 @@ public class UserControllerTest {
 
     private String getAccessToken(String username, String password) throws Exception {
         String authorization = "Basic "
-                + new String(Base64Utils.encode("clientapp:123456".getBytes()));
+                + new String(Base64Utils.encode((DEFAULT_CLIENT_NAME + ":" + DEFAULT_CLIENT_SECRET).getBytes()));
         String contentType = MediaType.APPLICATION_JSON + ";charset=UTF-8";
 
         // @formatter:off
@@ -68,8 +70,8 @@ public class UserControllerTest {
                                 .param("password", password)
                                 .param("grant_type", "password")
                                 .param("scope", "read write")
-                                .param("client_id", "clientapp")
-                                .param("client_secret", "123456"))
+                                .param("client_id", DEFAULT_CLIENT_NAME)
+                                .param("client_secret", DEFAULT_CLIENT_SECRET))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(contentType))
                 .andExpect(jsonPath("$.access_token", is(notNullValue())))
@@ -86,12 +88,12 @@ public class UserControllerTest {
 
     @Test
     public void meAuthorized() throws Exception {
-        String accessToken = getAccessToken("admin", "admin");
+        String accessToken = getAccessToken("adminLogin", "admin");
 
         // @formatter:off
         mvc.perform(get(REST_API.ME)
                 .header("Authorization", "Bearer " + accessToken))
-                .andExpect(jsonPath("$.id", is(1)));
+                .andExpect(jsonPath("$.id", is(notNullValue())));
         // @formatter:on
     }
 
