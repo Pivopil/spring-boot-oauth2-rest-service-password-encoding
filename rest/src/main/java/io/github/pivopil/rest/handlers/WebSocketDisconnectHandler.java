@@ -1,5 +1,6 @@
 package io.github.pivopil.rest.handlers;
 
+import io.github.pivopil.rest.constants.WS_API;
 import io.github.pivopil.rest.models.ActiveWebSocketUser;
 import io.github.pivopil.rest.models.ActiveWebSocketUserRepository;
 import org.springframework.context.ApplicationListener;
@@ -31,7 +32,7 @@ public class WebSocketDisconnectHandler<S>
         }
 
         this.repository.delete(id);
-        this.messagingTemplate.convertAndSend("/topic/friends/signout",
+        this.messagingTemplate.convertAndSend(WS_API.TOPIC_FRIENDS_SIGNOUT,
                 Arrays.asList(user.getUsername()));
 
     }

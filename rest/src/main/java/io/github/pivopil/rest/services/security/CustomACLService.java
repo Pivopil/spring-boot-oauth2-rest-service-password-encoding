@@ -1,5 +1,6 @@
 package io.github.pivopil.rest.services.security;
 
+import io.github.pivopil.rest.constants.ROLES;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +25,6 @@ public class CustomACLService {
 
     private static final Logger log = LoggerFactory.getLogger(CustomACLService.class);
 
-    public static final String ROLE_PREFIX = "ROLE_";
-    public static final String ILLEGAL_PRINCIPAL_OBJECT = "Illegal principal object";
 
     private final MutableAclService mutableAclService;
 
@@ -97,10 +96,10 @@ public class CustomACLService {
 
             String stringRecipient = String.class.cast(userData);
 
-            boolean startsWithRolePrefix = stringRecipient.startsWith(ROLE_PREFIX);
+            boolean startsWithRolePrefix = stringRecipient.startsWith(ROLES.ROLE_PREFIX);
 
             if (!isPrincipal && !startsWithRolePrefix) {
-                stringRecipient = ROLE_PREFIX + userData;
+                stringRecipient = ROLES.ROLE_PREFIX + userData;
             }
 
             if (startsWithRolePrefix) {
@@ -112,7 +111,7 @@ public class CustomACLService {
             }
         }
         log.error("No way to get principal object from data '{}'", userData);
-        throw new IllegalArgumentException(ILLEGAL_PRINCIPAL_OBJECT);
+        throw new IllegalArgumentException("Illegal principal object");
     }
 
     void persistAllACLPermissionsForDomainObject(Object objectWithId,

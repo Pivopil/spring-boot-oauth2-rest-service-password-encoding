@@ -1,5 +1,6 @@
 package io.github.pivopil.rest.services.security;
 
+import io.github.pivopil.rest.constants.ROLES;
 import io.github.pivopil.share.entities.impl.Role;
 import io.github.pivopil.share.entities.impl.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +23,6 @@ import java.util.stream.Collectors;
 @Service
 public class CustomSecurityService {
 
-    public static final String ROLE_ADMIN = "ROLE_ADMIN";
-    public static final String LOCAL_ADMIN = "LOCAL_ADMIN";
-    public static final String LOCAL_USER = "LOCAL_USER";
 
     private final MutableAclService mutableAclService;
 
@@ -62,19 +60,19 @@ public class CustomSecurityService {
         Collection<Role> authorities = getAuthorities(Role.class);
         mutableAclService.createAcl(identityRetrievalStrategy.getObjectIdentity(objectWithId));
 
-        Boolean isRoleAdmin = authorities.stream().filter(i -> i.getName().equals(ROLE_ADMIN)).count() > 0;
+        Boolean isRoleAdmin = authorities.stream().filter(i -> i.getName().equals(ROLES.ROLE_ADMIN)).count() > 0;
         // all posts are visible for ROLE_ADMIN
-        customACLService.persistAllACLPermissionsForDomainObject(objectWithId, ROLE_ADMIN, false);
+        customACLService.persistAllACLPermissionsForDomainObject(objectWithId, ROLES.ROLE_ADMIN, false);
         if (!isRoleAdmin) {
             // if user does not have ROLE_ADMIN check if he is LOCAL_ADMIN
-            List<Role> localAdminSet = authorities.stream().filter(i -> i.getName().contains(LOCAL_ADMIN)).collect(Collectors.toList());
+            List<Role> localAdminSet = authorities.stream().filter(i -> i.getName().contains(ROLES.LOCAL_ADMIN)).collect(Collectors.toList());
             if (localAdminSet.size() > 0) {
                 String roleName = localAdminSet.get(0).getName();
                 customACLService.persistAllACLPermissionsForDomainObject(objectWithId, roleName, false);
             } else {
-                List<Role> localUserSet = authorities.stream().filter(i -> i.getName().contains(LOCAL_USER)).collect(Collectors.toList());
+                List<Role> localUserSet = authorities.stream().filter(i -> i.getName().contains(ROLES.LOCAL_USER)).collect(Collectors.toList());
                 String roleName = localUserSet.get(0).getName();
-                String replace = roleName.replace(LOCAL_USER, LOCAL_ADMIN);
+                String replace = roleName.replace(ROLES.LOCAL_USER, ROLES.LOCAL_ADMIN);
                 customACLService.persistAllACLPermissionsForDomainObject(objectWithId, replace, false);
                 // if user is not ROLE_ADMIN and not LOCAL_ADMIN
                 customACLService.persistReadWritePermissionsForDomainObject(objectWithId, user.getLogin(), true);
@@ -83,23 +81,23 @@ public class CustomSecurityService {
     }
 
     public <T> void removeAclPermissions(T objectWithId, User user) {
-        customACLService.removePermissions(objectWithId, ROLE_ADMIN, false,
+        customACLService.removePermissions(objectWithId, ROLES.ROLE_ADMIN, false,
                 BasePermission.ADMINISTRATION,
                 BasePermission.CREATE,
                 BasePermission.DELETE,
                 BasePermission.READ,
                 BasePermission.WRITE);
         Collection<Role> authorities = getAuthorities(Role.class);
-        Boolean isRoleAdmin = authorities.stream().filter(i -> i.getName().equals(ROLE_ADMIN)).count() > 0;
+        Boolean isRoleAdmin = authorities.stream().filter(i -> i.getName().equals(ROLES.ROLE_ADMIN)).count() > 0;
 
         if (!isRoleAdmin) {
-            List<Role> localAdminSet = authorities.stream().filter(i -> i.getName().contains(LOCAL_ADMIN)).collect(Collectors.toList());
+            List<Role> localAdminSet = authorities.stream().filter(i -> i.getName().contains(ROLES.LOCAL_ADMIN)).collect(Collectors.toList());
             String roleName;
             if (localAdminSet.size() > 0) {
                 roleName = localAdminSet.get(0).getName();
             } else {
-                List<Role> localUserSet = authorities.stream().filter(i -> i.getName().contains(LOCAL_USER)).collect(Collectors.toList());
-                roleName = localUserSet.get(0).getName().replace(LOCAL_USER, LOCAL_ADMIN);
+                List<Role> localUserSet = authorities.stream().filter(i -> i.getName().contains(ROLES.LOCAL_USER)).collect(Collectors.toList());
+                roleName = localUserSet.get(0).getName().replace(ROLES.LOCAL_USER, ROLES.LOCAL_ADMIN);
                 customACLService.deleteReadWritePermissionsFromDatabase(objectWithId, user.getLogin(), true);
             }
             customACLService.removePermissions(objectWithId, roleName, false,

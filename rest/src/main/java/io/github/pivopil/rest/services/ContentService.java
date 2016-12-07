@@ -28,30 +28,33 @@ public class ContentService {
         this.customSecurityService = customSecurityService;
     }
 
-    @PostAuthorize("hasPermission(returnObject, 'WRITE')")
+    @PreAuthorize("isAuthenticated() && #id != null")
+    @PostAuthorize("returnObject == null || hasPermission(returnObject, 'WRITE')")
     public Content getSingle(Long id) {
         return contentRepository.findOne(id);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostFilter("hasPermission(filterObject, 'READ')")
-    public Iterable<Content> getAll() {
-        return contentRepository.findAll();
+    public Iterable<Content> getAll(String title) {
+        return title != null ? contentRepository.findAllByTitle(title) : contentRepository.findAll();
     }
 
     @Transactional
-    public Content add(Content post, User user) {
+    @PreAuthorize("isAuthenticated() && #post != null")
+    public Content add(@Param("post") Content post, User user) {
         post = contentRepository.save(post);
         customSecurityService.addAclPermissions(post, user);
         return post;
     }
 
-    @PreAuthorize("hasPermission(#post, 'WRITE')")
+    @PreAuthorize("isAuthenticated() && hasPermission(#post, 'WRITE') && #post != null")
     public Content edit(@Param("post") Content post) {
         return contentRepository.save(post);
     }
 
     @Transactional
-    @PreAuthorize("hasPermission(#post, 'WRITE')")
+    @PreAuthorize("isAuthenticated() && hasPermission(#post, 'WRITE') && #post != null")
     public void delete(@Param("post") Content post, User user) {
         contentRepository.delete(post);
         customSecurityService.removeAclPermissions(post, user);

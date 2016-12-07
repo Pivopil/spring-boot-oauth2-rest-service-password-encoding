@@ -1,5 +1,6 @@
 package io.github.pivopil.rest.config;
 
+import io.github.pivopil.rest.constants.ROLES;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.ehcache.EhCacheFactoryBean;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
@@ -12,7 +13,6 @@ import org.springframework.security.acls.domain.*;
 import org.springframework.security.acls.jdbc.BasicLookupStrategy;
 import org.springframework.security.acls.jdbc.JdbcMutableAclService;
 import org.springframework.security.acls.jdbc.LookupStrategy;
-import org.springframework.security.acls.model.AclService;
 import org.springframework.security.acls.model.SidRetrievalStrategy;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration;
@@ -27,6 +27,7 @@ import javax.sql.DataSource;
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class ACLConfig extends GlobalMethodSecurityConfiguration {
+
 
     @Autowired
     DataSource dataSource;
@@ -71,8 +72,8 @@ public class ACLConfig extends GlobalMethodSecurityConfiguration {
     }
 
     AclAuthorizationStrategy aclAuthorizationStrategy() {
-        return new AclAuthorizationStrategyImpl(new SimpleGrantedAuthority("ROLE_ADMIN"),
-                new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_ADMIN"));
+        return new AclAuthorizationStrategyImpl(new SimpleGrantedAuthority(ROLES.ROLE_ADMIN),
+                new SimpleGrantedAuthority(ROLES.ROLE_ADMIN), new SimpleGrantedAuthority(ROLES.ROLE_ADMIN));
     }
 
     @Bean
@@ -85,7 +86,7 @@ public class ACLConfig extends GlobalMethodSecurityConfiguration {
 
 
     @Override
-    protected MethodSecurityExpressionHandler createExpressionHandler(){
+    protected MethodSecurityExpressionHandler createExpressionHandler() {
         DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
         // todo as been
         expressionHandler.setPermissionEvaluator(new AclPermissionEvaluator(aclService()));

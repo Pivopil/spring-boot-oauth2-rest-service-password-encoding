@@ -1,5 +1,6 @@
 package io.github.pivopil.rest.handlers;
 
+import io.github.pivopil.rest.constants.WS_API;
 import io.github.pivopil.rest.models.ActiveWebSocketUser;
 import io.github.pivopil.rest.models.ActiveWebSocketUserRepository;
 import org.springframework.context.ApplicationListener;
@@ -14,6 +15,7 @@ import java.util.Calendar;
 
 public class WebSocketConnectHandler<S>
         implements ApplicationListener<SessionConnectEvent> {
+
     private ActiveWebSocketUserRepository repository;
     private SimpMessageSendingOperations messagingTemplate;
 
@@ -33,7 +35,7 @@ public class WebSocketConnectHandler<S>
         String id = SimpMessageHeaderAccessor.getSessionId(headers);
         this.repository.save(
                 new ActiveWebSocketUser(id, user.getName(), Calendar.getInstance()));
-        this.messagingTemplate.convertAndSend("/topic/friends/signin",
+        this.messagingTemplate.convertAndSend(WS_API.TOPIC_FRIENDS_SIGNIN,
                 Arrays.asList(user.getName()));
     }
 }

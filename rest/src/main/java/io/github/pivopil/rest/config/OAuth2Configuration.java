@@ -1,8 +1,10 @@
 package io.github.pivopil.rest.config;
 
-import io.github.pivopil.REST_API;
-import io.github.pivopil.rest.services.CustomUserDetailsService;
+import io.github.pivopil.rest.constants.REST_API;
+import io.github.pivopil.rest.constants.ROLES;
+import io.github.pivopil.rest.constants.WS_API;
 import io.github.pivopil.rest.services.CustomClientDetailsService;
+import io.github.pivopil.rest.services.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -118,12 +120,12 @@ public class OAuth2Configuration extends WebSecurityConfigurerAdapter {
         public void configure(HttpSecurity http) throws Exception {
             http
                     .authorizeRequests()
-                    .antMatchers(REST_API.USERS).hasRole("ADMIN")
+                    .antMatchers(REST_API.USERS).hasRole(ROLES.ADMIN)
                     .antMatchers(REST_API.ME).authenticated()
-                    .antMatchers(REST_API.ADMIN_POST).authenticated()
+                    .antMatchers(REST_API.CONTENT).authenticated()
                     .antMatchers(REST_API.PERSONAL_POST).authenticated()
                     .antMatchers(REST_API.PUBLIC_POST).authenticated()
-                    .antMatchers(REST_API.WS).authenticated();
+                    .antMatchers(WS_API.HANDSHAKE).authenticated();
         }
 
     }

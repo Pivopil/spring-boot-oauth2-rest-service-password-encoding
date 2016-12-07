@@ -1,5 +1,6 @@
 package io.github.pivopil.rest.config;
 
+import io.github.pivopil.rest.constants.WS_API;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.security.config.annotation.web.messaging.MessageSecurityMetadataSourceRegistry;
@@ -15,8 +16,8 @@ public class WebSocketSecurityConfig
 
                 .simpTypeMatchers(SimpMessageType.CONNECT, SimpMessageType.HEARTBEAT, SimpMessageType.UNSUBSCRIBE, SimpMessageType.DISCONNECT).permitAll()
                 // matches any destination that starts with /rooms/
-                .simpDestMatchers("/queue/**").authenticated()
-                .simpDestMatchers("/topic/**").authenticated()
+                .simpDestMatchers(WS_API.QUEUE_DESTINATION_PREFIX + "**").authenticated()
+                .simpDestMatchers(WS_API.TOPIC_DESTINATION_PREFIX + "**").authenticated()
                 // (i.e. cannot send messages directly to /topic/, /queue/)
                 // (i.e. cannot subscribe to /topic/messages/* to get messages sent to
                 // /topic/messages-user<id>)
