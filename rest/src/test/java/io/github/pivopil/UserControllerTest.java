@@ -4,6 +4,7 @@ package io.github.pivopil;
  * Created on 07.07.16.
  */
 
+import io.github.pivopil.rest.constants.REST_API;
 import io.github.pivopil.rest.controllers.UserController;
 import org.junit.Before;
 import org.junit.Test;
@@ -105,6 +106,25 @@ public class UserControllerTest {
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.error", is("unauthorized")));
         // @formatter:on
+    }
+
+    @Test
+    public void adminTryToGetContentByTitle() throws Exception {
+        String accessToken = getAccessToken("adminLogin", "admin");
+
+        mvc.perform(get(REST_API.CONTENT + "?title=adminLogin")
+                .header("Authorization", "Bearer " + accessToken))
+                .andExpect(jsonPath("$", hasSize(0)));
+//
+//        // @formatter:off
+//        mvc.perform(get(API.DEVICES + API.FORMATS)
+//                .header("Authorization", "Bearer " + accessToken))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$[?(@.code == 'OPS01')].description", contains("48 values collected each 60 minutes (upload interval 2 days)")))
+//                .andExpect(jsonPath("$[?(@.code == 'OPS02')].description", contains("144 values collected each 10 minutes (upload interval 1 day)")))
+//                .andExpect(jsonPath("$[?(@.code == 'OPS03')].description", contains("72 values collected each 10 minutes (upload interval 12 hours)")))
+//                .andExpect(jsonPath("$[?(@.code == 'OPS99')].description", contains("6 values collected each 10 minutes (upload interval 1 hour)")));
+//        // @formatter:on
     }
 
 }
