@@ -4,7 +4,8 @@ package io.github.pivopil;
  * Created on 07.07.16.
  */
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.pivopil.rest.constants.REST_API;
 import io.github.pivopil.rest.controllers.UserController;
 import io.github.pivopil.share.entities.impl.Content;
@@ -28,16 +29,14 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.List;
 
 import static org.hamcrest.Matchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @SpringBootTest(classes = Application.class)
-@TestPropertySource(locations="classpath:test.properties")
+@TestPropertySource(locations = "classpath:test.properties")
 public class UserControllerTest {
 
     public static final String DEFAULT_CLIENT_SECRET = "apiOne";
@@ -49,7 +48,7 @@ public class UserControllerTest {
     private FilterChainProxy springSecurityFilterChain;
 
     @Autowired
-    private Gson gson;
+    private ObjectMapper mapper;
 
     @InjectMocks
     UserController controller;
@@ -127,34 +126,24 @@ public class UserControllerTest {
             // add one content object by admin
             Content content = new Content();
             content.setTitle("adminLogin");
-            contentAsString = mvc.perform(post(REST_API.CONTENT)
+            String singleContentAsString = mvc.perform(post(REST_API.CONTENT)
                     .header("Authorization", "Bearer " + accessToken)
                     .contentType(MediaType.APPLICATION_JSON + ";charset=UTF-8")
-                    .content(gson.toJson(content)))
+                    .content(mapper.writeValueAsString(content)))
                     .andExpect(jsonPath("$.title", is(equalTo("adminLogin"))))
                     .andReturn().getResponse().getContentAsString();
 
-            content = gson.fromJson(contentAsString, Content.class);
+            content = mapper.readValue(singleContentAsString, Content.class);
 
             // remove one content object by admin
             mvc.perform(delete(REST_API.CONTENT + "/" + content.getId()).header("Authorization", "Bearer " + accessToken));
 
         } else {
-            mvc.perform(delete(REST_API.CONTENT + "/" + 13).header("Authorization", "Bearer " + accessToken)).andExpect(status().isNoContent());
+            List<Content> contentList = mapper.readValue(contentAsString, new TypeReference<List<Content>>() {
+            });
+            Content content = contentList.get(0);
+            mvc.perform(delete(REST_API.CONTENT + "/" + content.getId()).header("Authorization", "Bearer " + accessToken)).andExpect(status().isNoContent());
         }
-
-
-
-
-
-
-//
-//        // @formatter:off
-//        mvc.perform(get(API.DEVICES + API.FORMATS)
-//                .header("Authorization", "Bearer " + accessToken))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$[?(@.code == 'OPS01')].description", contains("48 values collected each 60 minutes (upload interval 2 days)")))
-//        // @formatter:on
     }
 
 }
