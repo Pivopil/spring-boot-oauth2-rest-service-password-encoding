@@ -53,11 +53,15 @@ public class ContentService {
         return contentRepository.save(post);
     }
 
-    @Transactional
     @PreAuthorize("isAuthenticated() && hasPermission(#post, 'WRITE') && #post != null")
     public void delete(@Param("post") Content post, User user) {
         contentRepository.delete(post);
         customSecurityService.removeAclPermissions(post, user);
     }
 
+    @Transactional
+    public void deleteById(Long id, User user) {
+        Content content = getSingle(id);
+        delete(content, user);
+    }
 }

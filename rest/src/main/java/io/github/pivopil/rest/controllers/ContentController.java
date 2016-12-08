@@ -55,9 +55,8 @@ public class ContentController {
 
     @DeleteMapping(REST_API.ID_PATH_VARIABLE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@RequestBody Content content, @PathVariable("id") Long id, @AuthenticationPrincipal User user) {
-        content.setId(id);
-        contentService.delete(content, user);
+    public void delete(@PathVariable("id") Long id, @AuthenticationPrincipal User user) {
+        contentService.deleteById(id, user);
     }
 
 }

@@ -161,7 +161,7 @@ public class CustomACLService {
                                           Object userData,
                                           boolean isPrincipal,
                                           final Permission selectedPermission) {
-        boolean loopBreak = true;
+        boolean loopBreak = false;
         try {
             log.debug("Try to get sid by user data '{}'", userData);
             final Sid sid = obtainSidObject(userData, isPrincipal);
@@ -172,10 +172,8 @@ public class CustomACLService {
             log.debug("Successfully got acl '{}' by objectIdentity '{}'", acl, userData);
 
             final MutableAcl mutableAcl = MutableAcl.class.cast(acl);
-
-            log.debug("LOOP START: Try to delete acl from mutableAcl in do while loop");
-            do {
-                log.debug("In loop, loopBreak = '{}'", loopBreak);
+            while (!loopBreak) {
+                loopBreak = true;
                 final List<AccessControlEntry> mutableAclEntries = mutableAcl.getEntries();
                 log.debug("In loop, got {} Access Control Entries", mutableAclEntries.size());
 
@@ -196,10 +194,7 @@ public class CustomACLService {
                         break;
                     }
                 }
-            } while (!loopBreak);
-
-            log.debug("LOOP END: Try to delete acl from mutableAcl in do while loop");
-
+            }
             log.debug("Try to persist mutableAcl");
             mutableAclService.updateAcl(mutableAcl);
             log.debug("Successfully persisted mutableAcl");
