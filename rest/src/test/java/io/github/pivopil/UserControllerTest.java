@@ -4,8 +4,10 @@ package io.github.pivopil;
  * Created on 07.07.16.
  */
 
+import com.google.gson.Gson;
 import io.github.pivopil.rest.constants.REST_API;
 import io.github.pivopil.rest.controllers.UserController;
+import io.github.pivopil.share.entities.impl.Content;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,7 +25,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.Base64Utils;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.List;
+
 import static org.hamcrest.Matchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -42,6 +47,9 @@ public class UserControllerTest {
 
     @Autowired
     private FilterChainProxy springSecurityFilterChain;
+
+    @Autowired
+    private Gson gson;
 
     @InjectMocks
     UserController controller;
@@ -112,18 +120,40 @@ public class UserControllerTest {
     public void adminTryToGetContentByTitle() throws Exception {
         String accessToken = getAccessToken("adminLogin", "admin");
 
-        mvc.perform(get(REST_API.CONTENT + "?title=adminLogin")
-                .header("Authorization", "Bearer " + accessToken))
-                .andExpect(jsonPath("$", hasSize(0)));
+        String contentAsString = mvc.perform(get(REST_API.CONTENT + "?title=adminLogin")
+                .header("Authorization", "Bearer " + accessToken)).andReturn().getResponse().getContentAsString();
+
+        if (contentAsString.equals("[]")) {
+            // add one content object by admin
+            Content content = new Content();
+            content.setTitle("adminLogin");
+            contentAsString = mvc.perform(post(REST_API.CONTENT)
+                    .header("Authorization", "Bearer " + accessToken)
+                    .contentType(MediaType.APPLICATION_JSON + ";charset=UTF-8")
+                    .content(gson.toJson(content)))
+                    .andExpect(jsonPath("$.title", is(equalTo("adminLogin"))))
+                    .andReturn().getResponse().getContentAsString();
+
+            content = gson.fromJson(contentAsString, Content.class);
+
+            // remove one content object by admin
+            mvc.perform(delete(REST_API.CONTENT + "/" + content.getId()).header("Authorization", "Bearer " + accessToken));
+
+        } else {
+            mvc.perform(delete(REST_API.CONTENT + "/" + 13).header("Authorization", "Bearer " + accessToken)).andExpect(status().isNoContent());
+        }
+
+
+
+
+
+
 //
 //        // @formatter:off
 //        mvc.perform(get(API.DEVICES + API.FORMATS)
 //                .header("Authorization", "Bearer " + accessToken))
 //                .andExpect(status().isOk())
 //                .andExpect(jsonPath("$[?(@.code == 'OPS01')].description", contains("48 values collected each 60 minutes (upload interval 2 days)")))
-//                .andExpect(jsonPath("$[?(@.code == 'OPS02')].description", contains("144 values collected each 10 minutes (upload interval 1 day)")))
-//                .andExpect(jsonPath("$[?(@.code == 'OPS03')].description", contains("72 values collected each 10 minutes (upload interval 12 hours)")))
-//                .andExpect(jsonPath("$[?(@.code == 'OPS99')].description", contains("6 values collected each 10 minutes (upload interval 1 hour)")));
 //        // @formatter:on
     }
 
