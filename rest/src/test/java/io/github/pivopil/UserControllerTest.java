@@ -41,6 +41,7 @@ public class UserControllerTest {
 
     public static final String DEFAULT_CLIENT_SECRET = "apiOne";
     public static final String DEFAULT_CLIENT_NAME = DEFAULT_CLIENT_SECRET;
+
     @Autowired
     WebApplicationContext context;
 
@@ -67,7 +68,6 @@ public class UserControllerTest {
                 + new String(Base64Utils.encode((DEFAULT_CLIENT_NAME + ":" + DEFAULT_CLIENT_SECRET).getBytes()));
         String contentType = MediaType.APPLICATION_JSON + ";charset=UTF-8";
 
-        // @formatter:off
         String content = mvc
                 .perform(
                         post("/oauth/token")
@@ -89,8 +89,6 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.scope", is(equalTo("read write"))))
                 .andReturn().getResponse().getContentAsString();
 
-        // @formatter:on
-
         return content.substring(17, 53);
     }
 
@@ -98,44 +96,61 @@ public class UserControllerTest {
     public void meAuthorized() throws Exception {
         String accessToken = getAccessToken("adminLogin", "admin");
 
-        // @formatter:off
         mvc.perform(get(REST_API.ME)
                 .header("Authorization", "Bearer " + accessToken))
                 .andExpect(jsonPath("$.id", is(notNullValue())));
-        // @formatter:on
     }
 
     @Test
     public void meUnauthorized() throws Exception {
-        // @formatter:off
         mvc.perform(get(REST_API.ME)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.error", is("unauthorized")));
-        // @formatter:on
     }
 
     @Test
-    public void adminTryToGetContentByTitle() throws Exception {
-        String accessToken = getAccessToken("adminLogin", "admin");
+    public void adminContentCRUDTest() throws Exception {
+        testCreateAndRemoveActionsForUserBy("adminLogin", "admin");
+    }
 
-        String contentAsString = mvc.perform(get(REST_API.CONTENT + "?title=adminLogin")
-                .header("Authorization", "Bearer " + accessToken)).andReturn().getResponse().getContentAsString();
+//    @Test
+//    public void neoAdminContentCRUDTest() throws Exception {
+//        testCreateAndRemoveActionsForUserBy("neoAdminLogin", "neoAdmin");
+//    }
+//
+//    @Test
+//    public void neoUserContentCRUDTest() throws Exception {
+//        testCreateAndRemoveActionsForUserBy("neoUserLogin", "neoUser");
+//    }
+
+    private void testCreateAndRemoveActionsForUserBy(String login, String pass) throws Exception {
+        String accessToken = getAccessToken(login, pass);
+
+        String contentAsString = mvc.perform(get(REST_API.CONTENT + "?title=" + login)
+                .header("Authorization", "Bearer " + accessToken))
+                .andReturn().getResponse().getContentAsString();
 
         if (contentAsString.equals("[]")) {
-            // add one content object by admin
+            // create content
             Content content = new Content();
-            content.setTitle("adminLogin");
+            content.setTitle(login);
             String singleContentAsString = mvc.perform(post(REST_API.CONTENT)
                     .header("Authorization", "Bearer " + accessToken)
                     .contentType(MediaType.APPLICATION_JSON + ";charset=UTF-8")
                     .content(mapper.writeValueAsString(content)))
-                    .andExpect(jsonPath("$.title", is(equalTo("adminLogin"))))
+                    .andExpect(jsonPath("$.title", is(equalTo(login))))
                     .andReturn().getResponse().getContentAsString();
 
             content = mapper.readValue(singleContentAsString, Content.class);
+            content.setTitle(content.getTitle() + "Updated");
+            // update content
+            mvc.perform(put(REST_API.CONTENT + "/" + content.getId())
+                    .header("Authorization", "Bearer " + accessToken)
+                    .contentType(MediaType.APPLICATION_JSON + ";charset=UTF-8")
+                    .content(mapper.writeValueAsString(content)))
+                    .andExpect(status().isNoContent());
 
-            // remove one content object by admin
             mvc.perform(delete(REST_API.CONTENT + "/" + content.getId()).header("Authorization", "Bearer " + accessToken));
 
         } else {
