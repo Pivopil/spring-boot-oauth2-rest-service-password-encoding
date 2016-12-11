@@ -12,6 +12,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created on 19.10.16.
  */
@@ -31,7 +34,14 @@ public class ContentService {
     @PreAuthorize("isAuthenticated() && #id != null")
     @PostAuthorize("returnObject == null || hasPermission(returnObject, 'WRITE')")
     public Content getSingle(Long id) {
-        return contentRepository.findOne(id);
+
+        Content one = contentRepository.findOne(id);
+        List<String> userACL = new ArrayList<>();
+        if (one != null) {
+            //userACL = this.customSecurityService.getAclForObject(one);
+        }
+
+        return one;
     }
 
     @PreAuthorize("isAuthenticated()")
