@@ -114,15 +114,15 @@ public class UserControllerTest {
         testCreateAndRemoveActionsForUserBy("adminLogin", "admin");
     }
 
-//    @Test
-//    public void neoAdminContentCRUDTest() throws Exception {
-//        testCreateAndRemoveActionsForUserBy("neoAdminLogin", "neoAdmin");
-//    }
-//
-//    @Test
-//    public void neoUserContentCRUDTest() throws Exception {
-//        testCreateAndRemoveActionsForUserBy("neoUserLogin", "neoUser");
-//    }
+    @Test
+    public void neoAdminContentCRUDTest() throws Exception {
+        testCreateAndRemoveActionsForUserBy("neoAdminLogin", "neoAdmin");
+    }
+
+    @Test
+    public void neoUserContentCRUDTest() throws Exception {
+        testCreateAndRemoveActionsForUserBy("neoUserLogin", "neoUser");
+    }
 
     private void testCreateAndRemoveActionsForUserBy(String login, String pass) throws Exception {
         String accessToken = getAccessToken(login, pass);
@@ -144,6 +144,7 @@ public class UserControllerTest {
 
             content = mapper.readValue(singleContentAsString, Content.class);
             content.setTitle(content.getTitle() + "Updated");
+
             // update content
             mvc.perform(put(REST_API.CONTENT + "/" + content.getId())
                     .header("Authorization", "Bearer " + accessToken)
@@ -151,6 +152,7 @@ public class UserControllerTest {
                     .content(mapper.writeValueAsString(content)))
                     .andExpect(status().isNoContent());
 
+            // remove content
             mvc.perform(delete(REST_API.CONTENT + "/" + content.getId()).header("Authorization", "Bearer " + accessToken));
 
         } else {
