@@ -163,4 +163,30 @@ public class UserControllerTest {
         }
     }
 
+    @Test
+    public void neoUserCreateContentThenAdminRemoveContent() throws Exception {
+        String neoUserLogin = "neoUserLogin";
+
+        String neoUserAccessToken = getAccessToken(neoUserLogin, "neoUser");
+
+        Content content = new Content();
+        content.setTitle(neoUserLogin + "Created");
+        String singleContentAsString = mvc.perform(post(REST_API.CONTENT)
+                .header("Authorization", "Bearer " + neoUserAccessToken)
+                .contentType(MediaType.APPLICATION_JSON + ";charset=UTF-8")
+                .content(mapper.writeValueAsString(content)))
+                .andExpect(jsonPath("$.title", is(equalTo(neoUserLogin + "Created"))))
+                .andReturn().getResponse().getContentAsString();
+
+        content = mapper.readValue(singleContentAsString, Content.class);
+
+        String adminAccessToken = getAccessToken("adminLogin", "admin");
+
+        // remove content
+        mvc.perform(delete(REST_API.CONTENT + "/" + content.getId()).header("Authorization", "Bearer " + adminAccessToken));
+
+
+
+    }
+
 }
