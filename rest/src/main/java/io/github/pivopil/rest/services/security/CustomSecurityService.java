@@ -1,20 +1,26 @@
 package io.github.pivopil.rest.services.security;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import io.github.pivopil.rest.constants.ROLES;
 import io.github.pivopil.share.entities.impl.Role;
-import io.github.pivopil.share.entities.impl.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.domain.ObjectIdentityRetrievalStrategyImpl;
-import org.springframework.security.acls.model.MutableAclService;
+import org.springframework.security.acls.domain.PrincipalSid;
+import org.springframework.security.acls.model.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -23,6 +29,7 @@ import java.util.stream.Collectors;
 @Service
 public class CustomSecurityService {
 
+    private static final Logger log = LoggerFactory.getLogger(CustomACLService.class);
 
     private final MutableAclService mutableAclService;
 
@@ -56,7 +63,7 @@ public class CustomSecurityService {
         return authorities;
     }
 
-    public <T> void addAclPermissions(T objectWithId, User user) {
+    public <T> void addAclPermissions(T objectWithId) {
         Collection<Role> authorities = getAuthorities(Role.class);
         mutableAclService.createAcl(identityRetrievalStrategy.getObjectIdentity(objectWithId));
 
@@ -75,12 +82,15 @@ public class CustomSecurityService {
                 String replace = roleName.replace(ROLES.LOCAL_USER, ROLES.LOCAL_ADMIN);
                 customACLService.persistAllACLPermissionsForDomainObject(objectWithId, replace, false);
                 // if user is not ROLE_ADMIN and not LOCAL_ADMIN
-                customACLService.persistReadWritePermissionsForDomainObject(objectWithId, user.getLogin(), true);
+                String userLogin = userLoginFromAuthentication();
+                if (userLogin != null) {
+                    customACLService.persistReadWritePermissionsForDomainObject(objectWithId, userLogin, true);
+                }
             }
         }
     }
 
-    public <T> void removeAclPermissions(T objectWithId, User user) {
+    public <T> void removeAclPermissions(T objectWithId) {
         customACLService.removePermissions(objectWithId, ROLES.ROLE_ADMIN, false,
                 BasePermission.ADMINISTRATION,
                 BasePermission.CREATE,
@@ -98,7 +108,11 @@ public class CustomSecurityService {
             } else {
                 List<Role> localUserSet = authorities.stream().filter(i -> i.getName().contains(ROLES.LOCAL_USER)).collect(Collectors.toList());
                 roleName = localUserSet.get(0).getName().replace(ROLES.LOCAL_USER, ROLES.LOCAL_ADMIN);
-                customACLService.deleteReadWritePermissionsFromDatabase(objectWithId, user.getLogin(), true);
+                String userLogin = userLoginFromAuthentication();
+                if (userLogin != null) {
+                    customACLService.deleteReadWritePermissionsFromDatabase(objectWithId, userLogin, true);
+                }
+
             }
             customACLService.removePermissions(objectWithId, roleName, false,
                     BasePermission.ADMINISTRATION,
@@ -108,5 +122,50 @@ public class CustomSecurityService {
                     BasePermission.WRITE);
         }
         customACLService.removeACLByObject(objectWithId);
+    }
+
+    public String getOwnerOfObject(Object objectWithId) {
+        final MutableAcl acl = customACLService.retrieveAclForObject(objectWithId);
+        PrincipalSid principalSid = PrincipalSid.class.cast(acl.getOwner());
+        return principalSid.getPrincipal();
+    }
+
+    private String userLoginFromAuthentication() {
+        Object principal = getAuthentication().getPrincipal();
+        if (principal == null) {
+            return null;
+        }
+        UserDetails userDetails = UserDetails.class.cast(principal);
+        return userDetails.getUsername();
+    }
+
+    public List<String> getACL(Object domain) {
+        final List<Sid> sids = customACLService.retrieveSidsBy(getAuthentication());
+
+        final MutableAcl acl = customACLService.retrieveAclForObject(domain);
+
+        ArrayList<Permission> allPermissions = Lists.newArrayList(BasePermission.READ,
+                BasePermission.WRITE,
+                BasePermission.CREATE,
+                BasePermission.DELETE,
+                BasePermission.ADMINISTRATION);
+
+        List<String> permissionLabels = new ArrayList<>();
+
+        Map<Integer, String> maskToLabel = ImmutableMap.of(1, "READ", 2, "WRITE", 4, "CREATE", 8, "DELETE", 16, "ADMINISTRATION");
+
+        for (Permission permission : allPermissions) {
+            try {
+                boolean isGranted = acl.isGranted(Lists.newArrayList(permission), sids, false);
+                if (isGranted) {
+                    String label = maskToLabel.get(permission.getMask());
+                    permissionLabels.add(label);
+                }
+            } catch (NotFoundException e) {
+                log.debug("Get Acl error '{}'", e.getMessage());
+            }
+        }
+
+        return permissionLabels;
     }
 }

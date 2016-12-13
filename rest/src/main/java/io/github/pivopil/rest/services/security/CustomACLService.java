@@ -173,27 +173,7 @@ public class CustomACLService {
 
             final MutableAcl mutableAcl = MutableAcl.class.cast(acl);
             while (!loopBreak) {
-                loopBreak = true;
-                final List<AccessControlEntry> mutableAclEntries = mutableAcl.getEntries();
-                log.debug("In loop, got {} Access Control Entries", mutableAclEntries.size());
-
-                log.debug("Iterate for Access Control Entries");
-                for (int i = 0; i < mutableAclEntries.size(); i++) {
-
-                    final AccessControlEntry entry = mutableAclEntries.get(i);
-                    final Sid entrySid = entry.getSid();
-                    final Permission permission = entry.getPermission();
-
-                    if (entrySid.equals(sid) && permission.equals(selectedPermission)) {
-                        log.debug("Try to delete Access Control Entry by index '{}'", i);
-                        mutableAcl.deleteAce(i);
-                        log.debug("Successfully deleted Access Control Entry by index '{}'", i);
-
-                        log.debug("Set loopBreak to false and break inner 'for' loop");
-                        loopBreak = false;
-                        break;
-                    }
-                }
+                loopBreak = isLoopBreak(selectedPermission, sid, mutableAcl);
             }
             log.debug("Try to persist mutableAcl");
             mutableAclService.updateAcl(mutableAcl);
@@ -201,6 +181,31 @@ public class CustomACLService {
         } catch (NotFoundException e) {
             log.error("Error while removing selected permissions with message '{}'", e.getMessage());
         }
+    }
+
+    private boolean isLoopBreak(Permission selectedPermission, Sid sid, MutableAcl mutableAcl) {
+        boolean loopBreak = true;
+        final List<AccessControlEntry> mutableAclEntries = mutableAcl.getEntries();
+        log.debug("In loop, got {} Access Control Entries", mutableAclEntries.size());
+
+        log.debug("Iterate for Access Control Entries");
+        for (int i = 0; i < mutableAclEntries.size(); i++) {
+
+            final AccessControlEntry entry = mutableAclEntries.get(i);
+            final Sid entrySid = entry.getSid();
+            final Permission permission = entry.getPermission();
+
+            if (entrySid.equals(sid) && permission.equals(selectedPermission)) {
+                log.debug("Try to delete Access Control Entry by index '{}'", i);
+                mutableAcl.deleteAce(i);
+                log.debug("Successfully deleted Access Control Entry by index '{}'", i);
+
+                log.debug("Set loopBreak to false and break inner 'for' loop");
+                loopBreak = false;
+                break;
+            }
+        }
+        return loopBreak;
     }
 
     private void removePermission(Object objectWithId,
@@ -218,6 +223,23 @@ public class CustomACLService {
         ObjectIdentity objectIdentity = objectIdentityRetrievalStrategy.getObjectIdentity(objectWithId);
 
         mutableAclService.deleteAcl(objectIdentity, false);
+    }
+
+    public MutableAcl changeOwnerForObjectByName(Object objectWithId, String newUsername) {
+        MutableAcl acl = retrieveAclForObject(objectWithId);
+        PrincipalSid principalSid = new PrincipalSid(newUsername);
+        acl.setOwner(principalSid);
+        return mutableAclService.updateAcl(acl);
+    }
+
+    MutableAcl retrieveAclForObject(Object objectWithId) {
+        ObjectIdentity objectIdentity = objectIdentityRetrievalStrategy.getObjectIdentity(objectWithId);
+        Acl acl = mutableAclService.readAclById(objectIdentity);
+        return MutableAcl.class.cast(acl);
+    }
+
+    List<Sid> retrieveSidsBy(Authentication authentication) {
+        return sidRetrievalStrategy.getSids(authentication);
     }
 
     void removePermissions(final Object objectWithId,

@@ -2,7 +2,6 @@ package io.github.pivopil.rest.services;
 
 import io.github.pivopil.rest.services.security.CustomSecurityService;
 import io.github.pivopil.share.entities.impl.Content;
-import io.github.pivopil.share.entities.impl.User;
 import io.github.pivopil.share.persistence.ContentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
@@ -36,10 +35,8 @@ public class ContentService {
     public Content getSingle(Long id) {
 
         Content one = contentRepository.findOne(id);
-        List<String> userACL = new ArrayList<>();
-        if (one != null) {
-            //userACL = this.customSecurityService.getAclForObject(one);
-        }
+        String ownerOfObject = customSecurityService.getOwnerOfObject(one);
+        List<String> acls = getMyAclForObject(one);
 
         return one;
     }
@@ -52,9 +49,11 @@ public class ContentService {
 
     @Transactional
     @PreAuthorize("isAuthenticated() && #post != null")
-    public Content add(@Param("post") Content post, User user) {
+    public Content add(@Param("post") Content post) {
         post = contentRepository.save(post);
-        customSecurityService.addAclPermissions(post, user);
+        customSecurityService.addAclPermissions(post);
+        String ownerOfObject = customSecurityService.getOwnerOfObject(post);
+        List<String> acls = getMyAclForObject(post);
         return post;
     }
 
@@ -64,14 +63,22 @@ public class ContentService {
     }
 
     @PreAuthorize("isAuthenticated() && hasPermission(#post, 'WRITE') && #post != null")
-    public void delete(@Param("post") Content post, User user) {
+    private void delete(@Param("post") Content post) {
         contentRepository.delete(post);
-        customSecurityService.removeAclPermissions(post, user);
+        customSecurityService.removeAclPermissions(post);
     }
 
     @Transactional
-    public void deleteById(Long id, User user) {
+    public void deleteById(Long id) {
         Content content = getSingle(id);
-        delete(content, user);
+        delete(content);
+    }
+
+    private List<String> getMyAclForObject(Content one) {
+        List<String> userACL = new ArrayList<>();
+        if (one != null) {
+            userACL = this.customSecurityService.getACL(one);
+        }
+        return userACL;
     }
 }
