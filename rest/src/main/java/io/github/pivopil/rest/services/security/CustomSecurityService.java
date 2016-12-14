@@ -64,20 +64,19 @@ public class CustomSecurityService {
     }
 
     public <T> void addAclPermissions(T objectWithId) {
-        Collection<Role> authorities = getAuthorities(Role.class);
         mutableAclService.createAcl(identityRetrievalStrategy.getObjectIdentity(objectWithId));
 
-        Boolean isRoleAdmin = authorities.stream().filter(i -> i.getName().equals(ROLES.ROLE_ADMIN)).count() > 0;
+        Boolean isRoleAdmin = isUserHasRole(ROLES.ROLE_ADMIN);
         // all posts are visible for ROLE_ADMIN
         customACLService.persistAllACLPermissionsForDomainObject(objectWithId, ROLES.ROLE_ADMIN, false);
         if (!isRoleAdmin) {
             // if user does not have ROLE_ADMIN check if he is LOCAL_ADMIN
-            List<Role> localAdminSet = authorities.stream().filter(i -> i.getName().contains(ROLES.LOCAL_ADMIN)).collect(Collectors.toList());
+            List<Role> localAdminSet = getRolesNameContains(ROLES.LOCAL_ADMIN);
             if (localAdminSet.size() > 0) {
                 String roleName = localAdminSet.get(0).getName();
                 customACLService.persistAllACLPermissionsForDomainObject(objectWithId, roleName, false);
             } else {
-                List<Role> localUserSet = authorities.stream().filter(i -> i.getName().contains(ROLES.LOCAL_USER)).collect(Collectors.toList());
+                List<Role> localUserSet = getRolesNameContains(ROLES.LOCAL_USER);
                 String roleName = localUserSet.get(0).getName();
                 String replace = roleName.replace(ROLES.LOCAL_USER, ROLES.LOCAL_ADMIN);
                 customACLService.persistAllACLPermissionsForDomainObject(objectWithId, replace, false);
@@ -97,16 +96,17 @@ public class CustomSecurityService {
                 BasePermission.DELETE,
                 BasePermission.READ,
                 BasePermission.WRITE);
-        Collection<Role> authorities = getAuthorities(Role.class);
-        Boolean isRoleAdmin = authorities.stream().filter(i -> i.getName().equals(ROLES.ROLE_ADMIN)).count() > 0;
+
+        Boolean isRoleAdmin = isUserHasRole(ROLES.ROLE_ADMIN);
 
         if (!isRoleAdmin) {
-            List<Role> localAdminSet = authorities.stream().filter(i -> i.getName().contains(ROLES.LOCAL_ADMIN)).collect(Collectors.toList());
+
+            List<Role> localAdminSet = getRolesNameContains(ROLES.LOCAL_ADMIN);
             String roleName;
             if (localAdminSet.size() > 0) {
                 roleName = localAdminSet.get(0).getName();
             } else {
-                List<Role> localUserSet = authorities.stream().filter(i -> i.getName().contains(ROLES.LOCAL_USER)).collect(Collectors.toList());
+                List<Role> localUserSet = getRolesNameContains(ROLES.LOCAL_USER);
                 roleName = localUserSet.get(0).getName().replace(ROLES.LOCAL_USER, ROLES.LOCAL_ADMIN);
                 String userLogin = userLoginFromAuthentication();
                 if (userLogin != null) {
@@ -122,6 +122,14 @@ public class CustomSecurityService {
                     BasePermission.WRITE);
         }
         customACLService.removeACLByObject(objectWithId);
+    }
+
+    private List<Role> getRolesNameContains(final String roleName) {
+        return getAuthorities(Role.class).stream().filter(i -> i.getName().contains(roleName)).collect(Collectors.toList());
+    }
+
+    private boolean isUserHasRole(final String roleName) {
+        return getAuthorities(Role.class).stream().filter(i -> i.getName().equals(roleName)).count() > 0;
     }
 
     public String getOwnerOfObject(Object objectWithId) {
