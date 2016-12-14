@@ -37,13 +37,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 @SpringBootTest(classes = Application.class)
 @TestPropertySource(locations = "classpath:test.properties")
-public class UserControllerTest {
+public class ContentControllerTest {
 
-    public static final String DEFAULT_CLIENT_SECRET = "apiOne";
-    public static final String DEFAULT_CLIENT_NAME = DEFAULT_CLIENT_SECRET;
+    private static final String DEFAULT_CLIENT_SECRET = "apiOne";
+    private static final String DEFAULT_CLIENT_NAME = DEFAULT_CLIENT_SECRET;
 
     @Autowired
-    WebApplicationContext context;
+    private WebApplicationContext context;
 
     @Autowired
     private FilterChainProxy springSecurityFilterChain;
