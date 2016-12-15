@@ -52,7 +52,7 @@ public class ContentControllerTest {
     private ObjectMapper mapper;
 
     @InjectMocks
-    UserController controller;
+    private UserController controller;
 
     private MockMvc mvc;
 
@@ -184,7 +184,6 @@ public class ContentControllerTest {
 
         // remove content
         mvc.perform(delete(REST_API.CONTENT + "/" + content.getId()).header("Authorization", "Bearer " + adminAccessToken));
-
 
 
     }
