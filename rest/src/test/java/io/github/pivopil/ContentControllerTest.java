@@ -23,24 +23,22 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.util.Base64Utils;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @SpringBootTest(classes = Application.class)
 @TestPropertySource(locations = "classpath:test.properties")
-public class ContentControllerTest {
+public class ContentControllerTest extends AbstractRestTest {
 
-    private static final String DEFAULT_CLIENT_SECRET = "apiOne";
-    private static final String DEFAULT_CLIENT_NAME = DEFAULT_CLIENT_SECRET;
 
     @Autowired
     private WebApplicationContext context;
@@ -63,38 +61,9 @@ public class ContentControllerTest {
                 .addFilter(springSecurityFilterChain).build();
     }
 
-    private String getAccessToken(String username, String password) throws Exception {
-        String authorization = "Basic "
-                + new String(Base64Utils.encode((DEFAULT_CLIENT_NAME + ":" + DEFAULT_CLIENT_SECRET).getBytes()));
-        String contentType = MediaType.APPLICATION_JSON + ";charset=UTF-8";
-
-        String content = mvc
-                .perform(
-                        post("/oauth/token")
-                                .header("Authorization", authorization)
-                                .contentType(
-                                        MediaType.APPLICATION_FORM_URLENCODED)
-                                .param("username", username)
-                                .param("password", password)
-                                .param("grant_type", "password")
-                                .param("scope", "read write")
-                                .param("client_id", DEFAULT_CLIENT_NAME)
-                                .param("client_secret", DEFAULT_CLIENT_SECRET))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(contentType))
-                .andExpect(jsonPath("$.access_token", is(notNullValue())))
-                .andExpect(jsonPath("$.token_type", is(equalTo("bearer"))))
-                .andExpect(jsonPath("$.refresh_token", is(notNullValue())))
-                .andExpect(jsonPath("$.expires_in", is(greaterThan(4000))))
-                .andExpect(jsonPath("$.scope", is(equalTo("read write"))))
-                .andReturn().getResponse().getContentAsString();
-
-        return content.substring(17, 53);
-    }
-
     @Test
     public void meAuthorized() throws Exception {
-        String accessToken = getAccessToken("adminLogin", "admin");
+        String accessToken = getAccessToken("adminLogin", "admin", mvc);
 
         mvc.perform(get(REST_API.ME)
                 .header("Authorization", "Bearer " + accessToken))
@@ -125,7 +94,7 @@ public class ContentControllerTest {
     }
 
     private void testCreateAndRemoveActionsForUserBy(String login, String pass) throws Exception {
-        String accessToken = getAccessToken(login, pass);
+        String accessToken = getAccessToken(login, pass, mvc);
 
         String contentAsString = mvc.perform(get(REST_API.CONTENT + "?title=" + login)
                 .header("Authorization", "Bearer " + accessToken))
@@ -167,7 +136,7 @@ public class ContentControllerTest {
     public void neoUserCreateContentThenAdminRemoveContent() throws Exception {
         String neoUserLogin = "neoUserLogin";
 
-        String neoUserAccessToken = getAccessToken(neoUserLogin, "neoUser");
+        String neoUserAccessToken = getAccessToken(neoUserLogin, "neoUser", mvc);
 
         Content content = new Content();
         content.setTitle(neoUserLogin + "Created");
@@ -180,12 +149,10 @@ public class ContentControllerTest {
 
         content = mapper.readValue(singleContentAsString, Content.class);
 
-        String adminAccessToken = getAccessToken("adminLogin", "admin");
+        String adminAccessToken = getAccessToken("adminLogin", "admin", mvc);
 
         // remove content
         mvc.perform(delete(REST_API.CONTENT + "/" + content.getId()).header("Authorization", "Bearer " + adminAccessToken));
-
-
     }
 
 }
