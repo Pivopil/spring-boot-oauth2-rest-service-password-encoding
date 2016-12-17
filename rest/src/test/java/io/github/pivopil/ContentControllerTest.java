@@ -62,23 +62,6 @@ public class ContentControllerTest extends AbstractRestTest {
     }
 
     @Test
-    public void meAuthorized() throws Exception {
-        String accessToken = getAccessToken("adminLogin", "admin", mvc);
-
-        mvc.perform(get(REST_API.ME)
-                .header("Authorization", "Bearer " + accessToken))
-                .andExpect(jsonPath("$.id", is(notNullValue())));
-    }
-
-    @Test
-    public void meUnauthorized() throws Exception {
-        mvc.perform(get(REST_API.ME)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.error", is("unauthorized")));
-    }
-
-    @Test
     public void adminContentCRUDTest() throws Exception {
         testCreateAndRemoveActionsForUserBy("adminLogin", "admin");
     }

@@ -4,12 +4,13 @@ import io.github.pivopil.rest.constants.REST_API;
 import io.github.pivopil.rest.services.CustomUserDetailsService;
 import io.github.pivopil.share.entities.impl.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping(REST_API.USERS)
 public class UserController {
 
     private final CustomUserDetailsService customUserDetailsService;
@@ -24,9 +25,29 @@ public class UserController {
         return customUserDetailsService.loadUserByUsername(user.getLogin());
     }
 
-    @GetMapping(REST_API.USERS)
+    @GetMapping
     public Iterable<User> getUsers() {
         return customUserDetailsService.findAll();
+    }
+
+    @GetMapping(REST_API.ID_PATH_VARIABLE)
+    public UserDetails getSingle(@PathVariable("id") Long id) {
+        return null;
+    }
+
+    @PostMapping
+    public User createUser(@RequestBody User user) {
+        return new User();
+    }
+
+    @PutMapping(REST_API.ID_PATH_VARIABLE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateUser(@RequestBody User user, @PathVariable("id") Long id) {
+    }
+
+    @DeleteMapping(REST_API.ID_PATH_VARIABLE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeUser(@PathVariable("id") Long id) {
     }
 
 }
