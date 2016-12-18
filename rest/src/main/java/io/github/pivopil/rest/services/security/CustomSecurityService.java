@@ -78,6 +78,11 @@ public class CustomSecurityService {
             } else {
                 List<Role> localUserSet = getRolesNameContains(ROLES.LOCAL_USER);
                 String roleName = localUserSet.get(0).getName();
+
+                // set read only permission for local user role
+                customACLService.persistReadPermissionForDomainObject(objectWithId, roleName, false);
+
+                // set all permission for local admin role
                 String replace = roleName.replace(ROLES.LOCAL_USER, ROLES.LOCAL_ADMIN);
                 customACLService.persistAllACLPermissionsForDomainObject(objectWithId, replace, false);
                 // if user is not ROLE_ADMIN and not LOCAL_ADMIN
@@ -107,7 +112,12 @@ public class CustomSecurityService {
                 roleName = localAdminSet.get(0).getName();
             } else {
                 List<Role> localUserSet = getRolesNameContains(ROLES.LOCAL_USER);
-                roleName = localUserSet.get(0).getName().replace(ROLES.LOCAL_USER, ROLES.LOCAL_ADMIN);
+                Role role = localUserSet.get(0);
+                String localRoleName = role.getName();
+
+                customACLService.removePermissions(objectWithId, localRoleName, false, BasePermission.READ);
+
+                roleName = localRoleName.replace(ROLES.LOCAL_USER, ROLES.LOCAL_ADMIN);
                 String userLogin = userLoginFromAuthentication();
                 if (userLogin != null) {
                     customACLService.deleteReadWritePermissionsFromDatabase(objectWithId, userLogin, true);
