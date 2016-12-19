@@ -142,6 +142,15 @@ public class CustomSecurityService {
         return getAuthorities(Role.class).stream().filter(i -> i.getName().equals(roleName)).count() > 0;
     }
 
+
+    public  <T> List<String> getMyAclForObject(T one) {
+        List<String> userACL = new ArrayList<>();
+        if (one != null) {
+            userACL = getACL(one);
+        }
+        return userACL;
+    }
+
     public String getOwnerOfObject(Object objectWithId) {
         final MutableAcl acl = customACLService.retrieveAclForObject(objectWithId);
         PrincipalSid principalSid = PrincipalSid.class.cast(acl.getOwner());
@@ -149,7 +158,11 @@ public class CustomSecurityService {
     }
 
     private String userLoginFromAuthentication() {
-        Object principal = getAuthentication().getPrincipal();
+        Authentication authentication = getAuthentication();
+        if (authentication == null) {
+            return null;
+        }
+        Object principal = authentication.getPrincipal();
         if (principal == null) {
             return null;
         }

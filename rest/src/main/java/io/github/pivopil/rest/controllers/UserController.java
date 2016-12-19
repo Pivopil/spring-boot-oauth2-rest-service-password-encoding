@@ -2,6 +2,7 @@ package io.github.pivopil.rest.controllers;
 
 import io.github.pivopil.rest.constants.REST_API;
 import io.github.pivopil.rest.services.CustomUserDetailsService;
+import io.github.pivopil.share.viewmodels.UserViewModel;
 import io.github.pivopil.share.entities.impl.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,12 +33,12 @@ public class UserController {
 
     @GetMapping(REST_API.ID_PATH_VARIABLE)
     public UserDetails getSingle(@PathVariable("id") Long id) {
-        return null;
+        return customUserDetailsService.getSingle(id);
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
-        return new User();
+    public UserViewModel createUser(@RequestBody UserViewModel userViewModel) {
+        return customUserDetailsService.createNewUser(userViewModel);
     }
 
     @PutMapping(REST_API.ID_PATH_VARIABLE)

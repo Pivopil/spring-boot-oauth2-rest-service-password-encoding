@@ -31,12 +31,12 @@ public class ContentService {
     }
 
     @PreAuthorize("isAuthenticated() && #id != null")
-    @PostAuthorize("returnObject == null || hasPermission(returnObject, 'WRITE')")
+    @PostAuthorize("returnObject == null || hasPermission(returnObject, 'READ')")
     public Content getSingle(Long id) {
 
         Content one = contentRepository.findOne(id);
         String ownerOfObject = customSecurityService.getOwnerOfObject(one);
-        List<String> acls = getMyAclForObject(one);
+        List<String> acls = customSecurityService.getMyAclForObject(one);
 
         return one;
     }
@@ -53,7 +53,7 @@ public class ContentService {
         post = contentRepository.save(post);
         customSecurityService.addAclPermissions(post);
         String ownerOfObject = customSecurityService.getOwnerOfObject(post);
-        List<String> acls = getMyAclForObject(post);
+        List<String> acls = customSecurityService.getMyAclForObject(post);
         return post;
     }
 
@@ -74,11 +74,5 @@ public class ContentService {
         delete(content);
     }
 
-    private List<String> getMyAclForObject(Content one) {
-        List<String> userACL = new ArrayList<>();
-        if (one != null) {
-            userACL = this.customSecurityService.getACL(one);
-        }
-        return userACL;
-    }
+
 }
