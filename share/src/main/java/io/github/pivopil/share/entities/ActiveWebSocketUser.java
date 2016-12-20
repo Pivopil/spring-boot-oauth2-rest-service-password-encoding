@@ -1,4 +1,4 @@
-package io.github.pivopil.rest.models;
+package io.github.pivopil.share.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

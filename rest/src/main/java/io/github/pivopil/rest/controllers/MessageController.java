@@ -2,7 +2,7 @@ package io.github.pivopil.rest.controllers;
 
 import io.github.pivopil.rest.constants.WS_API;
 import io.github.pivopil.rest.handlers.CurrentUser;
-import io.github.pivopil.rest.models.ActiveWebSocketUserRepository;
+import io.github.pivopil.share.persistence.ActiveWebSocketUserRepository;
 import io.github.pivopil.rest.models.InstantMessage;
 import io.github.pivopil.share.entities.impl.User;
 import org.springframework.beans.factory.annotation.Autowired;

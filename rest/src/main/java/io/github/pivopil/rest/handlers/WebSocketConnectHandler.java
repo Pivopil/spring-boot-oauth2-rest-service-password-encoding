@@ -1,8 +1,8 @@
 package io.github.pivopil.rest.handlers;
 
 import io.github.pivopil.rest.constants.WS_API;
-import io.github.pivopil.rest.models.ActiveWebSocketUser;
-import io.github.pivopil.rest.models.ActiveWebSocketUserRepository;
+import io.github.pivopil.share.entities.ActiveWebSocketUser;
+import io.github.pivopil.share.persistence.ActiveWebSocketUserRepository;
 import org.springframework.context.ApplicationListener;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;

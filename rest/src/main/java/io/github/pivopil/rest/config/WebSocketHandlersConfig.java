@@ -2,7 +2,7 @@ package io.github.pivopil.rest.config;
 
 import io.github.pivopil.rest.handlers.WebSocketConnectHandler;
 import io.github.pivopil.rest.handlers.WebSocketDisconnectHandler;
-import io.github.pivopil.rest.models.ActiveWebSocketUserRepository;
+import io.github.pivopil.share.persistence.ActiveWebSocketUserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;

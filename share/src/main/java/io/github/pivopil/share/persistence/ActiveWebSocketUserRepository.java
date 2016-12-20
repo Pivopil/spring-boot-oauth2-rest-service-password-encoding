@@ -1,5 +1,6 @@
-package io.github.pivopil.rest.models;
+package io.github.pivopil.share.persistence;
 
+import io.github.pivopil.share.entities.ActiveWebSocketUser;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
