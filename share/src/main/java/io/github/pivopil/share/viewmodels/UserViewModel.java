@@ -1,17 +1,21 @@
 package io.github.pivopil.share.viewmodels;
 
+import io.github.pivopil.share.entities.impl.User;
+
 import java.util.Date;
 import java.util.List;
 
 /**
  * Created on 18.12.16.
  */
-public class UserViewModel {
+public class UserViewModel implements ViewModel<User> {
 
 
     private Long id;
     private String user;
     private String login;
+    private String name;
+    private Boolean enabled;
     private Date created;
 
     private Date updated;
@@ -83,5 +87,21 @@ public class UserViewModel {
 
     public void setAcls(List<String> acls) {
         this.acls = acls;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 }

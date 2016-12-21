@@ -3,6 +3,7 @@ package io.github.pivopil.share.builders;
 import io.github.pivopil.share.builders.impl.UserBuilder;
 import io.github.pivopil.share.entities.BasicEntity;
 import io.github.pivopil.share.entities.impl.User;
+import io.github.pivopil.share.viewmodels.ViewModel;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -38,6 +39,14 @@ public class Builders {
             throw new IllegalArgumentException("No builder for entity: " + entity.getClass().getName());
 
         return (K) builder.newInstance(entity);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends BasicEntity, K extends EntityBuilder, V extends ViewModel<T>> K of(V viewModel, Class<? extends BasicEntity> clazz) {
+        K builder = (K) map.get(clazz);
+        if (builder == null) throw new IllegalArgumentException("No builder for entity: " + clazz.getName());
+        if (viewModel == null) throw new IllegalArgumentException("Entity should not be a null.");
+        return (K) builder.newInstance(viewModel);
     }
 
 

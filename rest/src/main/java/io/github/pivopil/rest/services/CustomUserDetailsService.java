@@ -1,6 +1,8 @@
 package io.github.pivopil.rest.services;
 
 import io.github.pivopil.rest.services.security.CustomSecurityService;
+import io.github.pivopil.share.builders.Builders;
+import io.github.pivopil.share.builders.impl.UserBuilder;
 import io.github.pivopil.share.viewmodels.UserViewModel;
 import io.github.pivopil.share.entities.impl.User;
 import io.github.pivopil.share.persistence.UserRepository;
@@ -71,6 +73,10 @@ public class CustomUserDetailsService implements UserDetailsService {
     // todo UserViewModel -> User -> saved User -> updated UserViewModel
     public UserViewModel createNewUser(UserViewModel userViewModel) {
 
+        UserBuilder userBuilder = Builders.of(User.class);
+
+
+
         User newUser = add(new User());
 
 
@@ -127,7 +133,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         @Override
         public boolean isEnabled() {
-            return true;
+            return getEnabled();
         }
 
     }

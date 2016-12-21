@@ -1,15 +1,18 @@
 package io.github.pivopil.share.builders;
 
 import io.github.pivopil.share.entities.BasicEntity;
+import io.github.pivopil.share.viewmodels.ViewModel;
 
 import java.util.Date;
 
 /**
  * Created on 06.05.16.
  */
-public interface EntityBuilder<T extends BasicEntity, K extends EntityBuilder> {
+public interface EntityBuilder<T extends BasicEntity, K extends EntityBuilder, V extends ViewModel<T>> {
 
     K newInstance();
+
+    K newInstance(V viewModel);
 
     K newInstance(T entity);
 

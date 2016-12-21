@@ -86,6 +86,7 @@ public class Application extends SpringBootServletInitializer implements Command
             admin.setName("adminName");
             admin.setLogin("adminLogin");
             admin.setPassword(passwordEncoder.encode("admin"));
+            admin.setEnabled(Boolean.TRUE);
             admin.setRoles(new HashSet<>(Arrays.asList(roleOrgNeoUser, roleAdmin, roleOrgNeoAdmin, roleOrgTrinityAdmin, roleOrgTrinityUser)));
 
             // admin for first client
@@ -93,6 +94,7 @@ public class Application extends SpringBootServletInitializer implements Command
             adminNeo.setName("neoAdminName");
             adminNeo.setLogin("neoAdminLogin");
             adminNeo.setPassword(passwordEncoder.encode("neoAdmin"));
+            adminNeo.setEnabled(Boolean.TRUE);
             adminNeo.setRoles(new HashSet<>(Collections.singletonList(roleOrgNeoAdmin)));
 
             // admin for second client
@@ -100,6 +102,7 @@ public class Application extends SpringBootServletInitializer implements Command
             adminTrinity.setName("trinityAdminName");
             adminTrinity.setLogin("trinityAdminLogin");
             adminTrinity.setPassword(passwordEncoder.encode("trinityAdmin"));
+            adminTrinity.setEnabled(Boolean.TRUE);
             adminTrinity.setRoles(new HashSet<>(Collections.singletonList(roleOrgTrinityAdmin)));
 
 
@@ -108,6 +111,7 @@ public class Application extends SpringBootServletInitializer implements Command
             userNeo.setName("neoUserName");
             userNeo.setLogin("neoUserLogin");
             userNeo.setPassword(passwordEncoder.encode("neoUser"));
+            userNeo.setEnabled(Boolean.TRUE);
             userNeo.setRoles(new HashSet<>(Collections.singletonList(roleOrgNeoUser)));
 
             // user for client second
@@ -115,6 +119,7 @@ public class Application extends SpringBootServletInitializer implements Command
             userTrinity.setName("trinityUserName");
             userTrinity.setLogin("trinityUserLogin");
             userTrinity.setPassword(passwordEncoder.encode("trinityUser"));
+            userTrinity.setEnabled(Boolean.TRUE);
             userTrinity.setRoles(new HashSet<>(Collections.singletonList(roleOrgTrinityUser)));
 
 

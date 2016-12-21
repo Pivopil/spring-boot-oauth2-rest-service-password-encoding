@@ -28,6 +28,8 @@ public class User extends BasicEntity implements Serializable {
     @JoinTable(name = "user_role", joinColumns = {@JoinColumn(name = "user_id")}, inverseJoinColumns = {@JoinColumn(name = "role_id")})
     private Set<Role> roles = new HashSet<>();
 
+    private Boolean enabled;
+
     public User() {
     }
 
@@ -38,6 +40,7 @@ public class User extends BasicEntity implements Serializable {
         this.login = user.getLogin();
         this.password = user.getPassword();
         this.roles = user.getRoles();
+        this.enabled = user.getEnabled();
     }
 
     public String getName() {
@@ -72,4 +75,11 @@ public class User extends BasicEntity implements Serializable {
         this.roles = roles;
     }
 
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
+    }
 }
