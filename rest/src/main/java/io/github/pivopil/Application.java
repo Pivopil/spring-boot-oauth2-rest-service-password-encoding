@@ -15,6 +15,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.EncodedResource;
@@ -43,7 +44,11 @@ public class Application extends SpringBootServletInitializer implements Command
     private static final Logger log = LoggerFactory.getLogger(Application.class);
 
     public static void main(String... args) throws Exception {
-        SpringApplication.run(Application.class, args);
+        try {
+            SpringApplication.run(Application.class, args);
+        } catch (RuntimeException e) {
+            log.error("Error type: {}, message: {}", e.getClass(), e.getMessage());
+        }
     }
 
     @Override

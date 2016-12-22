@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -73,12 +74,14 @@ public class CustomUserDetailsService implements UserDetailsService {
     // todo UserViewModel -> User -> saved User -> updated UserViewModel
     public UserViewModel createNewUser(UserViewModel userViewModel) {
 
+        User newUser = null;
         UserBuilder userBuilder = Builders.of(User.class);
 
-
-
-        User newUser = add(new User());
-
+        newUser = userBuilder.build();
+        newUser = add(newUser);
+        if (newUser == null) {
+            throw new BadCredentialsException("New user has bad credentials");
+        }
 
         String ownerOfObject = customSecurityService.getOwnerOfObject(newUser);
         List<String> acls = customSecurityService.getMyAclForObject(newUser);

@@ -41,6 +41,8 @@ and https://spring.io/guides/gs/rest-service/[Building a RESTful Web Service] ge
 - Task #1.1.6 (60%) create user service and update user controller
 - Task #1.1.7 (TODO) create client service and client controller
 - Task #1.1.8 (TODO) create role service and role controller
+- Task #1.1.9 (40%) ExceptionAdapter and Exception controller
+
 
 === v1.2
 - initial React configuration
