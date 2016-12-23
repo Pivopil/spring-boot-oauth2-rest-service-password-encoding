@@ -1,6 +1,5 @@
 package io.github.pivopil.rest.controllers;
 
-import io.github.pivopil.Application;
 import io.github.pivopil.share.exceptions.ExceptionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

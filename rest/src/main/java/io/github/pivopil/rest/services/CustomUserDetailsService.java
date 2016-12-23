@@ -75,7 +75,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserViewModel createNewUser(UserViewModel userViewModel) {
 
         User newUser = null;
-        UserBuilder userBuilder = Builders.of(User.class);
+        UserBuilder userBuilder = Builders.of(userViewModel, User.class);
 
         newUser = userBuilder.build();
         newUser = add(newUser);
