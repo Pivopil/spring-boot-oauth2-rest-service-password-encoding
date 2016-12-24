@@ -20,6 +20,14 @@ public class User extends BasicEntity implements Serializable {
     @Column(unique = true, nullable = false)
     private String login;
 
+    @NotEmpty
+    @Column(unique = true, nullable = false)
+    private String email;
+
+    @NotEmpty
+    @Column(unique = true, nullable = false)
+    private String phone;
+
     @JsonIgnore
     @NotEmpty
     private String password;
@@ -41,6 +49,8 @@ public class User extends BasicEntity implements Serializable {
         this.password = user.getPassword();
         this.roles = user.getRoles();
         this.enabled = user.getEnabled();
+        this.email = user.getEmail();
+        this.phone = user.getPhone();
     }
 
     public String getName() {
@@ -81,5 +91,21 @@ public class User extends BasicEntity implements Serializable {
 
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

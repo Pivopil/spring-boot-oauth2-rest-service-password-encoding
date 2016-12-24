@@ -4,6 +4,7 @@ package io.github.pivopil.share.builders.impl;
 import io.github.pivopil.share.builders.EntityBuilder;
 import io.github.pivopil.share.entities.impl.Role;
 import io.github.pivopil.share.entities.impl.User;
+import io.github.pivopil.share.persistence.RoleRepository;
 import io.github.pivopil.share.viewmodels.UserViewModel;
 
 import java.util.Date;
@@ -13,7 +14,7 @@ import java.util.Set;
  * Created on 06.05.16.
  */
 
-public class UserBuilder implements EntityBuilder<User, UserBuilder, UserViewModel> {
+public class UserBuilder implements EntityBuilder<User, UserBuilder> {
     private Long id;
     private Date created;
     private Date updated;
@@ -21,6 +22,8 @@ public class UserBuilder implements EntityBuilder<User, UserBuilder, UserViewMod
     private String login;
     private String password;
     private Boolean enabled;
+    private String phone;
+    private String email;
     private Set<Role> roles;
 
     public UserBuilder() {
@@ -35,16 +38,21 @@ public class UserBuilder implements EntityBuilder<User, UserBuilder, UserViewMod
         password = entity.getPassword();
         enabled = entity.getEnabled();
         roles = entity.getRoles();
+        phone = entity.getPhone();
+        email = entity.getEmail();
     }
 
-    public UserBuilder(UserViewModel viewModel) {
+    public UserBuilder from(UserViewModel viewModel, RoleRepository roleRepository) {
         id = viewModel.getId();
         created = viewModel.getCreated();
         updated = viewModel.getUpdated();
         name = viewModel.getName();
         login = viewModel.getLogin();
         enabled = viewModel.getEnabled();
+        phone = viewModel.getPhone();
+        email = viewModel.getEmail();
 //        roles = entity.getRoles();
+        return this;
     }
 
 
@@ -58,10 +66,6 @@ public class UserBuilder implements EntityBuilder<User, UserBuilder, UserViewMod
         return new UserBuilder(entity);
     }
 
-    @Override
-    public UserBuilder newInstance(UserViewModel viewModel) {
-        return new UserBuilder(viewModel);
-    }
 
     public UserBuilder id(Long val) {
         id = val;
@@ -85,6 +89,16 @@ public class UserBuilder implements EntityBuilder<User, UserBuilder, UserViewMod
 
     public UserBuilder login(String val) {
         login = val;
+        return this;
+    }
+
+    public UserBuilder email(String val) {
+        email = val;
+        return this;
+    }
+
+    public UserBuilder phone(String val) {
+        phone = val;
         return this;
     }
 

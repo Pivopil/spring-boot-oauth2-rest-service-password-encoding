@@ -20,6 +20,10 @@ public class UserViewModel implements ViewModel<User> {
 
     private Date updated;
 
+    private String email;
+
+    private String phone;
+
     private List<String> roles;
 
     private String owner;
@@ -103,5 +107,21 @@ public class UserViewModel implements ViewModel<User> {
 
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

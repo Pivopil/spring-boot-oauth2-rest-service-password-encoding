@@ -3,6 +3,7 @@ package io.github.pivopil.rest.services;
 import io.github.pivopil.rest.services.security.CustomSecurityService;
 import io.github.pivopil.share.builders.Builders;
 import io.github.pivopil.share.builders.impl.UserBuilder;
+import io.github.pivopil.share.persistence.RoleRepository;
 import io.github.pivopil.share.viewmodels.UserViewModel;
 import io.github.pivopil.share.entities.impl.User;
 import io.github.pivopil.share.persistence.UserRepository;
@@ -27,12 +28,15 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
+    private final RoleRepository roleRepository;
+
     private final CustomSecurityService customSecurityService;
 
     @Autowired
-    public CustomUserDetailsService(UserRepository userRepository, CustomSecurityService customSecurityService) {
+    public CustomUserDetailsService(UserRepository userRepository, CustomSecurityService customSecurityService, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.customSecurityService = customSecurityService;
+        this.roleRepository = roleRepository;
     }
 
     @Override
@@ -74,10 +78,8 @@ public class CustomUserDetailsService implements UserDetailsService {
     // todo UserViewModel -> User -> saved User -> updated UserViewModel
     public UserViewModel createNewUser(UserViewModel userViewModel) {
 
-        User newUser = null;
-        UserBuilder userBuilder = Builders.of(userViewModel, User.class);
-
-        newUser = userBuilder.build();
+        UserBuilder userBuilder = Builders.of(User.class);
+        User newUser = userBuilder.from(userViewModel, roleRepository).build();
         newUser = add(newUser);
         if (newUser == null) {
             throw new BadCredentialsException("New user has bad credentials");
