@@ -38,7 +38,7 @@ and https://spring.io/guides/gs/rest-service/[Building a RESTful Web Service] ge
 - Task #1.1.3 (DONE) create sql script for initial db data creation
 - Task #1.1.4 (60%) integration tests for BE functionality
 - Task #1.1.5 (DONE) store tokens in DB
-- Task #1.1.6 (70%) create user service and update user controller
+- Task #1.1.6 (75%) create user service and update user controller
 - Task #1.1.7 (TODO) create client service and client controller
 - Task #1.1.8 (TODO) create role service and role controller
 - Task #1.1.9 (40%) ExceptionAdapter and Exception controller

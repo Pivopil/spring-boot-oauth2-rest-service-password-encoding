@@ -134,11 +134,11 @@ public class CustomSecurityService {
         customACLService.removeACLByObject(objectWithId);
     }
 
-    private List<Role> getRolesNameContains(final String roleName) {
+    public List<Role> getRolesNameContains(final String roleName) {
         return getAuthorities(Role.class).stream().filter(i -> i.getName().contains(roleName)).collect(Collectors.toList());
     }
 
-    private boolean isUserHasRole(final String roleName) {
+    public boolean isUserHasRole(final String roleName) {
         return getAuthorities(Role.class).stream().filter(i -> i.getName().equals(roleName)).count() > 0;
     }
 
@@ -157,7 +157,7 @@ public class CustomSecurityService {
         return principalSid.getPrincipal();
     }
 
-    private String userLoginFromAuthentication() {
+    public String userLoginFromAuthentication() {
         Authentication authentication = getAuthentication();
         if (authentication == null) {
             return null;

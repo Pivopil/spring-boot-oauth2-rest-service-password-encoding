@@ -1,8 +1,10 @@
 package io.github.pivopil.rest.services;
 
+import io.github.pivopil.rest.constants.ROLES;
 import io.github.pivopil.rest.services.security.CustomSecurityService;
 import io.github.pivopil.share.builders.Builders;
 import io.github.pivopil.share.builders.impl.UserBuilder;
+import io.github.pivopil.share.entities.impl.Role;
 import io.github.pivopil.share.persistence.RoleRepository;
 import io.github.pivopil.share.viewmodels.UserViewModel;
 import io.github.pivopil.share.entities.impl.User;
@@ -78,6 +80,30 @@ public class CustomUserDetailsService implements UserDetailsService {
     // todo UserViewModel -> User -> saved User -> updated UserViewModel
     public UserViewModel createNewUser(UserViewModel userViewModel) {
 
+        //case 1 admin can create local_admin and local_user
+        Boolean isRoleAdmin = customSecurityService.isUserHasRole(ROLES.ROLE_ADMIN);
+
+        List<String> roles = userViewModel.getRoles();
+
+        if (roles.indexOf(ROLES.ROLE_ADMIN) != -1) {
+            throw new BadCredentialsException("User can not create new user with ROLE_ADMIN");
+        }
+
+        if (!isRoleAdmin) {
+            // if user does not have ROLE_ADMIN check if he is LOCAL_ADMIN
+            List<Role> localAdminSet = customSecurityService.getRolesNameContains(ROLES.LOCAL_ADMIN);
+
+            if (localAdminSet.size() == 0) {
+                throw new BadCredentialsException("User with LOCAL_ADMIN role can not create new user with LOCAL_ADMIN role");
+            }
+
+            String roleName = localAdminSet.get(0).getName();
+
+            if (roles.indexOf(roleName.replace(ROLES.LOCAL_ADMIN, ROLES.LOCAL_USER)) == -1) {
+                throw new BadCredentialsException("User with LOCAL_ADMIN role can create user only for the same org");
+            }
+        }
+
         UserBuilder userBuilder = Builders.of(User.class);
         User newUser = userBuilder.from(userViewModel, roleRepository).build();
         newUser = add(newUser);
@@ -87,6 +113,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         String ownerOfObject = customSecurityService.getOwnerOfObject(newUser);
         List<String> acls = customSecurityService.getMyAclForObject(newUser);
+
+
 
         userViewModel.setOwner(ownerOfObject);
         userViewModel.setAcls(acls);
@@ -102,6 +130,11 @@ public class CustomUserDetailsService implements UserDetailsService {
         return newUser;
     }
 
+    @PreAuthorize("isAuthenticated()")
+    public UserDetails me() {
+        String userLogin = customSecurityService.userLoginFromAuthentication();
+        return loadUserByUsername(userLogin);
+    }
 
     private final static class UserRepositoryUserDetails extends User implements UserDetails {
 
