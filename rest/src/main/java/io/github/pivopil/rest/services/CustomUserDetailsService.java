@@ -1,6 +1,7 @@
 package io.github.pivopil.rest.services;
 
 import io.github.pivopil.rest.constants.ROLES;
+import io.github.pivopil.rest.services.security.CustomACLService;
 import io.github.pivopil.rest.services.security.CustomSecurityService;
 import io.github.pivopil.share.builders.Builders;
 import io.github.pivopil.share.builders.impl.UserBuilder;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -34,11 +36,14 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private final CustomSecurityService customSecurityService;
 
+    private final CustomACLService customACLService;
+
     @Autowired
-    public CustomUserDetailsService(UserRepository userRepository, CustomSecurityService customSecurityService, RoleRepository roleRepository) {
+    public CustomUserDetailsService(UserRepository userRepository, CustomSecurityService customSecurityService, RoleRepository roleRepository, CustomACLService customACLService) {
         this.userRepository = userRepository;
         this.customSecurityService = customSecurityService;
         this.roleRepository = roleRepository;
+        this.customACLService = customACLService;
     }
 
     @Override
@@ -78,14 +83,15 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     // todo UserViewModel -> User -> saved User -> updated UserViewModel
-    public UserViewModel createNewUser(UserViewModel userViewModel) {
-
+    public UserViewModel createNewUser(User newUser) {
         //case 1 admin can create local_admin and local_user
         Boolean isRoleAdmin = customSecurityService.isUserHasRole(ROLES.ROLE_ADMIN);
 
-        List<String> roles = userViewModel.getRoles();
+        Set<Role> roles = newUser.getRoles();
 
-        if (roles.indexOf(ROLES.ROLE_ADMIN) != -1) {
+        Boolean hasAdminRole = isRolesContainRoleName(roles, ROLES.ROLE_ADMIN);
+
+        if (hasAdminRole) {
             throw new BadCredentialsException("User can not create new user with ROLE_ADMIN");
         }
 
@@ -97,24 +103,27 @@ public class CustomUserDetailsService implements UserDetailsService {
                 throw new BadCredentialsException("User with LOCAL_ADMIN role can not create new user with LOCAL_ADMIN role");
             }
 
-            String roleName = localAdminSet.get(0).getName();
+            String authenticatedUserRoleName = localAdminSet.get(0).getName();
 
-            if (roles.indexOf(roleName.replace(ROLES.LOCAL_ADMIN, ROLES.LOCAL_USER)) == -1) {
+            Boolean isLocalUser = isRolesContainRoleName(roles, authenticatedUserRoleName.replace(ROLES.LOCAL_ADMIN, ROLES.LOCAL_USER));
+
+            if (isLocalUser) {
                 throw new BadCredentialsException("User with LOCAL_ADMIN role can create user only for the same org");
             }
         }
 
-        UserBuilder userBuilder = Builders.of(User.class);
-        User newUser = userBuilder.from(userViewModel, roleRepository).build();
-        newUser = add(newUser);
+        UserBuilder userBuilder = Builders.of(newUser);
+        newUser = userBuilder.withRoleRepository(roleRepository).build();
         if (newUser == null) {
             throw new BadCredentialsException("New user has bad credentials");
         }
+        newUser = add(newUser);
+
+        userBuilder = Builders.of(newUser);
+        UserViewModel userViewModel = userBuilder.buildViewModel();
 
         String ownerOfObject = customSecurityService.getOwnerOfObject(newUser);
         List<String> acls = customSecurityService.getMyAclForObject(newUser);
-
-
 
         userViewModel.setOwner(ownerOfObject);
         userViewModel.setAcls(acls);
@@ -127,6 +136,8 @@ public class CustomUserDetailsService implements UserDetailsService {
     private User add(@Param("newUser") User newUser) {
         newUser = userRepository.save(newUser);
         customSecurityService.addAclPermissions(newUser);
+        // let new user edit himself
+        customACLService.persistReadWritePermissionsForDomainObject(newUser, newUser.getLogin(), true);
         return newUser;
     }
 
@@ -134,6 +145,11 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails me() {
         String userLogin = customSecurityService.userLoginFromAuthentication();
         return loadUserByUsername(userLogin);
+    }
+
+    private Boolean isRolesContainRoleName(Set<Role> roles, final String roleName) {
+        if (roles == null) return false;
+        return roles.stream().filter(i -> i.getName().equals(roleName)).count() > 0;
     }
 
     private final static class UserRepositoryUserDetails extends User implements UserDetails {

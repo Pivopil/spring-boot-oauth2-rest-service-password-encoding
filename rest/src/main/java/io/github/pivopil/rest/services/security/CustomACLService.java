@@ -128,9 +128,9 @@ public class CustomACLService {
                 BasePermission.WRITE);
     }
 
-    void persistReadWritePermissionsForDomainObject(Object objectWithId,
-                                                    String userNameOrRoleName,
-                                                    boolean isPrincipal) {
+    public void persistReadWritePermissionsForDomainObject(Object objectWithId,
+                                                           String userNameOrRoleName,
+                                                           boolean isPrincipal) {
 
         persistGeneralPermissions(objectWithId,
                 userNameOrRoleName,

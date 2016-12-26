@@ -8,7 +8,9 @@ import io.github.pivopil.share.persistence.RoleRepository;
 import io.github.pivopil.share.viewmodels.UserViewModel;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created on 06.05.16.
@@ -25,6 +27,7 @@ public class UserBuilder implements EntityBuilder<User, UserBuilder> {
     private String phone;
     private String email;
     private Set<Role> roles;
+    private RoleRepository roleRepository;
 
     public UserBuilder() {
     }
@@ -40,19 +43,6 @@ public class UserBuilder implements EntityBuilder<User, UserBuilder> {
         roles = entity.getRoles();
         phone = entity.getPhone();
         email = entity.getEmail();
-    }
-
-    public UserBuilder from(UserViewModel viewModel, RoleRepository roleRepository) {
-        id = viewModel.getId();
-        created = viewModel.getCreated();
-        updated = viewModel.getUpdated();
-        name = viewModel.getName();
-        login = viewModel.getLogin();
-        enabled = viewModel.getEnabled();
-        phone = viewModel.getPhone();
-        email = viewModel.getEmail();
-//        roles = entity.getRoles();
-        return this;
     }
 
 
@@ -127,7 +117,38 @@ public class UserBuilder implements EntityBuilder<User, UserBuilder> {
         user.setLogin(login);
         user.setPassword(password);
         user.setEnabled(enabled);
+
+        if (roleRepository != null) {
+            for (Role role : roles) {
+                String name = role.getName();
+                Role oneByName = roleRepository.findOneByName(name);
+                if (oneByName == null) {
+                    throw new IllegalArgumentException(String.format("Role with name %s does note exist", name));
+                }
+                role.setId(oneByName.getId());
+            }
+        }
         user.setRoles(roles);
         return user;
+    }
+
+    public UserBuilder withRoleRepository(RoleRepository roleRepository) {
+        this.roleRepository = roleRepository;
+        return this;
+    }
+
+    public UserViewModel buildViewModel() {
+        UserViewModel userViewModel = new UserViewModel();
+        userViewModel.setId(id);
+        userViewModel.setCreated(created);
+        userViewModel.setUpdated(updated);
+        userViewModel.setName(name);
+        userViewModel.setLogin(login);
+        userViewModel.setEnabled(enabled);
+        userViewModel.setEmail(email);
+        userViewModel.setPhone(phone);
+        List<String> collect = roles.stream().map(Role::getName).collect(Collectors.toList());
+        userViewModel.setRoles(collect);
+        return userViewModel;
     }
 }

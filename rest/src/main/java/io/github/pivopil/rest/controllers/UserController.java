@@ -37,8 +37,8 @@ public class UserController {
     }
 
     @PostMapping
-    public UserViewModel createUser(@RequestBody UserViewModel userViewModel) {
-        return customUserDetailsService.createNewUser(userViewModel);
+    public UserViewModel createUser(@RequestBody User user) {
+        return customUserDetailsService.createNewUser(user);
     }
 
     @PutMapping(REST_API.ID_PATH_VARIABLE)
