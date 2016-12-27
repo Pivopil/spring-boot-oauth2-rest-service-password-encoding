@@ -6,10 +6,10 @@ import io.github.pivopil.rest.services.security.CustomSecurityService;
 import io.github.pivopil.share.builders.Builders;
 import io.github.pivopil.share.builders.impl.UserBuilder;
 import io.github.pivopil.share.entities.impl.Role;
-import io.github.pivopil.share.persistence.RoleRepository;
-import io.github.pivopil.share.viewmodels.UserViewModel;
 import io.github.pivopil.share.entities.impl.User;
+import io.github.pivopil.share.persistence.RoleRepository;
 import io.github.pivopil.share.persistence.UserRepository;
+import io.github.pivopil.share.viewmodels.UserViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -59,9 +59,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
         return new UserRepositoryUserDetails(user);
     }
-// could be used as
-//    @PreAuthorize("@customUserDetailsService.canAccessUser(principal, #id)")
-   // public boolean canAccessUser(UserRepositoryUserDetails currentUser, Long id) { return false;  }
 
     @PreAuthorize("isAuthenticated()")
     @PostFilter("hasPermission(filterObject, 'READ')")

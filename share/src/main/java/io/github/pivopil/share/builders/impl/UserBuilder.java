@@ -4,7 +4,6 @@ package io.github.pivopil.share.builders.impl;
 import io.github.pivopil.share.builders.EntityBuilder;
 import io.github.pivopil.share.entities.impl.Role;
 import io.github.pivopil.share.entities.impl.User;
-import io.github.pivopil.share.persistence.RoleRepository;
 import io.github.pivopil.share.viewmodels.UserViewModel;
 
 import java.util.Date;
