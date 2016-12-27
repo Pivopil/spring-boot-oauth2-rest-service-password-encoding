@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
  */
 
 public class UserBuilder implements EntityBuilder<User, UserBuilder> {
+    public static final String REGEX = "[a-fA-F0-9]{40}";
     private Long id;
     private Date created;
     private Date updated;
@@ -27,7 +28,6 @@ public class UserBuilder implements EntityBuilder<User, UserBuilder> {
     private String phone;
     private String email;
     private Set<Role> roles;
-    private RoleRepository roleRepository;
 
     public UserBuilder() {
     }
@@ -115,26 +115,19 @@ public class UserBuilder implements EntityBuilder<User, UserBuilder> {
         user.setUpdated(updated);
         user.setName(name);
         user.setLogin(login);
+
+        if (!isValidSHA1(password)) {
+            // todo: validate row password
+        }
+
         user.setPassword(password);
         user.setEnabled(enabled);
-
-        if (roleRepository != null) {
-            for (Role role : roles) {
-                String name = role.getName();
-                Role oneByName = roleRepository.findOneByName(name);
-                if (oneByName == null) {
-                    throw new IllegalArgumentException(String.format("Role with name %s does note exist", name));
-                }
-                role.setId(oneByName.getId());
-            }
-        }
         user.setRoles(roles);
         return user;
     }
 
-    public UserBuilder withRoleRepository(RoleRepository roleRepository) {
-        this.roleRepository = roleRepository;
-        return this;
+    private boolean isValidSHA1(String s) {
+        return s.matches(REGEX);
     }
 
     public UserViewModel buildViewModel() {
@@ -147,8 +140,8 @@ public class UserBuilder implements EntityBuilder<User, UserBuilder> {
         userViewModel.setEnabled(enabled);
         userViewModel.setEmail(email);
         userViewModel.setPhone(phone);
-        List<String> collect = roles.stream().map(Role::getName).collect(Collectors.toList());
-        userViewModel.setRoles(collect);
+        List<String> roleNames = roles.stream().map(Role::getName).collect(Collectors.toList());
+        userViewModel.setRoles(roleNames);
         return userViewModel;
     }
 }

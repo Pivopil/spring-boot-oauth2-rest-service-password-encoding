@@ -20,10 +20,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -38,12 +40,15 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private final CustomACLService customACLService;
 
+    private final PasswordEncoder passwordEncoder;
+
     @Autowired
-    public CustomUserDetailsService(UserRepository userRepository, CustomSecurityService customSecurityService, RoleRepository roleRepository, CustomACLService customACLService) {
+    public CustomUserDetailsService(UserRepository userRepository, CustomSecurityService customSecurityService, RoleRepository roleRepository, CustomACLService customACLService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.customSecurityService = customSecurityService;
         this.roleRepository = roleRepository;
         this.customACLService = customACLService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -84,23 +89,38 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     // todo UserViewModel -> User -> saved User -> updated UserViewModel
     public UserViewModel createNewUser(User newUser) {
-        //case 1 admin can create local_admin and local_user
-        Boolean isRoleAdmin = customSecurityService.isUserHasRole(ROLES.ROLE_ADMIN);
+        Set<Role> roles = new HashSet<>();
 
-        Set<Role> roles = newUser.getRoles();
+        for (Role role : newUser.getRoles()) {
+            String name = role.getName();
+            Role oneByName = roleRepository.findOneByName(name);
+            if (oneByName == null) {
+                throw new IllegalArgumentException(String.format("Role with name %s does note exist", name));
+            }
+            roles.add(oneByName);
+        }
+
+        newUser.setRoles(roles);
+
+        if (roles.size() == 0) {
+            throw new BadCredentialsException("New User object should have at least one valid role!");
+        }
+
+        //case 1 admin can create local_admin and local_user
+        Boolean isCreatorAdmin = customSecurityService.isUserHasRole(ROLES.ROLE_ADMIN);
 
         Boolean hasAdminRole = isRolesContainRoleName(roles, ROLES.ROLE_ADMIN);
 
         if (hasAdminRole) {
-            throw new BadCredentialsException("User can not create new user with ROLE_ADMIN");
+            throw new BadCredentialsException("User can not create new user with ROLE_ADMIN!");
         }
 
-        if (!isRoleAdmin) {
+        if (!isCreatorAdmin) {
             // if user does not have ROLE_ADMIN check if he is LOCAL_ADMIN
             List<Role> localAdminSet = customSecurityService.getRolesNameContains(ROLES.LOCAL_ADMIN);
 
             if (localAdminSet.size() == 0) {
-                throw new BadCredentialsException("User with LOCAL_ADMIN role can not create new user with LOCAL_ADMIN role");
+                throw new BadCredentialsException("User with LOCAL_ADMIN role can not create new user with LOCAL_ADMIN role!");
             }
 
             String authenticatedUserRoleName = localAdminSet.get(0).getName();
@@ -113,10 +133,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
 
         UserBuilder userBuilder = Builders.of(newUser);
-        newUser = userBuilder.withRoleRepository(roleRepository).build();
-        if (newUser == null) {
-            throw new BadCredentialsException("New user has bad credentials");
-        }
+        String encodedPassword = passwordEncoder.encode(newUser.getPassword());
+        newUser = userBuilder.password(encodedPassword).enabled(Boolean.TRUE).build();
         newUser = add(newUser);
 
         userBuilder = Builders.of(newUser);
