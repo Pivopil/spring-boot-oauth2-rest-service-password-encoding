@@ -32,7 +32,7 @@ public class UserController {
     }
 
     @GetMapping(REST_API.ID_PATH_VARIABLE)
-    public UserDetails getSingle(@PathVariable("id") Long id) {
+    public UserViewModel getSingle(@PathVariable("id") Long id) {
         return customUserDetailsService.getSingle(id);
     }
 
@@ -44,11 +44,14 @@ public class UserController {
     @PutMapping(REST_API.ID_PATH_VARIABLE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateUser(@RequestBody User user, @PathVariable("id") Long id) {
+        user.setId(id);
+        customUserDetailsService.edit(user);
     }
 
     @DeleteMapping(REST_API.ID_PATH_VARIABLE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeUser(@PathVariable("id") Long id) {
+        customUserDetailsService.deleteById(id);
     }
 
 }

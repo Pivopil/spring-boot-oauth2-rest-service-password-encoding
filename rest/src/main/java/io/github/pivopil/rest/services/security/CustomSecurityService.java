@@ -17,10 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -92,6 +89,11 @@ public class CustomSecurityService {
                 }
             }
         }
+    }
+
+    public Boolean isRolesContainRoleName(Set<Role> roles, final String roleName) {
+        if (roles == null) return false;
+        return roles.stream().filter(i -> i.getName().equals(roleName)).count() > 0;
     }
 
     public <T> void removeAclPermissions(T objectWithId) {

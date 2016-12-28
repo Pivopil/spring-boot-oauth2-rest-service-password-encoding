@@ -67,24 +67,27 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
 
-    public UserDetails getSingle(Long id) {
-        User user = findUserById(id);
+    public UserViewModel getSingle(Long id) {
+        UserViewModel user = findUserById(id);
         if (user == null) {
             throw new UsernameNotFoundException(String.format("User with id = %s does not exist!", id));
         }
-        return new UserRepositoryUserDetails(user);
+        return user;
     }
 
     @PreAuthorize("isAuthenticated() && #id != null")
     @PostAuthorize("returnObject == null || hasPermission(returnObject, 'READ')")
-    private User findUserById(Long id) {
+    private UserViewModel findUserById(Long id) {
         User one = userRepository.findOne(id);
+        UserBuilder userBuilder = Builders.of(one);
+        UserViewModel userViewModel = userBuilder.buildViewModel();
         String ownerOfObject = customSecurityService.getOwnerOfObject(one);
         List<String> acls = customSecurityService.getMyAclForObject(one);
-        return one;
+        userViewModel.setOwner(ownerOfObject);
+        userViewModel.setAcls(acls);
+        return userViewModel;
     }
 
-    // todo UserViewModel -> User -> saved User -> updated UserViewModel
     public UserViewModel createNewUser(User newUser) {
         Set<Role> roles = new HashSet<>();
 
@@ -106,7 +109,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         //case 1 admin can create local_admin and local_user
         Boolean isCreatorAdmin = customSecurityService.isUserHasRole(ROLES.ROLE_ADMIN);
 
-        Boolean hasAdminRole = isRolesContainRoleName(roles, ROLES.ROLE_ADMIN);
+        Boolean hasAdminRole = customSecurityService.isRolesContainRoleName(roles, ROLES.ROLE_ADMIN);
 
         if (hasAdminRole) {
             throw new BadCredentialsException("User can not create new user with ROLE_ADMIN!");
@@ -122,7 +125,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
             String authenticatedUserRoleName = localAdminSet.get(0).getName();
 
-            Boolean isLocalUser = isRolesContainRoleName(roles, authenticatedUserRoleName.replace(ROLES.LOCAL_ADMIN, ROLES.LOCAL_USER));
+            Boolean isLocalUser = customSecurityService.isRolesContainRoleName(roles, authenticatedUserRoleName.replace(ROLES.LOCAL_ADMIN, ROLES.LOCAL_USER));
 
             if (isLocalUser) {
                 throw new BadCredentialsException("User with LOCAL_ADMIN role can create user only for the same org");
@@ -162,9 +165,22 @@ public class CustomUserDetailsService implements UserDetailsService {
         return loadUserByUsername(userLogin);
     }
 
-    private Boolean isRolesContainRoleName(Set<Role> roles, final String roleName) {
-        if (roles == null) return false;
-        return roles.stream().filter(i -> i.getName().equals(roleName)).count() > 0;
+    @PreAuthorize("isAuthenticated() && hasPermission(#user, 'WRITE') && #user != null")
+    public User edit(@Param("user") User user) {
+        // todo: implement validation
+        return userRepository.save(user);
+    }
+
+    @PreAuthorize("isAuthenticated() && hasPermission(#user, 'WRITE') && #user != null")
+    private void delete(@Param("user") User user) {
+        userRepository.delete(user);
+        customSecurityService.removeAclPermissions(user);
+    }
+
+    @Transactional
+    public void deleteById(Long id) {
+        User one = userRepository.findOne(id);
+        delete(one);
     }
 
     private final static class UserRepositoryUserDetails extends User implements UserDetails {
