@@ -5,6 +5,7 @@ import io.github.pivopil.share.entities.BasicEntity;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.security.core.GrantedAuthority;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
@@ -17,6 +18,7 @@ public class Role extends BasicEntity implements GrantedAuthority {
     private static final long serialVersionUID = 1L;
 
     @NotEmpty
+    @Column(unique = true, nullable = false)
     private String name;
 
     @JsonIgnore

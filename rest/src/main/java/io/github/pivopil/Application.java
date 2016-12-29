@@ -90,6 +90,8 @@ public class Application extends SpringBootServletInitializer implements Command
             User admin = new User();
             admin.setName("adminName");
             admin.setLogin("adminLogin");
+            admin.setEmail("admin@email.com");
+            admin.setPhone("123456789");
             admin.setPassword(passwordEncoder.encode("admin"));
             admin.setEnabled(Boolean.TRUE);
             admin.setRoles(new HashSet<>(Arrays.asList(roleOrgNeoUser, roleAdmin, roleOrgNeoAdmin, roleOrgTrinityAdmin, roleOrgTrinityUser)));
@@ -98,6 +100,8 @@ public class Application extends SpringBootServletInitializer implements Command
             User adminNeo = new User();
             adminNeo.setName("neoAdminName");
             adminNeo.setLogin("neoAdminLogin");
+            adminNeo.setEmail("neoadmin@email.com");
+            adminNeo.setPhone("912345678");
             adminNeo.setPassword(passwordEncoder.encode("neoAdmin"));
             adminNeo.setEnabled(Boolean.TRUE);
             adminNeo.setRoles(new HashSet<>(Collections.singletonList(roleOrgNeoAdmin)));
@@ -106,6 +110,8 @@ public class Application extends SpringBootServletInitializer implements Command
             User adminTrinity = new User();
             adminTrinity.setName("trinityAdminName");
             adminTrinity.setLogin("trinityAdminLogin");
+            adminTrinity.setEmail("trinityadmin@email.com");
+            adminTrinity.setPhone("891234567");
             adminTrinity.setPassword(passwordEncoder.encode("trinityAdmin"));
             adminTrinity.setEnabled(Boolean.TRUE);
             adminTrinity.setRoles(new HashSet<>(Collections.singletonList(roleOrgTrinityAdmin)));
@@ -115,6 +121,8 @@ public class Application extends SpringBootServletInitializer implements Command
             User userNeo = new User();
             userNeo.setName("neoUserName");
             userNeo.setLogin("neoUserLogin");
+            userNeo.setEmail("neouser@email.com");
+            userNeo.setPhone("789123456");
             userNeo.setPassword(passwordEncoder.encode("neoUser"));
             userNeo.setEnabled(Boolean.TRUE);
             userNeo.setRoles(new HashSet<>(Collections.singletonList(roleOrgNeoUser)));
@@ -123,6 +131,8 @@ public class Application extends SpringBootServletInitializer implements Command
             User userTrinity = new User();
             userTrinity.setName("trinityUserName");
             userTrinity.setLogin("trinityUserLogin");
+            userTrinity.setEmail("trinityuser@email.com");
+            userTrinity.setPhone("678912345");
             userTrinity.setPassword(passwordEncoder.encode("trinityUser"));
             userTrinity.setEnabled(Boolean.TRUE);
             userTrinity.setRoles(new HashSet<>(Collections.singletonList(roleOrgTrinityUser)));
