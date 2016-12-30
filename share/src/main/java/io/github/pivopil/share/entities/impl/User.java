@@ -28,7 +28,6 @@ public class User extends BasicEntity implements Serializable {
     @Column(unique = true, nullable = false)
     private String phone;
 
-    @JsonIgnore
     @NotEmpty
     private String password;
 

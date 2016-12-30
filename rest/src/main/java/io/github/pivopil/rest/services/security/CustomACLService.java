@@ -262,9 +262,9 @@ public class CustomACLService {
         }
     }
 
-    void deleteReadWritePermissionsFromDatabase(Object objectWithId,
-                                                String userNameOrRoleName,
-                                                boolean isPrincipal) {
+    public void deleteReadWritePermissionsFromDatabase(Object objectWithId,
+                                                       String userNameOrRoleName,
+                                                       boolean isPrincipal) {
         removePermissions(objectWithId,
                 userNameOrRoleName,
                 isPrincipal,
