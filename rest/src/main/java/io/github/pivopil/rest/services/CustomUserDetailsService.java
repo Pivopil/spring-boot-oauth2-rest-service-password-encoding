@@ -88,6 +88,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         return userViewModel;
     }
 
+    // todo: test transactional with different properties
+    @Transactional
     public UserViewModel createNewUser(User newUser) {
         Set<Role> roles = new HashSet<>();
 
@@ -149,7 +151,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         return userViewModel;
     }
 
-    @Transactional
     @PreAuthorize("isAuthenticated() && #newUser != null")
     private User add(@Param("newUser") User newUser) {
         newUser = userRepository.save(newUser);

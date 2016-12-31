@@ -60,8 +60,10 @@ public class CustomSecurityService {
         return authorities;
     }
 
+    // todo check transaction props there
     public <T> void addAclPermissions(T objectWithId) {
-        mutableAclService.createAcl(identityRetrievalStrategy.getObjectIdentity(objectWithId));
+        ObjectIdentity objectIdentity = identityRetrievalStrategy.getObjectIdentity(objectWithId);
+        mutableAclService.createAcl(objectIdentity);
 
         Boolean isRoleAdmin = isUserHasRole(ROLES.ROLE_ADMIN);
         // all posts are visible for ROLE_ADMIN
@@ -145,7 +147,7 @@ public class CustomSecurityService {
     }
 
 
-    public  <T> List<String> getMyAclForObject(T one) {
+    public <T> List<String> getMyAclForObject(T one) {
         List<String> userACL = new ArrayList<>();
         if (one != null) {
             userACL = getACL(one);
