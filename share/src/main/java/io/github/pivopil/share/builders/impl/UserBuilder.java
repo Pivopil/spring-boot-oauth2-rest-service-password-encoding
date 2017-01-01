@@ -119,6 +119,9 @@ public class UserBuilder implements EntityBuilder<User, UserBuilder> {
             // todo: validate row password
         }
 
+        user.setEmail(email);
+        user.setPhone(phone);
+
         user.setPassword(password);
         user.setEnabled(enabled);
         user.setRoles(roles);

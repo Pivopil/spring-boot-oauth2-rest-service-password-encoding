@@ -16,6 +16,8 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -60,7 +62,7 @@ public class CustomSecurityService {
         return authorities;
     }
 
-    // todo check transaction props there
+    @Transactional(propagation= Propagation.REQUIRED)
     public <T> void addAclPermissions(T objectWithId) {
         ObjectIdentity objectIdentity = identityRetrievalStrategy.getObjectIdentity(objectWithId);
         mutableAclService.createAcl(objectIdentity);
