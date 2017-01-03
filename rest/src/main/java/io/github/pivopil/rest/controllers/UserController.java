@@ -2,11 +2,10 @@ package io.github.pivopil.rest.controllers;
 
 import io.github.pivopil.rest.constants.REST_API;
 import io.github.pivopil.rest.services.CustomUserDetailsService;
-import io.github.pivopil.share.viewmodels.UserViewModel;
 import io.github.pivopil.share.entities.impl.User;
+import io.github.pivopil.share.viewmodels.UserViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,6 +51,12 @@ public class UserController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeUser(@PathVariable("id") Long id) {
         customUserDetailsService.deleteById(id);
+    }
+
+    @PostMapping(REST_API.ID_PATH_VARIABLE + "/disable")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void disableUser(@PathVariable("id") Long id) {
+        customUserDetailsService.disableById(id);
     }
 
 }

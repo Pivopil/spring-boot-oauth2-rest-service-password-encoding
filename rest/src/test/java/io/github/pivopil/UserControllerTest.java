@@ -27,11 +27,11 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -100,9 +100,9 @@ public class UserControllerTest extends AbstractRestTest {
         List<User> userList = mapper.readValue(contentAsString, new TypeReference<List<User>>() {
         });
 
-        boolean isNeoAdminLogin2Exist = userList.stream().filter(u -> u.getLogin().equals("neoAdminLogin2")).count() > 0;
+        List<User> neoAdminLogin2 = userList.stream().filter(u -> u.getLogin().equals("neoAdminLogin2")).collect(Collectors.toList());
 
-        if (!isNeoAdminLogin2Exist) {
+        if (neoAdminLogin2.size() == 0) {
             Role roleOrgNeoAdmin = roleRepository.findOneByName("ROLE_NEO_LOCAL_ADMIN");
 
             User adminNeo2 = new User();
@@ -122,7 +122,9 @@ public class UserControllerTest extends AbstractRestTest {
                     .content(writeValueAsString))
                     .andReturn().getResponse().getContentAsString();
 
-            System.out.printf(singleContentAsString);
+        } else {
+            User user = neoAdminLogin2.get(0);
+            mvc.perform(delete(REST_API.USERS + "/" + user.getId()).header("Authorization", "Bearer " + accessToken)).andExpect(status().isNoContent());
         }
 
 

@@ -171,9 +171,15 @@ public class CustomUserDetailsService implements UserDetailsService {
         return userRepository.save(user);
     }
 
-    // todo: find way to remove user object in case if user is owner if another objects
+    // todo: find way to remove user object in case if user is owner of another objects
     @PreAuthorize("isAuthenticated() && hasPermission(#user, 'WRITE') && #user != null")
     private void delete(@Param("user") User user) {
+        Boolean hasAdminRole = customSecurityService.isRolesContainRoleName(user.getRoles(), ROLES.ROLE_ADMIN);
+
+        if (hasAdminRole) {
+            throw new BadCredentialsException("Admin can not disable himself!");
+        }
+
         userRepository.delete(user);
         customSecurityService.removeAclPermissions(user);
         customACLService.deleteReadWritePermissionsFromDatabase(user, user.getLogin(), true);
@@ -182,7 +188,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Transactional
     public void deleteById(Long id) {
         User one = userRepository.findOne(id);
-        disableUser(one);
+        delete(one);
     }
 
     @PreAuthorize("isAuthenticated() && hasPermission(#user, 'WRITE') && #user != null")
@@ -195,6 +201,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         user.setEnabled(Boolean.FALSE);
         userRepository.save(user);
+    }
+
+    @Transactional
+    public void disableById(Long id) {
+        User one = userRepository.findOne(id);
+        disableUser(one);
     }
 
     private final static class UserRepositoryUserDetails extends User implements UserDetails {
