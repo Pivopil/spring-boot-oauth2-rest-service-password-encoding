@@ -120,6 +120,10 @@ public class OAuth2Configuration extends WebSecurityConfigurerAdapter {
         public void configure(HttpSecurity http) throws Exception {
             http
                     .authorizeRequests()
+                    .antMatchers(REST_API.CLIENTS + "/**").hasRole(ROLES.ADMIN)
+                    .antMatchers(REST_API.CLIENTS).hasRole(ROLES.ADMIN)
+                    .antMatchers(REST_API.COMPANIES + "/**").hasRole(ROLES.ADMIN)
+                    .antMatchers(REST_API.COMPANIES).hasRole(ROLES.ADMIN)
                     .antMatchers(REST_API.USERS + "/**").authenticated()
                     .antMatchers(REST_API.USERS).authenticated()
                     .antMatchers(REST_API.CONTENT + "/**").authenticated()

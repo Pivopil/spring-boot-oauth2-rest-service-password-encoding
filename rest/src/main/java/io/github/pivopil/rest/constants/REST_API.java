@@ -10,6 +10,8 @@ public class REST_API {
 
     public static final String ME = "/me";
     public static final String USERS = "/api/users";
+    public static final String CLIENTS = "/api/clients";
+    public static final String COMPANIES = "/api/companies";
     public static final String CONTENT = "/api/content";
     public static final String ID_PATH_VARIABLE = "/{id}";
 }
