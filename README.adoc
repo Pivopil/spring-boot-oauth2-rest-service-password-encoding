@@ -42,7 +42,7 @@ and https://spring.io/guides/gs/rest-service/[Building a RESTful Web Service] ge
 - Task #1.1.7 (TODO) create client service and client controller
 - Task #1.1.8 (TODO) create role service and role controller
 - Task #1.1.9 (80%) ExceptionAdapter and Exception controller
-- Task #1.1.10 (TODO) add company functionality to role service and role controller
+- Task #1.1.10 (60%) add company functionality to role service and role controller
 
 
 === v1.2
