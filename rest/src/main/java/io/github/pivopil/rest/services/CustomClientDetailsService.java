@@ -5,10 +5,12 @@ import io.github.pivopil.share.persistence.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.ClientRegistrationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -20,9 +22,12 @@ public class CustomClientDetailsService implements ClientDetailsService {
 
     private final ClientRepository clientRepository;
 
+    private final PasswordEncoder passwordEncoder;
+
     @Autowired
-    public CustomClientDetailsService(ClientRepository clientRepository) {
+    public CustomClientDetailsService(ClientRepository clientRepository, PasswordEncoder passwordEncoder) {
         this.clientRepository = clientRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -33,6 +38,47 @@ public class CustomClientDetailsService implements ClientDetailsService {
             throw new ClientRegistrationException("Could not find client with clientId " + clientId);
         }
         return new CustomClientDetailsService.ClientRepositoryDetails(client);
+    }
+
+    public Iterable<Client> list() {
+        return clientRepository.findAll();
+    }
+
+    public Client getSingle(Long id) {
+        return clientRepository.findOne(id);
+    }
+
+    @Transactional
+    public Client save(Client client) {
+
+        String clientSecretEncoded = passwordEncoder.encode(client.getClientSecret());
+
+        client.setClientSecret(clientSecretEncoded);
+
+        return clientRepository.save(client);
+    }
+
+
+    @Transactional
+    public void update(Client client) {
+        Client clientFromDB = clientRepository.findOne(client.getId());
+
+        // todo: implement validation for user object
+
+        String secret = client.getClientSecret();
+        if (secret != null && !secret.equals("")) {
+            String encodedSecret = passwordEncoder.encode(secret);
+            client.setClientSecret(encodedSecret);
+        } else {
+            client.setClientSecret(clientFromDB.getClientSecret());
+        }
+
+        clientRepository.save(client);
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        clientRepository.delete(id);
     }
 
     private final static class ClientRepositoryDetails extends Client implements ClientDetails {

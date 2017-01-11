@@ -15,7 +15,7 @@ and https://spring.io/guides/gs/rest-service/[Building a RESTful Web Service] ge
 
 ===== BE
 
-* http://projects.spring.io/spring-boot/[Spring Boot 1.4.2]
+* http://projects.spring.io/spring-boot/[Spring Boot 1.4.3]
 * http://docs.spring.io/spring/docs/current/spring-framework-reference/html/mvc.html[Spring MVC]
 * http://projects.spring.io/spring-security/[Spring Security]
 * http://projects.spring.io/spring-security-oauth/[Spring Security OAuth 2]
