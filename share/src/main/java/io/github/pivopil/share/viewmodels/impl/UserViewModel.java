@@ -1,6 +1,7 @@
-package io.github.pivopil.share.viewmodels;
+package io.github.pivopil.share.viewmodels.impl;
 
 import io.github.pivopil.share.entities.impl.User;
+import io.github.pivopil.share.viewmodels.ViewModel;
 
 import java.util.Date;
 import java.util.List;
