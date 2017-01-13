@@ -4,7 +4,7 @@ package io.github.pivopil.share.builders.impl;
 import io.github.pivopil.share.builders.EntityBuilder;
 import io.github.pivopil.share.entities.impl.Role;
 import io.github.pivopil.share.entities.impl.User;
-import io.github.pivopil.share.viewmodels.UserViewModel;
+import io.github.pivopil.share.viewmodels.impl.UserViewModel;
 
 import java.util.Date;
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  * Created on 06.05.16.
  */
 
-public class UserBuilder implements EntityBuilder<User, UserBuilder> {
+public class UserBuilder implements EntityBuilder<User, UserBuilder, UserViewModel> {
     public static final String REGEX = "[a-fA-F0-9]{40}";
     private Long id;
     private Date created;
@@ -132,6 +132,7 @@ public class UserBuilder implements EntityBuilder<User, UserBuilder> {
         return s.matches(REGEX);
     }
 
+    @Override
     public UserViewModel buildViewModel() {
         UserViewModel userViewModel = new UserViewModel();
         userViewModel.setId(id);

@@ -8,9 +8,11 @@ import java.util.Date;
 /**
  * Created on 06.05.16.
  */
-public interface EntityBuilder<T extends BasicEntity, K extends EntityBuilder> {
+public interface EntityBuilder<T extends BasicEntity, K extends EntityBuilder, V extends ViewModel<T>> {
 
     K newInstance();
+
+    V buildViewModel();
 
     K newInstance(T entity);
 

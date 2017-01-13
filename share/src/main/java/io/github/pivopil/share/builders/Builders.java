@@ -1,9 +1,10 @@
 package io.github.pivopil.share.builders;
 
+import io.github.pivopil.share.builders.impl.ContentBuilder;
 import io.github.pivopil.share.builders.impl.UserBuilder;
 import io.github.pivopil.share.entities.BasicEntity;
+import io.github.pivopil.share.entities.impl.Content;
 import io.github.pivopil.share.entities.impl.User;
-import io.github.pivopil.share.viewmodels.ViewModel;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,6 +21,7 @@ public class Builders {
 
     static {
         map.put(User.class, new UserBuilder());
+        map.put(Content.class, new ContentBuilder());
     }
 
     @SuppressWarnings("unchecked")
