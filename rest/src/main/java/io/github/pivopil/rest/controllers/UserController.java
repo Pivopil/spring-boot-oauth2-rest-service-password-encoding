@@ -3,7 +3,7 @@ package io.github.pivopil.rest.controllers;
 import io.github.pivopil.rest.constants.REST_API;
 import io.github.pivopil.rest.services.CustomUserDetailsService;
 import io.github.pivopil.share.entities.impl.User;
-import io.github.pivopil.share.viewmodels.UserViewModel;
+import io.github.pivopil.share.viewmodels.impl.UserViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;

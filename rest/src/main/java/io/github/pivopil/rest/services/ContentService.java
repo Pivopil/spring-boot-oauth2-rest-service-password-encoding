@@ -34,6 +34,7 @@ public class ContentService {
     @PostAuthorize("returnObject == null || hasPermission(returnObject, 'READ')")
     public Content getSingle(Long id) {
 
+        // todo - create content view model
         Content one = contentRepository.findOne(id);
         String ownerOfObject = customSecurityService.getOwnerOfObject(one);
         List<String> acls = customSecurityService.getMyAclForObject(one);

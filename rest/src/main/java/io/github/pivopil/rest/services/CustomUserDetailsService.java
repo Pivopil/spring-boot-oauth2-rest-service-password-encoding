@@ -9,7 +9,7 @@ import io.github.pivopil.share.entities.impl.Role;
 import io.github.pivopil.share.entities.impl.User;
 import io.github.pivopil.share.persistence.RoleRepository;
 import io.github.pivopil.share.persistence.UserRepository;
-import io.github.pivopil.share.viewmodels.UserViewModel;
+import io.github.pivopil.share.viewmodels.impl.UserViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -167,7 +167,17 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @PreAuthorize("isAuthenticated() && hasPermission(#user, 'WRITE') && #user != null")
     public User edit(@Param("user") User user) {
+        User userFromDB = userRepository.findOne(user.getId());
+
         // todo: implement validation for user object
+        String password = user.getPassword();
+        if (password != null && !password.equals("")) {
+            String encodedPassword = passwordEncoder.encode(password);
+            user.setPassword(encodedPassword);
+        } else {
+            user.setPassword(userFromDB.getPassword());
+        }
+
         return userRepository.save(user);
     }
 
