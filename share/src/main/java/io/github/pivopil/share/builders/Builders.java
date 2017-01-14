@@ -1,8 +1,10 @@
 package io.github.pivopil.share.builders;
 
+import io.github.pivopil.share.builders.impl.CompanyBuilder;
 import io.github.pivopil.share.builders.impl.ContentBuilder;
 import io.github.pivopil.share.builders.impl.UserBuilder;
 import io.github.pivopil.share.entities.BasicEntity;
+import io.github.pivopil.share.entities.impl.Company;
 import io.github.pivopil.share.entities.impl.Content;
 import io.github.pivopil.share.entities.impl.User;
 
@@ -22,6 +24,7 @@ public class Builders {
     static {
         map.put(User.class, new UserBuilder());
         map.put(Content.class, new ContentBuilder());
+        map.put(Company.class, new CompanyBuilder());
     }
 
     @SuppressWarnings("unchecked")
