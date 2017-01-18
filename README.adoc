@@ -43,7 +43,7 @@ and https://spring.io/guides/gs/rest-service/[Building a RESTful Web Service] ge
 - Task #1.1.8 (70%) create role service and role controller
 - Task #1.1.9 (80%) ExceptionAdapter and Exception controller
 - Task #1.1.10 (60%) add company functionality to role service and role controller
-
+- Task #1.1.11 (20%) add Oval validation for entities
 
 === v1.2
 - initial React configuration

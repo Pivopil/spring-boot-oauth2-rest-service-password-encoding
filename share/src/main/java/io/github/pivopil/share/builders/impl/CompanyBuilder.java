@@ -5,9 +5,11 @@ package io.github.pivopil.share.builders.impl;
  */
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.pivopil.share.builders.EntityBuilder;
 import io.github.pivopil.share.entities.impl.Company;
 import io.github.pivopil.share.viewmodels.impl.CompanyViewModel;
+import net.sf.oval.Validator;
 
 import java.util.Date;
 
@@ -18,6 +20,9 @@ public class CompanyBuilder implements EntityBuilder<Company, CompanyBuilder, Co
     private String name;
     private String roleAlias;
     private String description;
+
+    @JsonIgnore
+    private Validator ovalValidator;
 
     public CompanyBuilder() {
     }
@@ -93,5 +98,11 @@ public class CompanyBuilder implements EntityBuilder<Company, CompanyBuilder, Co
         company.setRoleAlias(roleAlias);
         company.setDescription(description);
         return company;
+    }
+
+    @Override
+    public CompanyBuilder withOvalValidator(Validator ovalValidator) {
+        this.ovalValidator = ovalValidator;
+        return this;
     }
 }

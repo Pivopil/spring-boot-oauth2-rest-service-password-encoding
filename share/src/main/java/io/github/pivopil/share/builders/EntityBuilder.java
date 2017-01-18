@@ -2,6 +2,7 @@ package io.github.pivopil.share.builders;
 
 import io.github.pivopil.share.entities.BasicEntity;
 import io.github.pivopil.share.viewmodels.ViewModel;
+import net.sf.oval.Validator;
 
 import java.util.Date;
 
@@ -23,4 +24,6 @@ public interface EntityBuilder<T extends BasicEntity, K extends EntityBuilder, V
     K updated(Date val);
 
     T build();
+
+    K withOvalValidator(Validator ovalValidator);
 }

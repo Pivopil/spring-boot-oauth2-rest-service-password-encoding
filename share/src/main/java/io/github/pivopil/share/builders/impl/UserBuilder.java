@@ -1,10 +1,12 @@
 package io.github.pivopil.share.builders.impl;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.pivopil.share.builders.EntityBuilder;
 import io.github.pivopil.share.entities.impl.Role;
 import io.github.pivopil.share.entities.impl.User;
 import io.github.pivopil.share.viewmodels.impl.UserViewModel;
+import net.sf.oval.Validator;
 
 import java.util.Date;
 import java.util.List;
@@ -27,6 +29,9 @@ public class UserBuilder implements EntityBuilder<User, UserBuilder, UserViewMod
     private String phone;
     private String email;
     private Set<Role> roles;
+
+    @JsonIgnore
+    private Validator ovalValidator;
 
     public UserBuilder() {
     }
@@ -126,6 +131,12 @@ public class UserBuilder implements EntityBuilder<User, UserBuilder, UserViewMod
         user.setEnabled(enabled);
         user.setRoles(roles);
         return user;
+    }
+
+    @Override
+    public UserBuilder withOvalValidator(Validator ovalValidator) {
+        this.ovalValidator = ovalValidator;
+        return this;
     }
 
     private boolean isValidSHA1(String s) {

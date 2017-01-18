@@ -5,9 +5,11 @@ package io.github.pivopil.share.builders.impl;
  */
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.pivopil.share.builders.EntityBuilder;
 import io.github.pivopil.share.entities.impl.Content;
 import io.github.pivopil.share.viewmodels.impl.ContentViewModel;
+import net.sf.oval.Validator;
 
 import java.util.Date;
 
@@ -16,6 +18,9 @@ public class ContentBuilder implements EntityBuilder<Content, ContentBuilder, Co
     private Date created;
     private Date updated;
     private String title;
+
+    @JsonIgnore
+    private Validator ovalValidator;
 
     public ContentBuilder() {
     }
@@ -75,5 +80,11 @@ public class ContentBuilder implements EntityBuilder<Content, ContentBuilder, Co
         content.setUpdated(updated);
         content.setTitle(title);
         return content;
+    }
+
+    @Override
+    public ContentBuilder withOvalValidator(Validator ovalValidator) {
+        this.ovalValidator = ovalValidator;
+        return this;
     }
 }

@@ -46,6 +46,12 @@
             <artifactId>joda-time</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>net.sf.oval</groupId>
+            <artifactId>oval</artifactId>
+            <version>1.86</version>
+        </dependency>
+
     </dependencies>
 
     <build>
