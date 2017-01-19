@@ -10,6 +10,9 @@ import io.github.pivopil.share.builders.EntityBuilder;
 import io.github.pivopil.share.entities.impl.Content;
 import io.github.pivopil.share.viewmodels.impl.ContentViewModel;
 import net.sf.oval.Validator;
+import net.sf.oval.constraint.Length;
+import net.sf.oval.constraint.NotEmpty;
+import net.sf.oval.constraint.NotNull;
 
 import java.util.Date;
 
@@ -17,6 +20,10 @@ public class ContentBuilder implements EntityBuilder<Content, ContentBuilder, Co
     private Long id;
     private Date created;
     private Date updated;
+
+    @NotNull
+    @NotEmpty
+    @Length(min = 1, max = 100)
     private String title;
 
     @JsonIgnore
@@ -74,6 +81,9 @@ public class ContentBuilder implements EntityBuilder<Content, ContentBuilder, Co
 
     @Override
     public Content build() {
+
+        validate(ovalValidator);
+
         Content content = new Content();
         content.setId(id);
         content.setCreated(created);

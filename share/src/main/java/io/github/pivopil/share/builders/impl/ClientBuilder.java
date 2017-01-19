@@ -10,6 +10,9 @@ import io.github.pivopil.share.builders.EntityBuilder;
 import io.github.pivopil.share.entities.impl.Client;
 import io.github.pivopil.share.viewmodels.impl.ClientViewModel;
 import net.sf.oval.Validator;
+import net.sf.oval.constraint.Length;
+import net.sf.oval.constraint.NotEmpty;
+import net.sf.oval.constraint.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,9 +23,19 @@ public class ClientBuilder implements EntityBuilder<Client, ClientBuilder, Clien
     private Long id;
     private Date created;
     private Date updated;
+
+    @NotNull
+    @NotEmpty
+    @Length(min = 1, max = 100)
     private String clientId;
+
+    @NotNull
+    @NotEmpty
+    @Length(min = 1, max=100)
     private String clientSecret;
+
     private String scopes;
+
     private String roles;
 
     @JsonIgnore
@@ -100,6 +113,9 @@ public class ClientBuilder implements EntityBuilder<Client, ClientBuilder, Clien
 
     @Override
     public Client build() {
+
+        validate(ovalValidator);
+
         Client client = new Client();
         client.setId(id);
         client.setCreated(created);

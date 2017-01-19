@@ -10,6 +10,9 @@ import io.github.pivopil.share.builders.EntityBuilder;
 import io.github.pivopil.share.entities.impl.Company;
 import io.github.pivopil.share.viewmodels.impl.CompanyViewModel;
 import net.sf.oval.Validator;
+import net.sf.oval.constraint.Length;
+import net.sf.oval.constraint.NotEmpty;
+import net.sf.oval.constraint.NotNull;
 
 import java.util.Date;
 
@@ -17,8 +20,17 @@ public class CompanyBuilder implements EntityBuilder<Company, CompanyBuilder, Co
     private Long id;
     private Date created;
     private Date updated;
+
+    @NotNull
+    @NotEmpty
+    @Length(min = 1, max = 100)
     private String name;
+
+    @NotNull
+    @NotEmpty
+    @Length(min = 1, max = 100)
     private String roleAlias;
+
     private String description;
 
     @JsonIgnore
@@ -90,6 +102,9 @@ public class CompanyBuilder implements EntityBuilder<Company, CompanyBuilder, Co
 
     @Override
     public Company build() {
+
+        validate(ovalValidator);
+
         Company company = new Company();
         company.setId(id);
         company.setCreated(created);

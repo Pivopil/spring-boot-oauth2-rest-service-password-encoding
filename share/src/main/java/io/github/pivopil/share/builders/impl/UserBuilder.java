@@ -3,10 +3,15 @@ package io.github.pivopil.share.builders.impl;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.pivopil.share.builders.EntityBuilder;
+import io.github.pivopil.share.builders.REGEX;
 import io.github.pivopil.share.entities.impl.Role;
 import io.github.pivopil.share.entities.impl.User;
 import io.github.pivopil.share.viewmodels.impl.UserViewModel;
 import net.sf.oval.Validator;
+import net.sf.oval.constraint.Length;
+import net.sf.oval.constraint.NotEmpty;
+import net.sf.oval.constraint.NotNull;
+import net.sf.oval.constraint.ValidateWithMethod;
 
 import java.util.Date;
 import java.util.List;
@@ -18,16 +23,34 @@ import java.util.stream.Collectors;
  */
 
 public class UserBuilder implements EntityBuilder<User, UserBuilder, UserViewModel> {
-    public static final String REGEX = "[a-fA-F0-9]{40}";
+
     private Long id;
     private Date created;
     private Date updated;
+
+    @NotNull
+    @NotEmpty
+    @Length(min = 1, max = 100)
     private String name;
+
+    @NotNull
+    @NotEmpty
+    @Length(min = 1, max = 100)
     private String login;
+
+    @ValidateWithMethod(methodName = "isValidSHA1", parameterType = String.class)
     private String password;
+
     private Boolean enabled;
+
+    @NotNull
+    @NotEmpty
+    @Length(min = 1, max = 100)
     private String phone;
+
+    @ValidateWithMethod(methodName = "isValidEmail", parameterType = String.class)
     private String email;
+
     private Set<Role> roles;
 
     @JsonIgnore
@@ -113,16 +136,16 @@ public class UserBuilder implements EntityBuilder<User, UserBuilder, UserViewMod
 
     @Override
     public User build() {
+
+        validate(ovalValidator);
+
         User user = new User();
+
         user.setId(id);
         user.setCreated(created);
         user.setUpdated(updated);
         user.setName(name);
         user.setLogin(login);
-
-        if (!isValidSHA1(password)) {
-            // todo: validate row password
-        }
 
         user.setEmail(email);
         user.setPhone(phone);
@@ -139,9 +162,7 @@ public class UserBuilder implements EntityBuilder<User, UserBuilder, UserViewMod
         return this;
     }
 
-    private boolean isValidSHA1(String s) {
-        return s.matches(REGEX);
-    }
+
 
     @Override
     public UserViewModel buildViewModel() {
@@ -157,5 +178,13 @@ public class UserBuilder implements EntityBuilder<User, UserBuilder, UserViewMod
         List<String> roleNames = roles.stream().map(Role::getName).collect(Collectors.toList());
         userViewModel.setRoles(roleNames);
         return userViewModel;
+    }
+
+    public boolean isValidEmail(String email) {
+        return password.matches(REGEX.EMAIL);
+    }
+
+    public boolean isValidSHA1(String password) {
+        return password.matches(REGEX.SHA1);
     }
 }
