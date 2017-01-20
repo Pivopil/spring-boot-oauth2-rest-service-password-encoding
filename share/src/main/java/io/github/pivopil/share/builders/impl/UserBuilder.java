@@ -1,7 +1,6 @@
 package io.github.pivopil.share.builders.impl;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.pivopil.share.builders.EntityBuilder;
 import io.github.pivopil.share.builders.REGEX;
 import io.github.pivopil.share.entities.impl.Role;
@@ -53,7 +52,6 @@ public class UserBuilder implements EntityBuilder<User, UserBuilder, UserViewMod
 
     private Set<Role> roles;
 
-    @JsonIgnore
     private Validator ovalValidator;
 
     public UserBuilder() {
@@ -161,7 +159,6 @@ public class UserBuilder implements EntityBuilder<User, UserBuilder, UserViewMod
         this.ovalValidator = ovalValidator;
         return this;
     }
-
 
 
     @Override

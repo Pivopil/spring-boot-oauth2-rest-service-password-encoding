@@ -5,7 +5,6 @@ package io.github.pivopil.share.builders.impl;
  */
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.pivopil.share.builders.EntityBuilder;
 import io.github.pivopil.share.entities.impl.Content;
 import io.github.pivopil.share.viewmodels.impl.ContentViewModel;
@@ -26,7 +25,6 @@ public class ContentBuilder implements EntityBuilder<Content, ContentBuilder, Co
     @Length(min = 1, max = 100)
     private String title;
 
-    @JsonIgnore
     private Validator ovalValidator;
 
     public ContentBuilder() {

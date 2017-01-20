@@ -5,7 +5,6 @@ package io.github.pivopil.share.builders.impl;
  */
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.pivopil.share.builders.EntityBuilder;
 import io.github.pivopil.share.entities.impl.Client;
 import io.github.pivopil.share.viewmodels.impl.ClientViewModel;
@@ -31,14 +30,13 @@ public class ClientBuilder implements EntityBuilder<Client, ClientBuilder, Clien
 
     @NotNull
     @NotEmpty
-    @Length(min = 1, max=100)
+    @Length(min = 1, max = 100)
     private String clientSecret;
 
     private String scopes;
 
     private String roles;
 
-    @JsonIgnore
     private Validator ovalValidator;
 
     public ClientBuilder() {
@@ -52,7 +50,7 @@ public class ClientBuilder implements EntityBuilder<Client, ClientBuilder, Clien
         clientViewModel.setCreated(created);
         clientViewModel.setUpdated(updated);
         clientViewModel.setRoles(roles != null ? Arrays.asList(roles.split(",")) : new ArrayList<>());
-        clientViewModel.setScopes(scopes != null ? Arrays.asList(scopes.split(",")): new ArrayList<>());
+        clientViewModel.setScopes(scopes != null ? Arrays.asList(scopes.split(",")) : new ArrayList<>());
         return clientViewModel;
     }
 

@@ -5,7 +5,6 @@ package io.github.pivopil.share.builders.impl;
  */
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.pivopil.share.builders.EntityBuilder;
 import io.github.pivopil.share.entities.impl.Company;
 import io.github.pivopil.share.viewmodels.impl.CompanyViewModel;
@@ -33,7 +32,6 @@ public class CompanyBuilder implements EntityBuilder<Company, CompanyBuilder, Co
 
     private String description;
 
-    @JsonIgnore
     private Validator ovalValidator;
 
     public CompanyBuilder() {

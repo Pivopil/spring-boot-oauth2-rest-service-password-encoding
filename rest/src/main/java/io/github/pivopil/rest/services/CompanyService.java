@@ -1,9 +1,12 @@
 package io.github.pivopil.rest.services;
 
+import io.github.pivopil.share.builders.Builders;
+import io.github.pivopil.share.builders.impl.CompanyBuilder;
 import io.github.pivopil.share.entities.impl.Company;
 import io.github.pivopil.share.entities.impl.Role;
 import io.github.pivopil.share.persistence.CompanyRepository;
 import io.github.pivopil.share.persistence.RoleRepository;
+import net.sf.oval.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,10 +24,13 @@ public class CompanyService {
 
     private final RoleRepository roleRepository;
 
+    private final Validator ovalValidator;
+
     @Autowired
-    public CompanyService(CompanyRepository companyRepository, RoleRepository roleRepository) {
+    public CompanyService(CompanyRepository companyRepository, RoleRepository roleRepository, Validator ovalValidator) {
         this.companyRepository = companyRepository;
         this.roleRepository = roleRepository;
+        this.ovalValidator = ovalValidator;
     }
 
     public Iterable<Company> list() {
@@ -35,9 +41,13 @@ public class CompanyService {
         return companyRepository.findOne(id);
     }
 
-    // todo add validation
     @Transactional
     public Company save(Company company) {
+
+        CompanyBuilder companyBuilder = Builders.of(company);
+
+        company = companyBuilder.withOvalValidator(ovalValidator).build();
+
         company = companyRepository.save(company);
 
         String upperCase = company.getRoleAlias().toUpperCase();
@@ -55,7 +65,6 @@ public class CompanyService {
         return company;
     }
 
-    // todo add validation
     @Transactional
     public void update(Company company) {
         Company companyFromRepository = companyRepository.findOne(company.getId());
@@ -63,6 +72,10 @@ public class CompanyService {
         if (!companyFromRepository.getRoleAlias().equals(company.getRoleAlias())) {
             throw new IllegalArgumentException("You can not change Role Alias of the company");
         }
+
+        CompanyBuilder companyBuilder = Builders.of(company);
+
+        company = companyBuilder.withOvalValidator(ovalValidator).build();
 
         companyRepository.save(company);
     }
