@@ -32,7 +32,7 @@ and https://spring.io/guides/gs/rest-service/[Building a RESTful Web Service] ge
 === v1.0 (current)
 - Task #1.0.1 (DONE) BE core functionality
 
-=== v1.1
+=== v1.1 (BE in progress, Angular 2 FE is old and will be totally rewritten in v1.2)
 - Task #1.1.1 (DONE) create security service
 - Task #1.1.2 (DONE) use JPA for clients
 - Task #1.1.3 (DONE) create sql script for initial db data creation
@@ -43,10 +43,10 @@ and https://spring.io/guides/gs/rest-service/[Building a RESTful Web Service] ge
 - Task #1.1.8 (70%) create role service and role controller
 - Task #1.1.9 (80%) ExceptionAdapter and Exception controller
 - Task #1.1.10 (60%) add company functionality to role service and role controller
-- Task #1.1.11 (50%) add Oval validation for entities
+- Task #1.1.11 (60%) add Oval validation for entities
 
 === v1.2
-- initial React configuration
+- initial React.js configuration
 
 === BUG
 - (BUG) Angular 2 SockJS error in zone.js
@@ -63,11 +63,16 @@ mvn clean install
 First update properties to you own db: `./rest/src/main/resources/application.properties`
 
 ```
-spring.datasource.url=jdbc:mysql://localhost/oauth2rest?createDatabaseIfNotExist=true
-spring.datasource.username=root
+spring.datasource.url=jdbc:postgresql://localhost:5432/oauth2rx
+spring.datasource.username=postgres
 spring.datasource.password=1
 ```
 
+Then execute sql script from:
+
+```
+/rest/src/main/resources/sql/acl-token-tables.sql
+```
 Then:
 
 ```sh
