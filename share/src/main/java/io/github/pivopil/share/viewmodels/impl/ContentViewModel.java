@@ -4,6 +4,7 @@ import io.github.pivopil.share.entities.impl.Content;
 import io.github.pivopil.share.viewmodels.ViewModel;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created on 11.01.17.
@@ -17,6 +18,8 @@ public class ContentViewModel implements ViewModel<Content> {
     private Date updated;
 
     private String title;
+    private String owner;
+    private List<String> acls;
 
     @Override
     public Long getId() {
@@ -54,5 +57,21 @@ public class ContentViewModel implements ViewModel<Content> {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setAcls(List<String> acls) {
+        this.acls = acls;
+    }
+
+    public List<String> getAcls() {
+        return acls;
     }
 }

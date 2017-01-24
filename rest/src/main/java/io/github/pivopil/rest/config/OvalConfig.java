@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
  */
 
 @Configuration
-@ComponentScan( basePackageClasses = SpringInjector.class)
+@ComponentScan(basePackageClasses = SpringInjector.class)
 public class OvalConfig {
 
     @Bean

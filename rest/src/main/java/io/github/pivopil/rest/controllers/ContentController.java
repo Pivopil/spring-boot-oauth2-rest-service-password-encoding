@@ -3,6 +3,7 @@ package io.github.pivopil.rest.controllers;
 import io.github.pivopil.rest.constants.REST_API;
 import io.github.pivopil.rest.services.ContentService;
 import io.github.pivopil.share.entities.impl.Content;
+import io.github.pivopil.share.viewmodels.impl.ContentViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -34,20 +35,20 @@ public class ContentController {
     }
 
     @GetMapping(REST_API.ID_PATH_VARIABLE)
-    public Content getSingle(@PathVariable("id") Long id) {
-        return contentService.getSingle(id);
+    public ContentViewModel getSingle(@PathVariable("id") Long id) {
+        return contentService.getContentById(id);
     }
 
     @PostMapping
-    public Content create(@RequestBody Content todo) {
-        return contentService.add(todo);
+    public ContentViewModel create(@RequestBody Content content) {
+        return contentService.addContent(content);
     }
 
     @PutMapping(REST_API.ID_PATH_VARIABLE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@RequestBody Content updatedTodo, @PathVariable("id") Long id) throws IOException {
-        updatedTodo.setId(id);
-        contentService.edit(updatedTodo);
+    public void update(@RequestBody Content updatedContent, @PathVariable("id") Long id) {
+        updatedContent.setId(id);
+        contentService.edit(updatedContent);
     }
 
     @DeleteMapping(REST_API.ID_PATH_VARIABLE)
