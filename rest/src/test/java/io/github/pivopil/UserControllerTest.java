@@ -110,7 +110,7 @@ public class UserControllerTest extends AbstractRestTest {
             adminNeo2.setLogin("neoAdminLogin2");
             adminNeo2.setEmail("neoadmin2@email.com");
             adminNeo2.setPhone("9123456782");
-            adminNeo2.setPassword("neoAdmin2");
+            adminNeo2.setPassword("NeoAdmin21#");
             adminNeo2.setEnabled(Boolean.TRUE);
             adminNeo2.setRoles(new HashSet<>(Collections.singletonList(roleOrgNeoAdmin)));
 
@@ -121,7 +121,6 @@ public class UserControllerTest extends AbstractRestTest {
                     .contentType(MediaType.APPLICATION_JSON + ";charset=UTF-8")
                     .content(writeValueAsString))
                     .andReturn().getResponse().getContentAsString();
-
         } else {
             User user = neoAdminLogin2.get(0);
             mvc.perform(delete(REST_API.USERS + "/" + user.getId()).header("Authorization", "Bearer " + accessToken)).andExpect(status().isNoContent());
@@ -145,6 +144,54 @@ public class UserControllerTest extends AbstractRestTest {
     // neo local admin see all neo users
 
     // neo local user see all neo users
+
+
+
+
+
+//            // admin for first client
+//            User adminNeo = new User();
+//            adminNeo.setName("neoAdminName");
+//            adminNeo.setLogin("neoAdminLogin");
+//            adminNeo.setEmail("neoadmin@email.com");
+//            adminNeo.setPhone("912345678");
+//            adminNeo.setPassword(passwordEncoder.encode("neoAdmin"));
+//            adminNeo.setEnabled(Boolean.TRUE);
+//            adminNeo.setRoles(new HashSet<>(Collections.singletonList(roleOrgNeoAdmin)));
+//
+//            // admin for second client
+//            User adminTrinity = new User();
+//            adminTrinity.setName("trinityAdminName");
+//            adminTrinity.setLogin("trinityAdminLogin");
+//            adminTrinity.setEmail("trinityadmin@email.com");
+//            adminTrinity.setPhone("891234567");
+//            adminTrinity.setPassword(passwordEncoder.encode("trinityAdmin"));
+//            adminTrinity.setEnabled(Boolean.TRUE);
+//            adminTrinity.setRoles(new HashSet<>(Collections.singletonList(roleOrgTrinityAdmin)));
+//
+//
+//            // user for first client
+//            User userNeo = new User();
+//            userNeo.setName("neoUserName");
+//            userNeo.setLogin("neoUserLogin");
+//            userNeo.setEmail("neouser@email.com");
+//            userNeo.setPhone("789123456");
+//            userNeo.setPassword(passwordEncoder.encode("neoUser"));
+//            userNeo.setEnabled(Boolean.TRUE);
+//            userNeo.setRoles(new HashSet<>(Collections.singletonList(roleOrgNeoUser)));
+//
+//            // user for client second
+//            User userTrinity = new User();
+//            userTrinity.setName("trinityUserName");
+//            userTrinity.setLogin("trinityUserLogin");
+//            userTrinity.setEmail("trinityuser@email.com");
+//            userTrinity.setPhone("678912345");
+//            userTrinity.setPassword(passwordEncoder.encode("trinityUser"));
+//            userTrinity.setEnabled(Boolean.TRUE);
+//            userTrinity.setRoles(new HashSet<>(Collections.singletonList(roleOrgTrinityUser)));
+//
+//
+//            userRepository.save(Arrays.asList(admin, userNeo, userTrinity, adminNeo, adminTrinity));
 
 
 }

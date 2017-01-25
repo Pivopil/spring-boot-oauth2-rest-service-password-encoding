@@ -4,12 +4,15 @@ import io.github.pivopil.rest.constants.ROLES;
 import io.github.pivopil.rest.services.security.CustomACLService;
 import io.github.pivopil.rest.services.security.CustomSecurityService;
 import io.github.pivopil.share.builders.Builders;
+import io.github.pivopil.share.builders.REGEX;
 import io.github.pivopil.share.builders.impl.UserBuilder;
 import io.github.pivopil.share.entities.impl.Role;
 import io.github.pivopil.share.entities.impl.User;
+import io.github.pivopil.share.exceptions.ExceptionAdapter;
 import io.github.pivopil.share.persistence.RoleRepository;
 import io.github.pivopil.share.persistence.UserRepository;
 import io.github.pivopil.share.viewmodels.impl.UserViewModel;
+import net.sf.oval.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -42,13 +45,16 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final Validator ovalValidator;
+
     @Autowired
-    public CustomUserDetailsService(UserRepository userRepository, CustomSecurityService customSecurityService, RoleRepository roleRepository, CustomACLService customACLService, PasswordEncoder passwordEncoder) {
+    public CustomUserDetailsService(UserRepository userRepository, CustomSecurityService customSecurityService, RoleRepository roleRepository, CustomACLService customACLService, PasswordEncoder passwordEncoder, Validator ovalValidator) {
         this.userRepository = userRepository;
         this.customSecurityService = customSecurityService;
         this.roleRepository = roleRepository;
         this.customACLService = customACLService;
         this.passwordEncoder = passwordEncoder;
+        this.ovalValidator = ovalValidator;
     }
 
     @Override
@@ -90,6 +96,11 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Transactional
     public UserViewModel createNewUser(User newUser) {
+
+        String password = newUser.getPassword();
+
+        validateUserPassword(password);
+
         Set<Role> roles = new HashSet<>();
 
         for (Role role : newUser.getRoles()) {
@@ -134,8 +145,13 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
 
         UserBuilder userBuilder = Builders.of(newUser);
-        String encodedPassword = passwordEncoder.encode(newUser.getPassword());
-        newUser = userBuilder.password(encodedPassword).enabled(Boolean.TRUE).build();
+        String encodedPassword = passwordEncoder.encode(password);
+        newUser = userBuilder
+                .password(encodedPassword)
+                .enabled(Boolean.TRUE)
+                .withOvalValidator(ovalValidator)
+                .build();
+
         newUser = add(newUser);
 
         userBuilder = Builders.of(newUser);
@@ -167,18 +183,34 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @PreAuthorize("isAuthenticated() && hasPermission(#user, 'WRITE') && #user != null")
     public User edit(@Param("user") User user) {
-        User userFromDB = userRepository.findOne(user.getId());
 
-        // todo: implement validation for user object
-        String password = user.getPassword();
-        if (password != null && !password.equals("")) {
-            String encodedPassword = passwordEncoder.encode(password);
-            user.setPassword(encodedPassword);
-        } else {
-            user.setPassword(userFromDB.getPassword());
+        Long userId = user.getId();
+
+        User userFromDB = userRepository.findOne(userId);
+
+        if (userFromDB == null) {
+            throw new ExceptionAdapter(new BadCredentialsException("there is no user with id = " + userId));
         }
 
-        return userRepository.save(user);
+        String password = user.getPassword();
+
+        validateUserPassword(password);
+
+        UserBuilder userBuilder = Builders.of(user);
+
+        String encodedPassword = passwordEncoder.encode(password);
+
+        user = userBuilder.password(encodedPassword).withOvalValidator(ovalValidator).build();
+
+        user = userRepository.save(user);
+
+        return user;
+    }
+
+    private void validateUserPassword(String password) {
+        if (password == null || !password.matches(REGEX.PASSWORD)) {
+            throw new ExceptionAdapter(new BadCredentialsException("Password should have at least 8 characters length, 2 letters in Upper Case, 1 Special Character (!@#$&*), 2 numerals (0-9), 3 letters in Lower Case"));
+        }
     }
 
     // todo: find way to remove user object in case if user is owner of another objects
@@ -187,7 +219,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         Boolean hasAdminRole = customSecurityService.isRolesContainRoleName(user.getRoles(), ROLES.ROLE_ADMIN);
 
         if (hasAdminRole) {
-            throw new BadCredentialsException("Admin can not disable himself!");
+            throw new ExceptionAdapter(new BadCredentialsException("Admin can not disable himself!"));
         }
 
         userRepository.delete(user);

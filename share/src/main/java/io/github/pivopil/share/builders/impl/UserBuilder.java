@@ -178,7 +178,7 @@ public class UserBuilder implements EntityBuilder<User, UserBuilder, UserViewMod
     }
 
     public boolean isValidEmail(String email) {
-        return password.matches(REGEX.EMAIL);
+        return email.matches(REGEX.EMAIL);
     }
 
     public boolean isValidSHA1(String password) {

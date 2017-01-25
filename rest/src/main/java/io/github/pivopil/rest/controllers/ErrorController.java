@@ -1,5 +1,6 @@
 package io.github.pivopil.rest.controllers;
 
+import io.github.pivopil.share.exceptions.CustomOvalException;
 import io.github.pivopil.share.exceptions.ExceptionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,11 +12,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created on 21.06.16.
  */
 @ControllerAdvice(basePackageClasses = {
+        ClientController.class,
+        CompanyController.class,
         ContentController.class,
         MessageController.class,
         UserController.class,
@@ -28,15 +33,19 @@ public class ErrorController extends ResponseEntityExceptionHandler {
     @ExceptionHandler(ExceptionAdapter.class)
     @ResponseBody
     ResponseEntity<?> handleControllerException(HttpServletRequest request, ExceptionAdapter ex) {
+        HttpStatus status = getStatus(request);
         try {
             throw ex.rethrow();
+        } catch (CustomOvalException e) {
+            Map<String, List<String>> errorMap = e.getErrorMap();
+            log.error("Error type: {}, message: {}", e.getClass(), errorMap);
+            return new ResponseEntity<>(errorMap, status);
         } catch (IllegalArgumentException e) {
             log.error("Error type: {}, message: {}", e.getClass(), e.getMessage());
         } catch (Throwable throwable) {
             log.error("Error type: {}, message: {}", throwable.getClass(), throwable.getMessage());
             throwable.printStackTrace();
         }
-        HttpStatus status = getStatus(request);
         return new ResponseEntity<>(status.value() + " " + ex.getMessage(), status);
     }
 
