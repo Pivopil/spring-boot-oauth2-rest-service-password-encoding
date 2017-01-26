@@ -3,6 +3,7 @@ package io.github.pivopil.rest.controllers;
 import io.github.pivopil.rest.constants.REST_API;
 import io.github.pivopil.rest.services.CustomClientDetailsService;
 import io.github.pivopil.share.entities.impl.Client;
+import io.github.pivopil.share.viewmodels.impl.ClientViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +34,7 @@ public class ClientController {
     }
 
     @PostMapping
-    public Client create(@RequestBody Client client) {
+    public ClientViewModel create(@RequestBody Client client) {
         return customClientDetailsService.save(client);
     }
 

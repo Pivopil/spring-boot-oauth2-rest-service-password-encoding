@@ -88,7 +88,6 @@ public class ACLConfig extends GlobalMethodSecurityConfiguration {
     @Override
     protected MethodSecurityExpressionHandler createExpressionHandler() {
         DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
-        // todo as been
         expressionHandler.setPermissionEvaluator(new AclPermissionEvaluator(aclService()));
         return expressionHandler;
     }
