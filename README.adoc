@@ -29,24 +29,30 @@ and https://spring.io/guides/gs/rest-service/[Building a RESTful Web Service] ge
 
 == Release Notes
 
-=== v1.0 (current)
+=== v1.0
 - Task #1.0.1 (DONE) BE core functionality
 
-=== v1.1 (BE in progress, Angular 2 FE is old and will be totally rewritten in v1.2)
+=== v1.1 (current)
 - Task #1.1.1 (DONE) create security service
 - Task #1.1.2 (DONE) use JPA for clients
 - Task #1.1.3 (DONE) create sql script for initial db data creation
-- Task #1.1.4 (85%) integration tests for BE functionality
+- Task #1.1.4 (DONE, will be improved in v1.2) initial integration tests for content controller and user controller
 - Task #1.1.5 (DONE) store tokens in DB
 - Task #1.1.6 (DONE) create user service and update user controller
-- Task #1.1.7 (70%) create client service and client controller
-- Task #1.1.8 (70%) create role service and role controller
-- Task #1.1.9 (80%) ExceptionAdapter and Exception controller
-- Task #1.1.10 (60%) add company functionality to role service and role controller
-- Task #1.1.11 (60%) add Oval validation for entities
+- Task #1.1.7 (DONE) create client service and client controller
+- Task #1.1.8 (DONE) create company (role) service and company (role) controller
+- Task #1.1.9 (DONE) ExceptionAdapter and Exception controller
+- Task #1.1.10 (DONE) add company functionality to role service and role controller
+- Task #1.1.11 (DONE) add Oval validation for entities
 
-=== v1.2
-- initial React.js configuration
+=== v1.2 (in progress, Angular 2 FE is old and will be totally rewritten)
+- Task #1.2.1 Update loggers
+- Task #1.2.2 Create SQL script for DB
+- Task #1.2.3 Improve integration tests for FE needs
+- Task #1.2.4 Create basic spec
+- Task #1.2.5 Initial React module configuration
+
+=== v2.0 (Java 9, Spring 5, Spring Boot 2.0)
 
 === BUG
 - (BUG) Angular 2 SockJS error in zone.js

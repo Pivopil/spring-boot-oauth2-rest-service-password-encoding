@@ -89,7 +89,6 @@ public class Application extends SpringBootServletInitializer implements Command
             roleOrgTrinityAdmin.setName("ROLE_TRINITY_LOCAL_ADMIN");
             roleOrgTrinityAdmin = roleRepository.save(roleOrgTrinityAdmin);
 
-
             // admin with roles for all
             User admin = new User();
             admin.setName("adminName");
@@ -100,24 +99,11 @@ public class Application extends SpringBootServletInitializer implements Command
             admin.setEnabled(Boolean.TRUE);
             admin.setRoles(new HashSet<>(Arrays.asList(roleOrgNeoUser, roleAdmin, roleOrgNeoAdmin, roleOrgTrinityAdmin, roleOrgTrinityUser)));
 
-
             userRepository.save(Collections.singletonList(admin));
 
             // clients
             Client client1 = new Client("apiOne", passwordEncoder.encode("apiOne"), "read,write", "ROLE_API_ONE");
-            Client client2 = new Client("apiTwo", passwordEncoder.encode("apiTwo"), "read,write", "ROLE_API_TWO");
-            clientRepository.save(Arrays.asList(client1, client2));
-
-            // todo:  acl and token tables auto creation
-
-//            try {
-//                DataSource dataSource = applicationContext.getBean(DataSource.class);
-//                Connection connection = dataSource.getConnection();
-//                ScriptUtils.executeSqlScript(connection, new EncodedResource(new ClassPathResource("/sql/acl-token-tables.sql"), "utf8"), false, false, "--", "commit", "______", "__________=");
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-
+            clientRepository.save(Collections.singletonList(client1));
         }
     }
 
