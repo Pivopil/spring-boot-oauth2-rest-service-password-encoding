@@ -66,7 +66,7 @@ cd spring-boot-oauth2-rest-service-password-encoding
 mvn clean install
 ```
 
-First update properties to you own db: `./rest/src/main/resources/application.properties`
+First update properties to you own prod db (create empty DB with this name manually): `./rest/src/main/resources/application.properties`
 
 ```
 spring.datasource.url=jdbc:postgresql://localhost:5432/oauth2rx
@@ -74,7 +74,15 @@ spring.datasource.username=postgres
 spring.datasource.password=1
 ```
 
-Then execute sql script from:
+Then update properties to you own test db (create empty DB with this name manually): `./rest/src/test/resources/test.properties`
+
+```
+spring.datasource.url=jdbc:postgresql://localhost:5432/testoauth2rx
+spring.datasource.username=postgres
+spring.datasource.password=1
+```
+
+Then execute this sql script from for both prod and test databases manually:
 
 ```
 /rest/src/main/resources/sql/acl-token-tables.sql
