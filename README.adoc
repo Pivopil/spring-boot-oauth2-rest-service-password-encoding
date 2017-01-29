@@ -46,11 +46,11 @@ and https://spring.io/guides/gs/rest-service/[Building a RESTful Web Service] ge
 - Task #1.1.11 (DONE) add Oval validation for entities
 
 === v1.2 (in progress, Angular 2 FE is old and will be totally rewritten)
-- Task #1.2.1 Update loggers
+- Task #1.2.1 (1%) Update loggers
 - Task #1.2.2 Create SQL script for DB
 - Task #1.2.3 Improve integration tests for FE needs
 - Task #1.2.4 Create basic spec
-- Task #1.2.5 Initial React module configuration
+- Task #1.2.5 (1%) Initial React module configuration
 
 === v2.0 (Java 9, Spring 5, Spring Boot 2.0)
 
