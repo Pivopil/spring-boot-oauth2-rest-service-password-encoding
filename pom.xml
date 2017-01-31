@@ -125,8 +125,11 @@
     <modules>
         <module>share</module>
         <module>rest</module>
-        <module>web-ui</module>
-        <module>web-react</module>
+
+        <!--You can import external UI modules using Maven-->
+
+        <!--<module>web-angular</module>-->
+        <!--<module>web-react</module>-->
     </modules>
 
 </project>

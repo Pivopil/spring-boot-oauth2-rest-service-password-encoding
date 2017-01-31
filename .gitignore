@@ -21,3 +21,5 @@ hs_err_pid*
 /rest/src/main/java/io/github/pivopil/rest/services/CustomACLService.java
 /web-react/node_modules/
 /web-react/src/node_modules/
+/rest/app.log
+/rest/rest.iml
