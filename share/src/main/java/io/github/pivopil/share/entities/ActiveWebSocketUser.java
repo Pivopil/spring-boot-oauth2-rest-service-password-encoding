@@ -1,12 +1,17 @@
 package io.github.pivopil.share.entities;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.Calendar;
 
 @Entity
 public class ActiveWebSocketUser {
     @Id
+    @GenericGenerator(name = "native_generator", strategy = "native")
+    @GeneratedValue(generator = "native_generator")
     private String id;
 
     private String username;

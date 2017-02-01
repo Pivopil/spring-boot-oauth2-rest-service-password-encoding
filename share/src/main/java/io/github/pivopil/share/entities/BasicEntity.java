@@ -1,5 +1,7 @@
 package io.github.pivopil.share.entities;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Objects;
@@ -9,9 +11,10 @@ import java.util.Objects;
  */
 @MappedSuperclass
 public class BasicEntity {
+
     @Id
-    @org.springframework.data.annotation.Id
-    @GeneratedValue
+    @GenericGenerator(name = "native_generator", strategy = "native")
+    @GeneratedValue(generator = "native_generator")
     private Long id;
 
     private Date created;

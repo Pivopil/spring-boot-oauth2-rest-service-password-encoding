@@ -54,7 +54,7 @@ and https://spring.io/guides/gs/rest-service/[Building a RESTful Web Service] ge
 
 === v1.2 (in progress)
 - Task #1.2.1 (1%) Update loggers
-- Task #1.2.2 Create SQL script for DB
+- Task #1.2.2 (1%) Create SQL script for DB and update Hibernate functionality
 - Task #1.2.3 Improve integration tests for FE needs
 - Task #1.2.4 Create basic spec
 - Task #1.2.5 (DONE) Move React module to external repo
