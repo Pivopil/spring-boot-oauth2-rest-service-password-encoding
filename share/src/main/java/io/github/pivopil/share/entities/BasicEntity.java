@@ -10,24 +10,11 @@ import java.util.Objects;
  * Created on 21.06.16.
  */
 @MappedSuperclass
-public class BasicEntity {
-
-    @Id
-    @GenericGenerator(name = "native_generator", strategy = "native")
-    @GeneratedValue(generator = "native_generator")
-    private Long id;
+public class BasicEntity extends EntityWithId {
 
     private Date created;
 
     private Date updated;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Date getCreated() {
         return created;
@@ -55,16 +42,4 @@ public class BasicEntity {
         this.updated = new Date();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BasicEntity base = (BasicEntity) o;
-        return Objects.equals(id, base.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
 }
