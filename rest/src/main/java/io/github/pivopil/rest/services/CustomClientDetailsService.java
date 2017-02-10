@@ -8,6 +8,7 @@ import io.github.pivopil.share.persistence.ClientRepository;
 import io.github.pivopil.share.viewmodels.impl.ClientViewModel;
 import net.sf.oval.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,6 +24,7 @@ import java.util.*;
  * Created on 24.10.16.
  */
 @Service
+@DependsOn("ovalValidator")
 public class CustomClientDetailsService implements ClientDetailsService {
 
     private final ClientRepository clientRepository;

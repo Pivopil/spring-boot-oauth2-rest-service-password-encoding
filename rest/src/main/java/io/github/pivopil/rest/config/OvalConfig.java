@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan(basePackageClasses = SpringInjector.class)
 public class OvalConfig {
 
-    @Bean
+    @Bean(name = "ovalValidator")
     public Validator validator() {
         AnnotationsConfigurer myConfigurer = new AnnotationsConfigurer();
         myConfigurer.addCheckInitializationListener(SpringCheckInitializationListener.INSTANCE);
