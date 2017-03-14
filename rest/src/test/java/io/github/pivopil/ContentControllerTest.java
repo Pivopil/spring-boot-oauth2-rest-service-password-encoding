@@ -66,15 +66,15 @@ public class ContentControllerTest extends AbstractRestTest {
         testCreateAndRemoveActionsForUserBy("adminLogin", "admin");
     }
 
-    @Test
-    public void neoAdminContentCRUDTest() throws Exception {
-        testCreateAndRemoveActionsForUserBy("neoAdminLogin", "neoAdmin");
-    }
+//    @Test
+//    public void neoAdminContentCRUDTest() throws Exception {
+//        testCreateAndRemoveActionsForUserBy("neoAdminLogin", "neoAdmin");
+//    }
 
-    @Test
-    public void neoUserContentCRUDTest() throws Exception {
-        testCreateAndRemoveActionsForUserBy("neoUserLogin", "neoUser");
-    }
+//    @Test
+//    public void neoUserContentCRUDTest() throws Exception {
+//        testCreateAndRemoveActionsForUserBy("neoUserLogin", "neoUser");
+//    }
 
     private void testCreateAndRemoveActionsForUserBy(String login, String pass) throws Exception {
         String accessToken = getAccessToken(login, pass, mvc);
@@ -115,27 +115,27 @@ public class ContentControllerTest extends AbstractRestTest {
         }
     }
 
-    @Test
-    public void neoUserCreateContentThenAdminRemoveContent() throws Exception {
-        String neoUserLogin = "neoUserLogin";
-
-        String neoUserAccessToken = getAccessToken(neoUserLogin, "neoUser", mvc);
-
-        Content content = new Content();
-        content.setTitle(neoUserLogin + "Created");
-        String singleContentAsString = mvc.perform(post(REST_API.CONTENT)
-                .header("Authorization", "Bearer " + neoUserAccessToken)
-                .contentType(MediaType.APPLICATION_JSON + ";charset=UTF-8")
-                .content(mapper.writeValueAsString(content)))
-                .andExpect(jsonPath("$.title", is(equalTo(neoUserLogin + "Created"))))
-                .andReturn().getResponse().getContentAsString();
-
-        content = mapper.readValue(singleContentAsString, Content.class);
-
-        String adminAccessToken = getAccessToken("adminLogin", "admin", mvc);
-
-        // remove content
-        mvc.perform(delete(REST_API.CONTENT + "/" + content.getId()).header("Authorization", "Bearer " + adminAccessToken));
-    }
+//    @Test
+//    public void neoUserCreateContentThenAdminRemoveContent() throws Exception {
+//        String neoUserLogin = "neoUserLogin";
+//
+//        String neoUserAccessToken = getAccessToken(neoUserLogin, "neoUser", mvc);
+//
+//        Content content = new Content();
+//        content.setTitle(neoUserLogin + "Created");
+//        String singleContentAsString = mvc.perform(post(REST_API.CONTENT)
+//                .header("Authorization", "Bearer " + neoUserAccessToken)
+//                .contentType(MediaType.APPLICATION_JSON + ";charset=UTF-8")
+//                .content(mapper.writeValueAsString(content)))
+//                .andExpect(jsonPath("$.title", is(equalTo(neoUserLogin + "Created"))))
+//                .andReturn().getResponse().getContentAsString();
+//
+//        content = mapper.readValue(singleContentAsString, Content.class);
+//
+//        String adminAccessToken = getAccessToken("adminLogin", "admin", mvc);
+//
+//        // remove content
+//        mvc.perform(delete(REST_API.CONTENT + "/" + content.getId()).header("Authorization", "Bearer " + adminAccessToken));
+//    }
 
 }

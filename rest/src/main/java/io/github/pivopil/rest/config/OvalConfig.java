@@ -18,9 +18,9 @@ public class OvalConfig {
 
     @Bean(name = "ovalValidator")
     public Validator validator() {
-        AnnotationsConfigurer myConfigurer = new AnnotationsConfigurer();
-        myConfigurer.addCheckInitializationListener(SpringCheckInitializationListener.INSTANCE);
-        return new Validator(myConfigurer);
+        AnnotationsConfigurer annotationsConfigurer = new AnnotationsConfigurer();
+        annotationsConfigurer.addCheckInitializationListener(SpringCheckInitializationListener.INSTANCE);
+        return new Validator(annotationsConfigurer);
     }
 
 }

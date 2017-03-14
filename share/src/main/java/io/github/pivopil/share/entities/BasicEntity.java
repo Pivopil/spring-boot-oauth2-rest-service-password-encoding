@@ -1,10 +1,9 @@
 package io.github.pivopil.share.entities;
 
-import org.hibernate.annotations.GenericGenerator;
-
-import javax.persistence.*;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import java.util.Date;
-import java.util.Objects;
 
 /**
  * Created on 21.06.16.

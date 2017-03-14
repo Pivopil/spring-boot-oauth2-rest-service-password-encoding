@@ -16,20 +16,6 @@
 
     <dependencies>
 
-        <!--You can import external UI modules using Maven-->
-
-        <!--<dependency>-->
-            <!--<groupId>io.github.pivopil</groupId>-->
-            <!--<artifactId>web-angular</artifactId>-->
-            <!--<version>1.0.0</version>-->
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-        <!--<groupId>io.github.pivopil</groupId>-->
-        <!--<artifactId>web-react</artifactId>-->
-        <!--<version>1.0.0</version>-->
-        <!--</dependency>-->
-
         <dependency>
             <groupId>io.github.pivopil</groupId>
             <artifactId>share</artifactId>
