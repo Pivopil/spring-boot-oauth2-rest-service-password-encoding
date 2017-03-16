@@ -59,6 +59,7 @@ and https://spring.io/guides/gs/rest-service/[Building a RESTful Web Service] ge
 - Task #1.2.4 Create basic spec
 - Task #1.2.5 (DONE) Move React module to external repo
 - Task #1.2.6 (DONE) Move Angular 2 module to external repo
+- Task #1.2.7 () Update exception functionality
 
 === v2.0 (Java 9, Spring 5, Spring Boot 2.0)
 

@@ -3,6 +3,7 @@ package io.github.pivopil;
 import io.github.pivopil.share.entities.impl.Client;
 import io.github.pivopil.share.entities.impl.Role;
 import io.github.pivopil.share.entities.impl.User;
+import io.github.pivopil.share.exceptions.ExceptionAdapter;
 import io.github.pivopil.share.persistence.ClientRepository;
 import io.github.pivopil.share.persistence.RoleRepository;
 import io.github.pivopil.share.persistence.UserRepository;
@@ -50,6 +51,8 @@ public class Application extends SpringBootServletInitializer implements Command
     public static void main(String... args) throws Exception {
         try {
             SpringApplication.run(Application.class, args);
+        } catch (ExceptionAdapter e) {
+            log.error("Error type: {}, message: {}", e.getClass(), e.getMessage());
         } catch (RuntimeException e) {
             log.error("Error type: {}, message: {}", e.getClass(), e.getMessage());
         }
