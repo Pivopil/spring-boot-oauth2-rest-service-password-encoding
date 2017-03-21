@@ -72,19 +72,23 @@ public class ContentService {
 
     @PreAuthorize("isAuthenticated() && #content != null")
     public Content add(@Param("content") Content content) {
-        content = contentRepository.save(content);
-        customSecurityService.addAclPermissions(content);
-        return content;
+
+        Content currentContent = content;
+        currentContent = contentRepository.save(currentContent);
+        customSecurityService.addAclPermissions(currentContent);
+        return currentContent;
     }
 
     @PreAuthorize("isAuthenticated() && hasPermission(#content, 'WRITE') && #content != null")
     public Content edit(@Param("content") Content content) {
 
-        ContentBuilder contentBuilder = Builders.of(content);
+        Content currentContent = content;
 
-        content = contentBuilder.withOvalValidator(ovalValidator).build();
+        ContentBuilder contentBuilder = Builders.of(currentContent);
 
-        return contentRepository.save(content);
+        currentContent = contentBuilder.withOvalValidator(ovalValidator).build();
+
+        return contentRepository.save(currentContent);
     }
 
     @PreAuthorize("isAuthenticated() && hasPermission(#content, 'WRITE') && #content != null")
@@ -102,18 +106,20 @@ public class ContentService {
     @Transactional
     public ContentViewModel addContent(Content content) {
 
-        ContentBuilder contentBuilder = Builders.of(content);
+        Content currentContent = content;
 
-        content = contentBuilder.withOvalValidator(ovalValidator).build();
+        ContentBuilder contentBuilder = Builders.of(currentContent);
 
-        content = add(content);
+        currentContent = contentBuilder.withOvalValidator(ovalValidator).build();
 
-        contentBuilder = Builders.of(content);
+        currentContent = add(currentContent);
+
+        contentBuilder = Builders.of(currentContent);
 
         ContentViewModel contentViewModel = contentBuilder.buildViewModel();
 
-        String ownerOfObject = customSecurityService.getOwnerOfObject(content);
-        List<String> acls = customSecurityService.getMyAclForObject(content);
+        String ownerOfObject = customSecurityService.getOwnerOfObject(currentContent);
+        List<String> acls = customSecurityService.getMyAclForObject(currentContent);
 
         contentViewModel.setOwner(ownerOfObject);
         contentViewModel.setAcls(acls);

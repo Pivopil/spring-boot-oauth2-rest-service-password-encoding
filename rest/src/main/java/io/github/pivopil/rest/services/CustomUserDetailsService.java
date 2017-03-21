@@ -99,13 +99,15 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Transactional
     public UserViewModel createNewUser(User newUser) {
 
-        String password = newUser.getPassword();
+        User currentUser = newUser;
+
+        String password = currentUser.getPassword();
 
         validateUserPassword(password);
 
         Set<Role> roles = new HashSet<>();
 
-        for (Role role : newUser.getRoles()) {
+        for (Role role : currentUser.getRoles()) {
             String name = role.getName();
             Role oneByName = roleRepository.findOneByName(name);
             if (oneByName == null) {
@@ -114,7 +116,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             roles.add(oneByName);
         }
 
-        newUser.setRoles(roles);
+        currentUser.setRoles(roles);
 
         if (roles.size() == 0) {
             throw new BadCredentialsException("New User object should have at least one valid role!");
@@ -146,21 +148,21 @@ public class CustomUserDetailsService implements UserDetailsService {
             }
         }
 
-        UserBuilder userBuilder = Builders.of(newUser);
+        UserBuilder userBuilder = Builders.of(currentUser);
         String encodedPassword = passwordEncoder.encode(password);
-        newUser = userBuilder
+        currentUser = userBuilder
                 .password(encodedPassword)
                 .enabled(Boolean.TRUE)
                 .withOvalValidator(ovalValidator)
                 .build();
 
-        newUser = add(newUser);
+        currentUser = add(currentUser);
 
-        userBuilder = Builders.of(newUser);
+        userBuilder = Builders.of(currentUser);
         UserViewModel userViewModel = userBuilder.buildViewModel();
 
-        String ownerOfObject = customSecurityService.getOwnerOfObject(newUser);
-        List<String> acls = customSecurityService.getMyAclForObject(newUser);
+        String ownerOfObject = customSecurityService.getOwnerOfObject(currentUser);
+        List<String> acls = customSecurityService.getMyAclForObject(currentUser);
 
         userViewModel.setOwner(ownerOfObject);
         userViewModel.setAcls(acls);
@@ -170,11 +172,11 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @PreAuthorize("isAuthenticated() && #newUser != null")
     private User add(@Param("newUser") User newUser) {
-        newUser = userRepository.save(newUser);
-        customSecurityService.addAclPermissions(newUser);
+        User currentUser = userRepository.save(newUser);
+        customSecurityService.addAclPermissions(currentUser);
         // let new user edit himself
-        customACLService.persistReadWritePermissionsForDomainObject(newUser, newUser.getLogin(), true);
-        return newUser;
+        customACLService.persistReadWritePermissionsForDomainObject(currentUser, currentUser.getLogin(), true);
+        return currentUser;
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -186,7 +188,9 @@ public class CustomUserDetailsService implements UserDetailsService {
     @PreAuthorize("isAuthenticated() && hasPermission(#user, 'WRITE') && #user != null")
     public User edit(@Param("user") User user) {
 
-        Long userId = user.getId();
+        User currentUser = user;
+
+        Long userId = currentUser.getId();
 
         User userFromDB = userRepository.findOne(userId);
 
@@ -194,19 +198,19 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new ExceptionAdapter(new BadCredentialsException("there is no user with id = " + userId));
         }
 
-        String password = user.getPassword();
+        String password = currentUser.getPassword();
 
         validateUserPassword(password);
 
-        UserBuilder userBuilder = Builders.of(user);
+        UserBuilder userBuilder = Builders.of(currentUser);
 
         String encodedPassword = passwordEncoder.encode(password);
 
-        user = userBuilder.password(encodedPassword).withOvalValidator(ovalValidator).build();
+        currentUser = userBuilder.password(encodedPassword).withOvalValidator(ovalValidator).build();
 
-        user = userRepository.save(user);
+        currentUser = userRepository.save(currentUser);
 
-        return user;
+        return currentUser;
     }
 
     private void validateUserPassword(String password) {
@@ -218,15 +222,18 @@ public class CustomUserDetailsService implements UserDetailsService {
     // todo: find way to remove user object in case if user is owner of another objects
     @PreAuthorize("isAuthenticated() && hasPermission(#user, 'WRITE') && #user != null")
     private void delete(@Param("user") User user) {
-        Boolean hasAdminRole = customSecurityService.isRolesContainRoleName(user.getRoles(), ROLES.ROLE_ADMIN);
+
+        User currentUser = user;
+
+        Boolean hasAdminRole = customSecurityService.isRolesContainRoleName(currentUser.getRoles(), ROLES.ROLE_ADMIN);
 
         if (hasAdminRole) {
             throw new ExceptionAdapter(new BadCredentialsException("Admin can not disable himself!"));
         }
 
-        userRepository.delete(user);
-        customSecurityService.removeAclPermissions(user);
-        customACLService.deleteReadWritePermissionsFromDatabase(user, user.getLogin(), true);
+        userRepository.delete(currentUser);
+        customSecurityService.removeAclPermissions(currentUser);
+        customACLService.deleteReadWritePermissionsFromDatabase(currentUser, currentUser.getLogin(), true);
     }
 
     @Transactional
@@ -237,14 +244,17 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @PreAuthorize("isAuthenticated() && hasPermission(#user, 'WRITE') && #user != null")
     private void disableUser(User user) {
-        Boolean hasAdminRole = customSecurityService.isRolesContainRoleName(user.getRoles(), ROLES.ROLE_ADMIN);
+
+        User currentUser = user;
+
+        Boolean hasAdminRole = customSecurityService.isRolesContainRoleName(currentUser.getRoles(), ROLES.ROLE_ADMIN);
 
         if (hasAdminRole) {
             throw new BadCredentialsException("Admin can not disable himself!");
         }
 
-        user.setEnabled(Boolean.FALSE);
-        userRepository.save(user);
+        currentUser.setEnabled(Boolean.FALSE);
+        userRepository.save(currentUser);
     }
 
     @Transactional

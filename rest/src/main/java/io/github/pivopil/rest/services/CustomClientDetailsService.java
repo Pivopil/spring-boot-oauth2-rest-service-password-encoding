@@ -61,19 +61,21 @@ public class CustomClientDetailsService implements ClientDetailsService {
     @Transactional
     public ClientViewModel save(Client client) {
 
-        String secret = client.getClientSecret();
+        Client currentClient = client;
+
+        String secret = currentClient.getClientSecret();
 
         validateSecret(secret);
 
-        ClientBuilder clientBuilder = Builders.of(client);
+        ClientBuilder clientBuilder = Builders.of(currentClient);
 
-        String clientSecretEncoded = passwordEncoder.encode(client.getClientSecret());
+        String clientSecretEncoded = passwordEncoder.encode(currentClient.getClientSecret());
 
-        client = clientBuilder.clientSecret(clientSecretEncoded).withOvalValidator(ovalValidator).build();
+        currentClient = clientBuilder.clientSecret(clientSecretEncoded).withOvalValidator(ovalValidator).build();
 
-        client = clientRepository.save(client);
+        currentClient = clientRepository.save(currentClient);
 
-        clientBuilder = Builders.of(client);
+        clientBuilder = Builders.of(currentClient);
 
         return clientBuilder.buildViewModel();
     }
@@ -82,7 +84,9 @@ public class CustomClientDetailsService implements ClientDetailsService {
     @Transactional
     public void update(Client client) {
 
-        Long clientId = client.getId();
+        Client currentClient = client;
+
+        Long clientId = currentClient.getId();
 
         Client clientFromDB = clientRepository.findOne(clientId);
 
@@ -90,17 +94,17 @@ public class CustomClientDetailsService implements ClientDetailsService {
             throw new ExceptionAdapter(new ClientRegistrationException("Could not find client with clientId " + clientId));
         }
 
-        String secret = client.getClientSecret();
+        String secret = currentClient.getClientSecret();
 
         validateSecret(secret);
 
-        ClientBuilder clientBuilder = Builders.of(client);
+        ClientBuilder clientBuilder = Builders.of(currentClient);
 
         String encodedSecret = passwordEncoder.encode(secret);
 
-        client = clientBuilder.clientSecret(encodedSecret).withOvalValidator(ovalValidator).build();
+        currentClient = clientBuilder.clientSecret(encodedSecret).withOvalValidator(ovalValidator).build();
 
-        clientRepository.save(client);
+        clientRepository.save(currentClient);
     }
 
     private void validateSecret(String secret) {

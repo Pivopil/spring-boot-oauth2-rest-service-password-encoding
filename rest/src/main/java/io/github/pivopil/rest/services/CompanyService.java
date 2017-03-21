@@ -46,13 +46,15 @@ public class CompanyService {
     @Transactional
     public Company save(Company company) {
 
-        CompanyBuilder companyBuilder = Builders.of(company);
+        Company currentCompany = company;
 
-        company = companyBuilder.withOvalValidator(ovalValidator).build();
+        CompanyBuilder companyBuilder = Builders.of(currentCompany);
 
-        company = companyRepository.save(company);
+        currentCompany = companyBuilder.withOvalValidator(ovalValidator).build();
 
-        String upperCase = company.getRoleAlias().toUpperCase();
+        currentCompany = companyRepository.save(currentCompany);
+
+        String upperCase = currentCompany.getRoleAlias().toUpperCase();
 
         Role roleUser = new Role();
         String roleUserName = String.format("ROLE_%s_LOCAL_USER", upperCase);
@@ -64,22 +66,24 @@ public class CompanyService {
 
         roleRepository.save(Arrays.asList(roleAdmin, roleUser));
 
-        return company;
+        return currentCompany;
     }
 
     @Transactional
     public void update(Company company) {
-        Company companyFromRepository = companyRepository.findOne(company.getId());
+        Company currentCompany = company;
 
-        if (!companyFromRepository.getRoleAlias().equals(company.getRoleAlias())) {
+        Company companyFromRepository = companyRepository.findOne(currentCompany.getId());
+
+        if (!companyFromRepository.getRoleAlias().equals(currentCompany.getRoleAlias())) {
             throw new IllegalArgumentException("You can not change Role Alias of the company");
         }
 
-        CompanyBuilder companyBuilder = Builders.of(company);
+        CompanyBuilder companyBuilder = Builders.of(currentCompany);
 
-        company = companyBuilder.withOvalValidator(ovalValidator).build();
+        currentCompany = companyBuilder.withOvalValidator(ovalValidator).build();
 
-        companyRepository.save(company);
+        companyRepository.save(currentCompany);
     }
 
     @Transactional
