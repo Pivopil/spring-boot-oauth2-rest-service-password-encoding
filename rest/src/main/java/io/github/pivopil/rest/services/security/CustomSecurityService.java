@@ -96,8 +96,7 @@ public class CustomSecurityService {
     }
 
     public Boolean isRolesContainRoleName(Set<Role> roles, final String roleName) {
-        if (roles == null) return false;
-        return roles.stream().filter(i -> i.getName().equals(roleName)).count() > 0;
+        return roles != null && roles.stream().filter(i -> i.getName().equals(roleName)).count() > 0;
     }
 
     public <T> void removeAclPermissions(T objectWithId) {
@@ -176,7 +175,7 @@ public class CustomSecurityService {
         return userDetails.getUsername();
     }
 
-    public List<String> getACL(Object domain) {
+    private List<String> getACL(Object domain) {
         final List<Sid> sids = customACLService.retrieveSidsBy(getAuthentication());
 
         final MutableAcl acl = customACLService.retrieveAclForObject(domain);
