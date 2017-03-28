@@ -8,6 +8,7 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 public class WebSocketDisconnectHandler<S>
         implements ApplicationListener<SessionDisconnectEvent> {
@@ -33,7 +34,7 @@ public class WebSocketDisconnectHandler<S>
 
         this.repository.delete(id);
         this.messagingTemplate.convertAndSend(WS_API.TOPIC_FRIENDS_SIGNOUT,
-                Arrays.asList(user.getUsername()));
+                Collections.singletonList(user.getUsername()));
 
     }
 }

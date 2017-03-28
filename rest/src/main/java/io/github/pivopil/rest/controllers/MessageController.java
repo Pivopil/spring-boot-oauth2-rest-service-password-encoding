@@ -36,6 +36,6 @@ public class MessageController {
 
     @SubscribeMapping(WS_API.ACTIVE_USERS)
     public List<String> subscribeMessages(@CurrentUser User currentUser) throws Exception {
-        return this.activeUserRepository.findAllActiveUsers(currentUser.getName());
+        return this.activeUserRepository.findAllActiveUsers(currentUser.getLogin());
     }
 }
