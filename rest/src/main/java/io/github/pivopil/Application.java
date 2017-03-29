@@ -4,6 +4,7 @@ import io.github.pivopil.share.entities.impl.Client;
 import io.github.pivopil.share.entities.impl.Role;
 import io.github.pivopil.share.entities.impl.User;
 import io.github.pivopil.share.exceptions.ExceptionAdapter;
+import io.github.pivopil.share.persistence.ActiveWebSocketUserRepository;
 import io.github.pivopil.share.persistence.ClientRepository;
 import io.github.pivopil.share.persistence.RoleRepository;
 import io.github.pivopil.share.persistence.UserRepository;
@@ -16,24 +17,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.support.EncodedResource;
-import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.ForkJoinTask;
-
-import static java.awt.Color.RED;
 
 /**
  * Created on 17.06.16.
@@ -67,6 +57,10 @@ public class Application extends SpringBootServletInitializer implements Command
     public void run(String... args) throws Exception {
         PasswordEncoder passwordEncoder = applicationContext.getBean(PasswordEncoder.class);
         UserRepository userRepository = applicationContext.getBean(UserRepository.class);
+        ActiveWebSocketUserRepository activeWebSocketUserRepository = applicationContext.getBean(ActiveWebSocketUserRepository.class);
+
+        // drop all active users on app restart
+        activeWebSocketUserRepository.delete(activeWebSocketUserRepository.findAll());
         if (((List<User>) userRepository.findAll()).size() == 0) {
             RoleRepository roleRepository = applicationContext.getBean(RoleRepository.class);
             ClientRepository clientRepository  = applicationContext.getBean(ClientRepository.class);
