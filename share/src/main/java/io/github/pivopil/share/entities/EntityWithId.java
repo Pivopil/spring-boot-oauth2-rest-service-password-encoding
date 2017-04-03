@@ -1,8 +1,7 @@
 package io.github.pivopil.share.entities;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.util.Objects;
@@ -15,8 +14,7 @@ import java.util.Objects;
 public class EntityWithId {
 
     @Id
-    @GenericGenerator(name = "native_generator", strategy = "native")
-    @GeneratedValue(generator = "native_generator")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
 

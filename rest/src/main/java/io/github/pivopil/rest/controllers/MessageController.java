@@ -20,11 +20,13 @@ public class MessageController {
         this.messageService = messageService;
     }
 
+    // @Payload Object payload, @Headers Map<String, Object> headers
     @MessageMapping(WS_API.INSTANT_MESSAGE)
     public void im(InstantMessage im) {
         messageService.im(im);
     }
 
+    // @Headers Map<String, Object> headers
     @SubscribeMapping(WS_API.ACTIVE_USERS)
     public List<String> subscribeMessages() {
         return messageService.getAllActiveUsers();
